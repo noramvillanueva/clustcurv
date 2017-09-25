@@ -78,7 +78,7 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
                            nboot = 100, algorithm = "kmeans", alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL){
 
-
+  #---------------
 
   if (!is.null(seed)) set.seed(seed)
 
