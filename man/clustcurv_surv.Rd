@@ -63,12 +63,12 @@ k-medians algorithm. It returns the number of groups and the assignement.
 library(clustcurv)
 library(survival)
 data(veteran)
+data(colonCS)
 
 res <- clustcurv_surv(time = veteran$time, status = veteran$status,
 fac = veteran$celltype, algorithm = "kmeans")
 
-res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
-fac = colonCSm$nodes, nboot = 20)
+#res <- clustcurv_surv(colonCS$time, status = colonCS$status, fac = colonCS$nodes, nboot = 20)
 
 
 }
