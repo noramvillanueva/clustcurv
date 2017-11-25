@@ -58,8 +58,9 @@
 #' @importFrom parallel makeCluster
 #' @importFrom parallel parLapply
 #' @importFrom parallel stopCluster
-#' @importFrom doRNG %dorng%
+#' @importFrom doRNG %dorng% registerDoRNG
 #' @importFrom foreach %do% foreach
+#' @importFrom doParallel registerDoParallel
 #'
 
 
