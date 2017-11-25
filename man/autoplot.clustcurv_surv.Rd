@@ -4,12 +4,12 @@
 \alias{autoplot.clustcurv_surv}
 \title{Visualization of \code{clustcurv_surv} objects with ggplot2 graphics}
 \usage{
-\method{autoplot}{clustcurv_surv}(x = object, groups_by_colour = TRUE,
+\method{autoplot}{clustcurv_surv}(object = object, groups_by_colour = TRUE,
   centers = FALSE, conf.int = FALSE, censor = FALSE, xlab = "Time",
   ylab = "Survival", ...)
 }
 \arguments{
-\item{x}{Object of \code{clustcurv_surv} class.}
+\item{object}{Object of \code{clustcurv_surv} class.}
 
 \item{groups_by_colour}{jsjhd}
 
@@ -44,11 +44,22 @@ library(survival)
 data(veteran)
 
 cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
-fac = veteran$celltype, k = 2, algorithm = "kmeans", nboot = 20)
+fac = veteran$celltype, k = 2, algorithm = "kmeans")
 
 autoplot(cl2)
 autoplot(cl2, groups_by_colour = FALSE)
 autoplot(cl2, centers = TRUE)
+
+colonCSm <- data.frame(time = condSURV::colonCS$Stime, status = condSURV::colonCS$event,
+nodes = condSURV::colonCS$nodes)
+
+table(colonCSm$nodes)
+colonCSm$nodes[colonCSm$nodes == 0] <- NA
+colonCSm <- na.omit(colonCSm)
+colonCSm$nodes[colonCSm$nodes >= 10] <- 10
+ table(colonCSm$nodes) # ten levels
+
+
 
 res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
 fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)

@@ -23,6 +23,8 @@ checking.}
 \item{kbin}{Size of the grid over which the survival functions
 are to be estimated.}
 
+\item{nboot}{Number of bootstrap repeats.}
+
 \item{algorithm}{A character string specifying which clustering algorithm is used,
 i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}
 

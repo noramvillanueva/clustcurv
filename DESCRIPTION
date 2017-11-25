@@ -21,5 +21,6 @@ Imports:
     ggfortify,
     doRNG,
     Gmedian,
-    doParallel
+    wesanderson,
+    survival
 RoxygenNote: 6.0.1

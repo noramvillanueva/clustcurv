@@ -12,6 +12,7 @@
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
+#' @param nboot Number of bootstrap repeats.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
 #' @param alpha Seed to be used in the procedure.
@@ -60,7 +61,7 @@
 #' @importFrom parallel stopCluster
 #' @importFrom doRNG %dorng% registerDoRNG
 #' @importFrom foreach %do% foreach
-#' @importFrom doParallel registerDoParallel
+#' @importFrom doParallel registerDoParallel stopImplicitCluster
 #'
 
 
