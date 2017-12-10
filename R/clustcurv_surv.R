@@ -28,6 +28,9 @@
 #' in the parallelized procedure. If \code{NULL} (default), the number of cores
 #' to be used is equal to the number of cores of the machine - 1.
 #' @param seed Seed to be used in the procedure.
+#' @param multiple A logical value. If  \code{TRUE} (not default), the resulted
+#' pvalues are adjunted by using one of several methods for multiple comparisons.
+#' @param multiple.method Correction method. See Details.
 #'
 #'@return
 #'A list containing the following items:
@@ -40,6 +43,16 @@
 #'  (mean of the curves pertaining to the same group).}
 #'  \item{curves}{An object of class \code{survfit} containing the survival
 #'  curves for each population.}
+#'
+#'@details The adjustment methods include the Bonferroni correction ("bonferroni")
+#' in which the p-values are multiplied by the number of comparisons.
+#' Less conservative corrections are also included by Holm (1979) ("holm"),
+#' Hochberg (1988) ("hochberg"), Hommel (1988) ("hommel"),
+#' Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), and
+#' Benjamini & Yekutieli (2001) ("BY"), respectively.
+#' A pass-through option ("none") is also included.
+#'
+#'
 #'@author Marta Sestelo, Nora M. Villanueva.
 #'
 #'@examples
@@ -78,7 +91,8 @@
 
 clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
                            nboot = 100, algorithm = "kmeans", alpha = 0.05,
-                           cluster = FALSE, ncores = NULL, seed = NULL){
+                           cluster = FALSE, ncores = NULL, seed = NULL,
+                           multiple = FALSE, multiple.method = "holm"){
 
   #---------------
 
@@ -105,6 +119,7 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
   pval <- NA
   tval <- NA
   h0tested <- NA
+  aux <- list()
 
   for (k in kvector){
     if(k == 1){
@@ -112,16 +127,34 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
     }else{
       cat(paste("Checking",k, "clusters...", "\n"), sep = "")
     }
-    aux <- testing_k(time = time, status = status, fac = fac, k = k,
+    aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
                      kbin = kbin, nboot = nboot, algorithm = algorithm,
                      seed = seed)
 
-    pval[ii] <- aux$pvalue
-    tval[ii] <- aux$t
+    pval[ii] <- aux[[ii]]$pvalue
+    tval[ii] <- aux[[ii]]$t
     h0tested[ii] <- k
+
+
+    if(isTRUE(multiple)){
+      pval <- p.adjust(pval, method = multiple.method)
+      ind <- pval >= alpha
+      if(sum(ind) > 0){
+        ind_list <- which(ind)[1]
+        k <- kvector[ind_list]
+        aux <- aux[[ind_list]]
+        break
+        }
+      }
+
+    if(aux[[ii]]$pvalue >= alpha){
+      aux <- aux[[ii]]
+      break
+      }
     ii <- ii + 1
-    if(aux$pvalue >= alpha){break}
   }
+
+
 
 
   if(k == 1){
@@ -137,7 +170,7 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
   h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
   h1 <- survfit(Surv(time, status) ~ fac)
 
-  res <- list(table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
+  res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
               centers = h0, curves = h1)
   class(res) <- "clustcurv_surv"
