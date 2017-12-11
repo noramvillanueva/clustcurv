@@ -115,6 +115,7 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
 
   if(is.null(kvector)) kvector <- c(1:100)
 
+  accept <- 0
   ii <- 1
   pval <- NA
   tval <- NA
@@ -143,19 +144,21 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
         ind_list <- which(ind)[1]
         k <- kvector[ind_list]
         aux <- aux[[ind_list]]
+        accept <- 1
         break
         }
       }
 
     if(aux[[ii]]$pvalue >= alpha){
       aux <- aux[[ii]]
+      accept <- 1
       break
       }
     ii <- ii + 1
   }
 
 
-
+  if (accept == 1) {
 
   if(k == 1){
     cat("\n")
@@ -169,6 +172,18 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
   # muhat under h0 and under h1
   h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
   h1 <- survfit(Surv(time, status) ~ fac)
+
+  }else{
+    k <- paste( ">", k, sep ="")
+    aux$levels <- NA
+    aux$cluster <- NA
+    h0 <- NA
+    h1 <- survfit(Surv(time, status) ~ fac)
+    cat("\n")
+    cat(paste("The number 'k' of clusters has not been found, try another kvector.", "\n"), sep = "")
+
+  }
+
 
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
