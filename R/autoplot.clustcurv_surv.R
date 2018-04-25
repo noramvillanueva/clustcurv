@@ -33,7 +33,7 @@
 #' data(veteran)
 #'
 #' cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
-#' fac = veteran$celltype, k = 2, algorithm = "kmeans", nboot = 20)
+#' fac = veteran$celltype, k = 2, algorithm = "kmeans")
 #'
 #' autoplot(cl2)
 #' autoplot(cl2, groups_by_colour = FALSE)
@@ -56,7 +56,7 @@ autoplot.clustcurv_surv <- function(x = object, groups_by_colour = TRUE,
 
   k <- length(x$centers$strata)
  # colnm <- wesanderson::wes_palette("Zissou", length(x$levels), type = c("continuous"))
-  colgr <- wesanderson::wes_palette("Zissou", k, type = c("continuous"))
+  colgr <- wesanderson::wes_palette("Zissou1", k, type = c("continuous"))
 
   if(!isTRUE(centers)){
 
