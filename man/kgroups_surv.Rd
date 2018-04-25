@@ -66,7 +66,7 @@ data.frame(level = cl2$level, cluster = cl2$cluster)
 cl3 <- kgroups_surv(time = veteran$time, status = veteran$status,
 fac = veteran$celltype, k = 3, algorithm = "kmeans")
 
-data.frame(level = $level, cluster = cl3$cluster)
+data.frame(level = cl3$level, cluster = cl3$cluster)
 
 }
 \author{

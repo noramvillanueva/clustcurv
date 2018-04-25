@@ -6,7 +6,7 @@
 \usage{
 clustcurv_surv(time, status, fac, kvector = NULL, kbin = 50, nboot = 100,
   algorithm = "kmeans", alpha = 0.05, cluster = FALSE, ncores = NULL,
-  seed = NULL)
+  seed = NULL, multiple = FALSE, multiple.method = "holm")
 }
 \arguments{
 \item{time}{Survival time.}
@@ -22,6 +22,8 @@ checking.}
 
 \item{kbin}{Size of the grid over which the survival functions
 are to be estimated.}
+
+\item{nboot}{Number of bootstrap repeats.}
 
 \item{algorithm}{A character string specifying which clustering algorithm is used,
 i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}
@@ -42,6 +44,11 @@ in the parallelized procedure. If \code{NULL} (default), the number of cores
 to be used is equal to the number of cores of the machine - 1.}
 
 \item{seed}{Seed to be used in the procedure.}
+
+\item{multiple}{A logical value. If  \code{TRUE} (not default), the resulted
+pvalues are adjunted by using one of several methods for multiple comparisons.}
+
+\item{multiple.method}{Correction method. See Details.}
 }
 \value{
 A list containing the following items:
@@ -59,16 +66,25 @@ A list containing the following items:
 Function for grouping survival curves based on the k-means or
 k-medians algorithm. It returns the number of groups and the assignement.
 }
+\details{
+The adjustment methods include the Bonferroni correction ("bonferroni")
+in which the p-values are multiplied by the number of comparisons.
+Less conservative corrections are also included by Holm (1979) ("holm"),
+Hochberg (1988) ("hochberg"), Hommel (1988) ("hommel"),
+Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), and
+Benjamini & Yekutieli (2001) ("BY"), respectively.
+A pass-through option ("none") is also included.
+}
 \examples{
 library(clustcurv)
 library(survival)
 data(veteran)
+data(colonCS)
 
 res <- clustcurv_surv(time = veteran$time, status = veteran$status,
 fac = veteran$celltype, algorithm = "kmeans")
 
-res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
-fac = colonCSm$nodes, nboot = 20)
+#res <- clustcurv_surv(colonCS$time, status = colonCS$status, fac = colonCS$nodes, nboot = 20)
 
 
 }
