@@ -72,7 +72,7 @@ autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
 
   k <- length(x$centers$strata)
  # colnm <- wesanderson::wes_palette("Zissou", length(x$levels), type = c("continuous"))
-  colgr <- wesanderson::wes_palette("Zissou", k, type = c("continuous"))
+  colgr <- wesanderson::wes_palette("Zissou1", k, type = c("continuous"))
 
   if(!isTRUE(centers)){
 
