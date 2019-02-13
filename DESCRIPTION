@@ -20,5 +20,6 @@ Imports:
     ggplot2,
     ggfortify,
     doRNG,
-    Gmedian
+    Gmedian, 
+    survival
 RoxygenNote: 6.1.1
