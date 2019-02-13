@@ -4,8 +4,8 @@
 \alias{kgroups_surv}
 \title{k-groups of survival curves}
 \usage{
-kgroups_surv(time, status, fac, k = K, kbin = 50, algorithm = "kmeans",
-  seed = NULL)
+kgroups_surv(time, status, fac, k = K, kbin = 50,
+  algorithm = "kmeans", seed = NULL)
 }
 \arguments{
 \item{time}{Survival time.}

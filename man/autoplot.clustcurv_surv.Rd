@@ -44,7 +44,7 @@ library(survival)
 data(veteran)
 
 cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
-fac = veteran$celltype, k = 2, algorithm = "kmeans", nboot = 20)
+fac = veteran$celltype, k = 2, algorithm = "kmeans")
 
 autoplot(cl2)
 autoplot(cl2, groups_by_colour = FALSE)

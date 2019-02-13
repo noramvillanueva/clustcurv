@@ -4,9 +4,9 @@
 \alias{clustcurv_surv}
 \title{Clustering survival curves}
 \usage{
-clustcurv_surv(time, status, fac, kvector = NULL, kbin = 50, nboot = 100,
-  algorithm = "kmeans", alpha = 0.05, cluster = FALSE, ncores = NULL,
-  seed = NULL)
+clustcurv_surv(time, status, fac, kvector = NULL, kbin = 50,
+  nboot = 100, algorithm = "kmeans", alpha = 0.05, cluster = FALSE,
+  ncores = NULL, seed = NULL)
 }
 \arguments{
 \item{time}{Survival time.}
