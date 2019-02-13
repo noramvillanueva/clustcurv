@@ -1,7 +1,4 @@
 # clustcurv
-An R package for determining groups in multiple survival curves. There are some 
-functions implemented, on the one hand, given a number of groups k, it can be 
-determing which curves are similar or which ones not. On the other hand, when 
-the number of groups k is unkonwn, a new procedure that let us not only the 
-equality of the mulitple curves but also grouping them if they are not equal, 
-with an automatic selection of the number. 
+One important goal in survival analysis is the comparison of survival curves between groups. In many longitudinal survival studies one is often interested in assessing whether there are differences in survival among different groups of participants. For example, in a longitudinal medical study with a survival outcome, we might be interested in comparing survival between participants receiving different treatments, different age groups, racial/ethnic groups, geographic localization, etc. Several nonparametric methods have been proposed in the literature to test for the equality of survival curves for censored data. However, none of these methods can be used to determine groups among a series of survival curves. Naive approaches, such as pairwise comparisons, lead to a large number of comparisons making difficult the interpretations. Based on this, a new method is proposed which allows determining groups of survival curves with an automatic selection of their number. This method is implemented in the R clustcurv package and is illustrated using data from a colon cancer study.
+
+clustcurv algorithm has direct application in different sectors, such as engineering, banking, medicine or aquaculture where it is necessary to estimate the probability of a specific event occurring beyond a given period of time. Examples of such events could be a one-piece failure, defaulters or crop mortality, such fish in a fish farm.
