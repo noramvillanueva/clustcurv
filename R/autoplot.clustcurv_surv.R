@@ -10,7 +10,7 @@
 #' color and the centroids (mean curve of the curves pertaining to the
 #' same group).
 #'
-#' @param x Object of \code{clustcurv_surv} class.
+#' @param object Object of \code{clustcurv_surv} class.
 #' @param groups_by_colour jsjhd
 #' @param centers  Draw the centroids (mean of the curves pertaining to the
 #' same group) into the plot. By default it is \code{FALSE}.
@@ -39,6 +39,17 @@
 #' autoplot(cl2, groups_by_colour = FALSE)
 #' autoplot(cl2, centers = TRUE)
 #'
+#'colonCSm <- data.frame(time = condSURV::colonCS$Stime, status = condSURV::colonCS$event,
+#'nodes = condSURV::colonCS$nodes)
+#'
+#' table(colonCSm$nodes)
+#' colonCSm$nodes[colonCSm$nodes == 0] <- NA
+#'colonCSm <- na.omit(colonCSm)
+#' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
+#'  table(colonCSm$nodes) # ten levels
+#'
+#'
+#'
 #' res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
 #' fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
 #'
@@ -46,13 +57,18 @@
 #' autoplot(res, groups_by_colour = FALSE)
 #' autoplot(res, centers = TRUE)
 #'
+#' @importFrom wesanderson wes_palette
 #' @export
+#'
 
 
-autoplot.clustcurv_surv <- function(x = object, groups_by_colour = TRUE,
+autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
                               centers = FALSE, conf.int = FALSE, censor = FALSE,
                               xlab = "Time", ylab = "Survival",
                               ...){
+
+
+  x <- object
 
   k <- length(x$centers$strata)
  # colnm <- wesanderson::wes_palette("Zissou", length(x$levels), type = c("continuous"))
