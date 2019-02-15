@@ -8,7 +8,7 @@ Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
 Description: A method for determining groups in multiple curves with an 
     automatic selection of their number. It is focused on both regression
     and survival curves and using the k-means or k-medians.
-BugReports: http://github.com/sestelo/clustsurv/issues
+BugReports: http://github.com/noramvillanueva/clustsurv/issues
 Depends:
     R (>= 3.2.0)
 License: MIT + file LICENSE
