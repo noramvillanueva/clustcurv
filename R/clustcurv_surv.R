@@ -12,6 +12,7 @@
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
+#' @param nboot Number of bootstrap repeats.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
 #' @param alpha Seed to be used in the procedure.
@@ -27,6 +28,9 @@
 #' in the parallelized procedure. If \code{NULL} (default), the number of cores
 #' to be used is equal to the number of cores of the machine - 1.
 #' @param seed Seed to be used in the procedure.
+#' @param multiple A logical value. If  \code{TRUE} (not default), the resulted
+#' pvalues are adjunted by using one of several methods for multiple comparisons.
+#' @param multiple.method Correction method. See Details.
 #'
 #'@return
 #'A list containing the following items:
@@ -76,9 +80,10 @@
 
 clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
                            nboot = 100, algorithm = "kmeans", alpha = 0.05,
-                           cluster = FALSE, ncores = NULL, seed = NULL){
+                           cluster = FALSE, ncores = NULL, seed = NULL,
+                           multiple = FALSE, multiple.method = "holm"){
 
-
+  #---------------
 
   if (!is.null(seed)) set.seed(seed)
 
@@ -99,10 +104,12 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
 
   if(is.null(kvector)) kvector <- c(1:100)
 
+  accept <- 0
   ii <- 1
   pval <- NA
   tval <- NA
   h0tested <- NA
+  aux <- list()
 
   for (k in kvector){
     if(k == 1){
@@ -110,17 +117,37 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
     }else{
       cat(paste("Checking",k, "clusters...", "\n"), sep = "")
     }
-    aux <- testing_k(time = time, status = status, fac = fac, k = k,
+    aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
                      kbin = kbin, nboot = nboot, algorithm = algorithm,
                      seed = seed)
 
-    pval[ii] <- aux$pvalue
-    tval[ii] <- aux$t
+    pval[ii] <- aux[[ii]]$pvalue
+    tval[ii] <- aux[[ii]]$t
     h0tested[ii] <- k
+
+
+    if(isTRUE(multiple)){
+      pval <- p.adjust(pval, method = multiple.method)
+      ind <- pval >= alpha
+      if(sum(ind) > 0){
+        ind_list <- which(ind)[1]
+        k <- kvector[ind_list]
+        aux <- aux[[ind_list]]
+        accept <- 1
+        break
+        }
+      }
+
+    if(aux[[ii]]$pvalue >= alpha){
+      aux <- aux[[ii]]
+      accept <- 1
+      break
+      }
     ii <- ii + 1
-    if(aux$pvalue >= alpha){break}
   }
 
+
+  if (accept == 1) {
 
   if(k == 1){
     cat("\n")
@@ -135,7 +162,19 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
   h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
   h1 <- survfit(Surv(time, status) ~ fac)
 
-  res <- list(table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
+  }else{
+    k <- paste( ">", k, sep ="")
+    aux$levels <- NA
+    aux$cluster <- NA
+    h0 <- NA
+    h1 <- survfit(Surv(time, status) ~ fac)
+    cat("\n")
+    cat(paste("The number 'k' of clusters has not been found, try another kvector.", "\n"), sep = "")
+
+  }
+
+
+  res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
               centers = h0, curves = h1)
   class(res) <- "clustcurv_surv"
