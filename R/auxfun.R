@@ -54,12 +54,12 @@ chat_grid <- function(h1, h0, data, res, kbin, j){
 
 
 
-
+# CAMBIAR!!!!!!
 
 # test statistic (valid for kmeans or kmedians algorithm, fill in method argument)
 Tvalue <- function(data, K, kbin, method){
   h1 <- survfit(Surv(ttilde, status) ~ ff, data = data)
-  xbin <- seq(from = min(data$ttilde), to = max(data$ttilde), length.out = kbin)
+  xbin <- seq(from = min(data$ttilde), to = max(data$ttilde), length.out = kbin)   # !OJO cambiar esto para que el último tiempo nunca sea censurado!!! que el max sea el max ttilde no censurado!!!
   aux <- summary(h1, times = xbin)
   kbin_km <- as.numeric(table(aux$strata))
 
