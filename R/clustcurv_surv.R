@@ -43,18 +43,28 @@
 #'  (mean of the curves pertaining to the same group).}
 #'  \item{curves}{An object of class \code{survfit} containing the survival
 #'  curves for each population.}
+#'
+#'@details The adjustment methods include the Bonferroni correction ("bonferroni")
+#' in which the p-values are multiplied by the number of comparisons.
+#' Less conservative corrections are also included by Holm (1979) ("holm"),
+#' Hochberg (1988) ("hochberg"), Hommel (1988) ("hommel"),
+#' Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), and
+#' Benjamini & Yekutieli (2001) ("BY"), respectively.
+#' A pass-through option ("none") is also included.
+#'
+#'
 #'@author Marta Sestelo, Nora M. Villanueva.
 #'
 #'@examples
 #' library(clustcurv)
 #' library(survival)
 #' data(veteran)
+#' data(colonCS)
 #'
 #' res <- clustcurv_surv(time = veteran$time, status = veteran$status,
 #' fac = veteran$celltype, algorithm = "kmeans")
 #'
-#' res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
-#' fac = colonCSm$nodes, nboot = 20)
+#' #res <- clustcurv_surv(colonCS$time, status = colonCS$status, fac = colonCS$nodes, nboot = 20)
 #'
 #'
 #' @importFrom survival survfit
@@ -62,8 +72,9 @@
 #' @importFrom parallel makeCluster
 #' @importFrom parallel parLapply
 #' @importFrom parallel stopCluster
-#' @importFrom doRNG %dorng%
+#' @importFrom doRNG %dorng% registerDoRNG
 #' @importFrom foreach %do% foreach
+#' @importFrom doParallel registerDoParallel stopImplicitCluster
 #'
 
 
