@@ -1,9 +1,3 @@
- #' @importFrom ggplot2 autoplot
- #' @import ggfortify
- #' @export
- ggplot2::autoplot
-
-
 #' Visualization of \code{clustcurv_surv} objects with ggplot2 graphics
 #'
 #' @description Useful for drawing the estimated survival functions grouped by
@@ -26,11 +20,14 @@
 #' ggplot2 package to manipulate the plot.
 #'
 #'@author Nora M. Villanueva and Marta Sestelo.
-#'
+
 #' @examples
 #'
 #' library(survival)
+#' library(clustcurv)
+#' library(condSURV)
 #' data(veteran)
+#' data(colonCS)
 #'
 #' cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
 #' fac = veteran$celltype, k = 2, algorithm = "kmeans")
@@ -39,8 +36,8 @@
 #' autoplot(cl2, groups_by_colour = FALSE)
 #' autoplot(cl2, centers = TRUE)
 #'
-#'colonCSm <- data.frame(time = condSURV::colonCS$Stime, status = condSURV::colonCS$event,
-#'nodes = condSURV::colonCS$nodes)
+#' colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
+#'                       nodes = colonCS$nodes)
 #'
 #' table(colonCSm$nodes)
 #' colonCSm$nodes[colonCSm$nodes == 0] <- NA
@@ -57,9 +54,9 @@
 #' autoplot(res, groups_by_colour = FALSE)
 #' autoplot(res, centers = TRUE)
 #'
-#' @importFrom wesanderson wes_palette
-#' @export
-#'
+#' @importFrom ggplot2 autoplot
+#' @import ggfortify
+
 
 
 autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
@@ -72,7 +69,7 @@ autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
 
   k <- length(x$centers$strata)
  # colnm <- wesanderson::wes_palette("Zissou", length(x$levels), type = c("continuous"))
-  colgr <- wesanderson::wes_palette("Zissou1", k, type = c("continuous"))
+  colgr <- wes_palette("Zissou1", k, type = c("continuous"))
 
   if(!isTRUE(centers)){
 
