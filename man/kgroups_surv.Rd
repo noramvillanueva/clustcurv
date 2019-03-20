@@ -4,7 +4,7 @@
 \alias{kgroups_surv}
 \title{k-groups of survival curves}
 \usage{
-kgroups_surv(time, status, fac, k = K, kbin = 50, algorithm = "kmeans",
+kgroups_surv(time, status, fac, k, kbin = 50, algorithm = "kmeans",
   seed = NULL)
 }
 \arguments{

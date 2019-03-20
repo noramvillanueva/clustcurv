@@ -4,9 +4,10 @@
 \alias{clustcurv_surv}
 \title{Clustering survival curves}
 \usage{
-clustcurv_surv(time, status, fac, kvector = NULL, kbin = 50, nboot = 100,
-  algorithm = "kmeans", alpha = 0.05, cluster = FALSE, ncores = NULL,
-  seed = NULL, multiple = FALSE, multiple.method = "holm")
+clustcurv_surv(time, status, fac, kvector = NULL, kbin = 50,
+  nboot = 100, algorithm = "kmeans", alpha = 0.05, cluster = FALSE,
+  ncores = NULL, seed = NULL, multiple = FALSE,
+  multiple.method = "holm")
 }
 \arguments{
 \item{time}{Survival time.}
@@ -76,14 +77,16 @@ Benjamini & Yekutieli (2001) ("BY"), respectively.
 A pass-through option ("none") is also included.
 }
 \examples{
+\donttest{
 library(clustcurv)
 library(survival)
+library(condSURV)
 data(veteran)
 data(colonCS)
 
 res <- clustcurv_surv(time = veteran$time, status = veteran$status,
 fac = veteran$celltype, algorithm = "kmeans")
-
+}
 #res <- clustcurv_surv(colonCS$time, status = colonCS$status, fac = colonCS$nodes, nboot = 20)
 
 

@@ -4,14 +4,14 @@
 \alias{autoplot.clustcurv_surv}
 \title{Visualization of \code{clustcurv_surv} objects with ggplot2 graphics}
 \usage{
-\method{autoplot}{clustcurv_surv}(object = object, groups_by_colour = TRUE,
-  centers = FALSE, conf.int = FALSE, censor = FALSE, xlab = "Time",
-  ylab = "Survival", ...)
+\method{autoplot}{clustcurv_surv}(object = object,
+  groups_by_colour = TRUE, centers = FALSE, conf.int = FALSE,
+  censor = FALSE, xlab = "Time", ylab = "Survival", ...)
 }
 \arguments{
 \item{object}{Object of \code{clustcurv_surv} class.}
 
-\item{groups_by_colour}{jsjhd}
+\item{groups_by_colour}{A specification for the plotting groups by color.}
 
 \item{centers}{Draw the centroids (mean of the curves pertaining to the
 same group) into the plot. By default it is \code{FALSE}.}
@@ -41,7 +41,12 @@ See help page of the function \code{\link{autoplot.survfit}}.
 \examples{
 
 library(survival)
+library(clustcurv)
+library(condSURV)
+library(ggplot2)
+library(ggfortify)
 data(veteran)
+data(colonCS)
 
 cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
 fac = veteran$celltype, k = 2, algorithm = "kmeans")
@@ -49,25 +54,23 @@ fac = veteran$celltype, k = 2, algorithm = "kmeans")
 autoplot(cl2)
 autoplot(cl2, groups_by_colour = FALSE)
 autoplot(cl2, centers = TRUE)
-
-colonCSm <- data.frame(time = condSURV::colonCS$Stime, status = condSURV::colonCS$event,
-nodes = condSURV::colonCS$nodes)
+\donttest{
+colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
+                      nodes = colonCS$nodes)
 
 table(colonCSm$nodes)
 colonCSm$nodes[colonCSm$nodes == 0] <- NA
 colonCSm <- na.omit(colonCSm)
 colonCSm$nodes[colonCSm$nodes >= 10] <- 10
- table(colonCSm$nodes) # ten levels
-
-
+table(colonCSm$nodes) # ten levels
 
 res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
-fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
+       fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
 
 autoplot(res)
 autoplot(res, groups_by_colour = FALSE)
 autoplot(res, centers = TRUE)
-
+}
 }
 \author{
 Nora M. Villanueva and Marta Sestelo.
