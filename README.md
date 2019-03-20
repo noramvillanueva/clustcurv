@@ -1,6 +1,10 @@
 # clustcurv: Determining Groups in Multiple Curves
 
 
+[![Build Status](https://travis-ci.org/noramvillanueva/clustcurv.svg?branch=master)](https://travis-ci.org/noramvillanueva/clustcurv)
+
+
+
 ```clustcurv``` is an R package that provides a method for determining groups in multiple survival 
 curves with an automatic selection of their number based on k-means or
 k-medians algorithms. The selection of the optimal number is provided by
