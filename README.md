@@ -2,6 +2,8 @@
 
 
 [![Build Status](https://travis-ci.org/noramvillanueva/clustcurv.svg?branch=master)](https://travis-ci.org/noramvillanueva/clustcurv)
+[![Coverage status](https://codecov.io/gh/noramvillanueva/clustcurv/branch/master/graph/badge.svg)](https://codecov.io/github/noramvillanueva/clustcurv?branch=master)
+
 
 
 

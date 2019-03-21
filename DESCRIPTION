@@ -32,5 +32,6 @@ Imports:
 Suggests:
     testthat,
     usethis,
-    condSURV
+    condSURV,
+    covr
 RoxygenNote: 6.1.1

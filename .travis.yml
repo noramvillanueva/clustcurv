@@ -2,16 +2,22 @@ language: r
 cache: packages
 sudo: true
 
-r:
-  - release
-  - devel
+# only run for pushes to master branch
+branches:
+  only:
+   - master
 
+r_github_packages:
+  - r-lib/covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
 
 warnings_are_errors: true
 
 notifications:
   slack:
     rooms:
-    
+
     on_success: change # default: always
     on_failure: always # default: always
