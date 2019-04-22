@@ -15,7 +15,7 @@ bootstrap methods.
 
 
 ## Installation
-```clustcurv``` is available through both CRAN and GitHub.
+```clustcurv``` is available through both [CRAN](https://cran.r-project.org/) and GitHub.
 
 Get the released version from CRAN:
 ```
