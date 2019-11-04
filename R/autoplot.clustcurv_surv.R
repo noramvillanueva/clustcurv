@@ -1,7 +1,8 @@
- #' @importFrom ggplot2 autoplot
- #' @import ggfortify
- #' @export
- ggplot2::autoplot
+#' @importFrom ggplot2 autoplot
+#' @import ggfortify
+#' @export
+ggplot2::autoplot
+
 
 
 #' Visualization of \code{clustcurv_surv} objects with ggplot2 graphics
@@ -11,7 +12,7 @@
 #' same group).
 #'
 #' @param object Object of \code{clustcurv_surv} class.
-#' @param groups_by_colour jsjhd
+#' @param groups_by_colour A specification for the plotting groups by color.
 #' @param centers  Draw the centroids (mean of the curves pertaining to the
 #' same group) into the plot. By default it is \code{FALSE}.
 #' @param conf.int Logical flag indicating whether to plot confidence intervals.
@@ -22,15 +23,19 @@
 #'
 #' @details See help page of the function \code{\link{autoplot.survfit}}.
 #'
-#'@return A ggplot object, so you can use common features from
+#' @return A ggplot object, so you can use common features from
 #' ggplot2 package to manipulate the plot.
 #'
-#'@author Nora M. Villanueva and Marta Sestelo.
-#'
+#' @author Nora M. Villanueva and Marta Sestelo.
 #' @examples
 #'
 #' library(survival)
+#' library(clustcurv)
+#' library(condSURV)
+#' library(ggplot2)
+#' library(ggfortify)
 #' data(veteran)
+#' data(colonCS)
 #'
 #' cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
 #' fac = veteran$celltype, k = 2, algorithm = "kmeans")
@@ -38,41 +43,36 @@
 #' autoplot(cl2)
 #' autoplot(cl2, groups_by_colour = FALSE)
 #' autoplot(cl2, centers = TRUE)
-#'
-#'colonCSm <- data.frame(time = condSURV::colonCS$Stime, status = condSURV::colonCS$event,
-#'nodes = condSURV::colonCS$nodes)
+#'\donttest{
+#' colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
+#'                       nodes = colonCS$nodes)
 #'
 #' table(colonCSm$nodes)
 #' colonCSm$nodes[colonCSm$nodes == 0] <- NA
-#'colonCSm <- na.omit(colonCSm)
+#' colonCSm <- na.omit(colonCSm)
 #' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
-#'  table(colonCSm$nodes) # ten levels
-#'
-#'
+#' table(colonCSm$nodes) # ten levels
 #'
 #' res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
-#' fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
+#'        fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
 #'
 #' autoplot(res)
 #' autoplot(res, groups_by_colour = FALSE)
 #' autoplot(res, centers = TRUE)
-#'
+#' }
 #' @importFrom wesanderson wes_palette
 #' @export
-#'
-
 
 autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
-                              centers = FALSE, conf.int = FALSE, censor = FALSE,
-                              xlab = "Time", ylab = "Survival",
-                              ...){
+          centers = FALSE, conf.int = FALSE, censor = FALSE,
+          xlab = "Time", ylab = "Survival", ...){
 
 
   x <- object
 
   k <- length(x$centers$strata)
  # colnm <- wesanderson::wes_palette("Zissou", length(x$levels), type = c("continuous"))
-  colgr <- wesanderson::wes_palette("Zissou1", k, type = c("continuous"))
+  colgr <- wes_palette("Zissou1", k, type = c("continuous"))
 
   if(!isTRUE(centers)){
 
@@ -95,8 +95,6 @@ autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
                          cen = factor(unlist(sapply(1:k, function(x, y){rep(x, y[x])},
                                                   y = x$centers$strata))))
 
-
-
       plot1 <- autoplot(x$curves, conf.int = conf.int, censor = censor, xlab = xlab,
                         ylab = ylab, ...) + ggplot2::scale_color_manual(values = colgr[x$cluster])
 
@@ -106,5 +104,6 @@ autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
 
   }
 }
+
 
 

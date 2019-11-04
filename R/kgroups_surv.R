@@ -55,13 +55,14 @@
 #' data.frame(level = cl3$level, cluster = cl3$cluster)
 #'
 #' @importFrom survival survfit
+#' @importFrom stats kmeans p.adjust
 #' @importFrom Gmedian kGmedian
+
 #' @export
 
 
-kgroups_surv <- function(time, status, fac, k = K, kbin = 50,
+kgroups_surv <- function(time, status, fac, k, kbin = 50,
                     algorithm = "kmeans", seed = NULL){
-
   if (!is.null(seed)) set.seed(seed)
 
   method <- algorithm
@@ -75,14 +76,15 @@ kgroups_surv <- function(time, status, fac, k = K, kbin = 50,
   data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
 
   # measure
-  tsample <- Tvalue(data, k, kbin, method)
+  aux <- Tvalue(data, k, kbin, method)
+  tsample <- aux$t
 
   # muhat under h0 and under h1
-  h0 <- survfit(Surv(ttilde, status) ~ res$cluster[data$ff], data = data)
+  h0 <- survfit(Surv(ttilde, status) ~ aux$res$cluster[data$ff], data = data)
   h1 <- survfit(Surv(ttilde, status) ~ ff, data = data)
 
   res <- list(measure = as.numeric(tsample), levels = lab,
-              cluster = as.numeric(res$cluster), centers = h0, curves = h1)
+              cluster = as.numeric(aux$res$cluster), centers = h0, curves = h1)
   class(res) <- c("kgroups_surv", "clustcurv_surv")
   return(res)
 }

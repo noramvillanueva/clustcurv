@@ -1,16 +1,22 @@
 Package: clustcurv
 Type: Package
-Title: Clustering Curves Through Heuristic Algorithms
-Version: 0.1.0
-Author: Nora M. Villanueva [aut, cre],
-    Marta Sestelo [aut, cre]
+Title: Determining Groups in Multiples Curves
+URL: https://github.com/noramvillanueva/clustcurv
+BugReports: http://github.com/noramvillanueva/clustcurv/issues
+Version: 1.0.0
+Date: 2019-03-15
 Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
-Description: A method for determining groups in multiple curves with an 
-    automatic selection of their number. It is focused on both regression
-    and survival curves and using the k-means or k-medians.
-BugReports: http://github.com/noramvillanueva/clustsurv/issues
+Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role = c("aut", "cre"),
+  comment = c(ORCID = "0000-0001-8085-2745")),
+  person("Marta", "Sestelo",email= "sestelo@uvigo.es", role = "aut"))
+Description: A method for determining groups in multiple survival
+    curves with an automatic selection of their number based on k-means or 
+    k-medians algorithms. The selection of the optimal number is provided by 
+    bootstrap methods.
+     Implemented methods are:
+    Grouping multiple survival curves described by Villanueva et al. (2018) <doi:10.1002/sim.8016>.
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -20,7 +26,12 @@ Imports:
     ggplot2,
     ggfortify,
     doRNG,
-    Gmedian,
-    wesanderson,
-    survival
-RoxygenNote: 6.0.1
+    Gmedian, 
+    survival,
+    wesanderson
+Suggests:
+    testthat,
+    usethis,
+    condSURV,
+    covr
+RoxygenNote: 6.1.1

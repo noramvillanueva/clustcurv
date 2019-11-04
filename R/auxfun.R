@@ -1,4 +1,4 @@
-
+#globalVariables(c("res", "K", "cluster") )
 
 #function for fitting an exponential model
 survfitpar <- function(data, xbin){
@@ -53,6 +53,8 @@ chat_grid <- function(h1, h0, data, res, kbin, j){
 }
 
 
+#innerf <- function(x, foo) assign(paste(x), foo , envir = clustcurv)
+
 
 # CAMBIAR!!!!!!
 
@@ -71,20 +73,34 @@ Tvalue <- function(data, K, kbin, method){
     muhat <- matrix(aux$surv, ncol = nlevels(as.factor(data$ff)), nrow = kbin)
   }
 
+
+
   if(method == "kmeans"){
-    res <<- kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500)
+    #res <- NULL
+    #rebind("res", kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500))
+    #res <<- kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500) #<<-
+    #innerf("res", kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500))
+    res <- kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500)
   }
   if(method == "kmedians"){
     if (K == 1){
-      res <<- list()
-      res$cluster <<- rep(1, length(unique(data$ff)))
+      #res <<- list()
+      #res$cluster <<- rep(1, length(unique(data$ff)))
+      res <- list()
+      res$cluster <- rep(1, length(unique(data$ff)))
+      #rebind("res$cluster", rep(1, length(unique(data$ff))))
+      #innerf("res$cluster", rep(1, length(unique(data$ff))) )
+
     } else {
-      res <<- kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10,
-                       gamma=0.05)
+      #res <<- kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10, gamma=0.05)
+      res <- kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10, gamma=0.05)
+      #rebind("res", kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10, gamma=0.05))
+      #innerf("res", kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10, gamma=0.05)  )
     }
   }
 
-
+  #assign("res", res, environment())
+  #print(get("res", thisEnv))
   h0 <- survfit(Surv(ttilde, status) ~ res$cluster[data$ff], data = data)
   mchat <- do.call("rbind", lapply(1:length(unique(data$ff)),
                                    function(x){chat_grid(h1, h0, data, res, kbin, x)}))
@@ -98,7 +114,7 @@ Tvalue <- function(data, K, kbin, method){
    # t1 <- max(tapply(abs(u), mchat$f, mean))
     t <- sum(tapply(abs(u), mchat$f, sum))
   }
-  return(t)
+  return(list(t = t, res = res))
 }
 
 
@@ -126,14 +142,14 @@ bootstrap <- function(data, newf, K, kbin, method){
     n <- dim(data)[1]
     ii <- sample.int(n, size = n, replace = TRUE)
     databoot <- data.frame(data[ii,1:2], ff = data$ff)
-    tboot <- Tvalue(databoot, K, kbin, method)
+    tboot <- Tvalue(databoot, K, kbin, method)$t
   }else{
     aux <- by(data, newf, simpleboot)
     databoot <- data.frame()
     for (i in 1:K) {
       databoot <- rbind(databoot,aux[[i]])
     }
-    tboot <- Tvalue(databoot, K, kbin, method)
+    tboot <- Tvalue(databoot, K, kbin, method)$t
   }
 }
 
@@ -145,9 +161,13 @@ bootstrap <- function(data, newf, K, kbin, method){
 
 # function testing H_0 (k)
 testing_k <- function(time, status, fac, k, kbin, nboot,
-                      algorithm, seed){
+                      algorithm, seed, cluster){
   method <- algorithm
   nf <- nlevels(factor(fac))
+
+  #########################################################
+  #get("res", envir = environment())
+  ########################################################
 
   # levels
   f <- factor(fac)
@@ -157,8 +177,10 @@ testing_k <- function(time, status, fac, k, kbin, nboot,
   data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
 
   # statistic from the sample
-  tsample <- Tvalue(data, k, kbin, method)
-  newf <- res$cluster[data$ff]
+  aux <- Tvalue(data, k, kbin, method)
+  tsample <- aux$t
+
+  newf <- aux$res$cluster[data$ff]
 
   # bootstrap
   if (isTRUE(cluster)) {
@@ -171,9 +193,19 @@ testing_k <- function(time, status, fac, k, kbin, nboot,
   pvalue <- mean(unlist(tboot) >= tsample)
 
   return(list(pvalue = pvalue, t = tsample, levels = lab,
-              cluster = as.numeric(res$cluster)))
+              cluster = as.numeric(aux$res$cluster)))
 }
 
-
+# corrigiendo "<<-" no visible binding
+#
+# rebind <- function(name, value, env = parent.frame()) {
+#   if (identical(env, emptyenv())) {
+#     stop("Can't find ", name, call. = FALSE)
+#   } else if (exists(name, envir = env, inherits = FALSE)) {
+#     assign(name, value, envir = env)
+#   } else {
+#     rebind(name, value, parent.env(env))
+#   }
+#}
 
 

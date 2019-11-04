@@ -56,14 +56,16 @@
 #'@author Marta Sestelo, Nora M. Villanueva.
 #'
 #'@examples
+#'\donttest{
 #' library(clustcurv)
 #' library(survival)
+#' library(condSURV)
 #' data(veteran)
 #' data(colonCS)
 #'
 #' res <- clustcurv_surv(time = veteran$time, status = veteran$status,
 #' fac = veteran$celltype, algorithm = "kmeans")
-#'
+#' }
 #' #res <- clustcurv_surv(colonCS$time, status = colonCS$status, fac = colonCS$nodes, nboot = 20)
 #'
 #'
@@ -75,11 +77,7 @@
 #' @importFrom doRNG %dorng% registerDoRNG
 #' @importFrom foreach %do% foreach
 #' @importFrom doParallel registerDoParallel stopImplicitCluster
-#'
-
-
-
-#'@export
+#' @export
 
 
 
@@ -130,7 +128,7 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
     }
     aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
                      kbin = kbin, nboot = nboot, algorithm = algorithm,
-                     seed = seed)
+                     seed = seed, cluster = cluster)
 
     pval[ii] <- aux[[ii]]$pvalue
     tval[ii] <- aux[[ii]]$t
