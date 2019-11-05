@@ -126,9 +126,20 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
     }else{
       cat(paste("Checking",k, "clusters...", "\n"), sep = "")
     }
+
+
+    if(method == "survival"){
     aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
                      kbin = kbin, nboot = nboot, algorithm = algorithm,
                      seed = seed, cluster = cluster)
+    }else if(method == "regression"){
+
+      TODO
+
+    }else{
+      stop("The argument method has to be 'survival' or 'regression'.")
+    }
+
 
     pval[ii] <- aux[[ii]]$pvalue
     tval[ii] <- aux[[ii]]$t
@@ -168,15 +179,24 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
 
 
   # muhat under h0 and under h1
+
+  if(method == "survival"){
   h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
   h1 <- survfit(Surv(time, status) ~ fac)
+  }else{
+    TODO
+  }
 
   }else{
     k <- paste( ">", k, sep ="")
     aux$levels <- NA
     aux$cluster <- NA
     h0 <- NA
+    if(method == "survival"){
     h1 <- survfit(Surv(time, status) ~ fac)
+    }else{
+      TODO
+    }
     cat("\n")
     cat(paste("The number 'k' of clusters has not been found, try another kvector.", "\n"), sep = "")
 
