@@ -5,13 +5,13 @@ ggplot2::autoplot
 
 
 
-#' Visualization of \code{clustcurv_surv} objects with ggplot2 graphics
+#' Visualization of \code{clustcurv} objects with ggplot2 graphics
 #'
 #' @description Useful for drawing the estimated survival functions grouped by
 #' color and the centroids (mean curve of the curves pertaining to the
 #' same group).
 #'
-#' @param object Object of \code{clustcurv_surv} class.
+#' @param object Object of \code{clustcurv} class.
 #' @param groups_by_colour A specification for the plotting groups by color.
 #' @param centers  Draw the centroids (mean of the curves pertaining to the
 #' same group) into the plot. By default it is \code{FALSE}.
@@ -53,7 +53,7 @@ ggplot2::autoplot
 #' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
 #' table(colonCSm$nodes) # ten levels
 #'
-#' res <- clustcurv_surv(colonCSm$time, status = colonCSm$status,
+#' res <- autoclustcurv(colonCSm$time, status = colonCSm$status,
 #'        fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
 #'
 #' autoplot(res)
@@ -63,7 +63,7 @@ ggplot2::autoplot
 #' @importFrom wesanderson wes_palette
 #' @export
 
-autoplot.clustcurv_surv <- function(object = object, groups_by_colour = TRUE,
+autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
           centers = FALSE, conf.int = FALSE, censor = FALSE,
           xlab = "Time", ylab = "Survival", ...){
 

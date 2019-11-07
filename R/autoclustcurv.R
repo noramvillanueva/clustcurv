@@ -3,11 +3,13 @@
 #' @description Function for grouping survival curves based on the k-means or
 #' k-medians algorithm. It returns the number of groups and the assignement.
 #'
-#' @param time Survival time.
-#' @param status Censoring indicator of the survival time of the process; 0 if
-#' the total time is censored and 1 otherwise.
-#' @param fac Categoriacl variable indicating the population to which
-#' the subject belongs
+#' @param y Survival time (method = "survival") or response variable (method = "regression").
+#' @param x Only for method = "regression". Dependent variable.
+#' @param z Categorical variable indicating the population to which
+#' the observations belongs.
+#' @param weights Only for method = "survival". Censoring indicator of the survival
+#' time of the process; 0 if the total time is censored and 1 otherwise.
+#' @param method A character string specifying which method is used, "survival" or "regression".
 #' @param kvector A vector specifying the number of groups of curves to be
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
@@ -36,13 +38,12 @@
 #'A list containing the following items:
 #'  \item{table}{A data frame containing the null hypothesis tested, the values
 #'  of the test statistics and the obtained pvalues.}
-#'  \item{levels}{Original levels of the variable \code{fac}.}
+#'  \item{levels}{Original levels of the variable \code{z}.}
 #'  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
 #'  which each curve is allocated.}
-#'  \item{centers}{An object of class \code{survfit} containing the centroids
+#'  \item{centers}{An object containing the centroids
 #'  (mean of the curves pertaining to the same group).}
-#'  \item{curves}{An object of class \code{survfit} containing the survival
-#'  curves for each population.}
+#'  \item{curves}{An object containing the fitted curves for each population.}
 #'
 #'@details The adjustment methods include the Bonferroni correction ("bonferroni")
 #' in which the p-values are multiplied by the number of comparisons.
@@ -53,7 +54,7 @@
 #' A pass-through option ("none") is also included.
 #'
 #'
-#'@author Marta Sestelo, Nora M. Villanueva.
+#'@author Nora M. Villanueva, Marta Sestelo.
 #'
 #'@examples
 #'\donttest{
@@ -63,10 +64,11 @@
 #' data(veteran)
 #' data(colonCS)
 #'
-#' res <- clustcurv_surv(time = veteran$time, status = veteran$status,
-#' fac = veteran$celltype, algorithm = "kmeans")
+#' res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
+#' weights = veteran$status, method = "survival", algorithm = "kmeans")
 #' }
-#' #res <- clustcurv_surv(colonCS$time, status = colonCS$status, fac = colonCS$nodes, nboot = 20)
+#' #res <- autoclustcurv(y = colonCS$time, z = colonCS$nodes,
+#' weigths = colonCS$status,  nboot = 20)
 #'
 #'
 #' @importFrom survival survfit
@@ -76,7 +78,10 @@
 #' @importFrom parallel stopCluster
 #' @importFrom doRNG %dorng% registerDoRNG
 #' @importFrom foreach %do% foreach
+#' @importFrom foreach %dopar% foreach
 #' @importFrom doParallel registerDoParallel stopImplicitCluster
+#' @importFrom splines interpSpline
+#' @importFrom npregfast frfast
 #' @export
 
 
@@ -87,12 +92,18 @@
 
 
 
-clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
+autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
+                           kvector = NULL, kbin = 50,
                            nboot = 100, algorithm = "kmeans", alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL,
                            multiple = FALSE, multiple.method = "holm"){
 
   #---------------
+  time <- y
+  status <- weights
+  fac <- z
+
+
 
   if (!is.null(seed)) set.seed(seed)
 
@@ -132,9 +143,12 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
     aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
                      kbin = kbin, nboot = nboot, algorithm = algorithm,
                      seed = seed, cluster = cluster)
+    aux[[ii]]$grid <- NULL
     }else if(method == "regression"){
 
-      TODO
+    aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
+                     h = -1, ngrid = kbin, algorithm = algorithm, seed = seed,
+                     cluster = cluster)
 
     }else{
       stop("The argument method has to be 'survival' or 'regression'.")
@@ -184,7 +198,8 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
   h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
   h1 <- survfit(Surv(time, status) ~ fac)
   }else{
-    TODO
+  h0 <- aux$centers
+  h1 <- aux$muhat
   }
 
   }else{
@@ -195,7 +210,7 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
     if(method == "survival"){
     h1 <- survfit(Surv(time, status) ~ fac)
     }else{
-      TODO
+    h1 <- aux$muhat
     }
     cat("\n")
     cat(paste("The number 'k' of clusters has not been found, try another kvector.", "\n"), sep = "")
@@ -205,8 +220,8 @@ clustcurv_surv <- function(time, status, fac, kvector = NULL, kbin = 50,
 
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
-              centers = h0, curves = h1)
-  class(res) <- "clustcurv_surv"
+              centers = h0, curves = h1, method = method, grid = aux$grid)
+  class(res) <- "clustcurv"
   return(res)
 
 } #end clustcurv
