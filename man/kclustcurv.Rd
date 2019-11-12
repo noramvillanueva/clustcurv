@@ -77,5 +77,5 @@ data.frame(level = r2$level, cluster = r2$cluster)
 
 }
 \author{
-Marta Sestelo, Nora M. Villanueva.
+Nora M. Villanueva and Marta Sestelo.
 }

@@ -102,5 +102,5 @@ weigths = colonCS$status,  nboot = 20)
 
 }
 \author{
-Nora M. Villanueva, Marta Sestelo.
+Nora M. Villanueva and Marta Sestelo.
 }

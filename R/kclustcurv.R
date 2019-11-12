@@ -29,7 +29,7 @@
 #'  (mean of the curves pertaining to the same group).}
 #'  \item{curves}{An object of class \code{survfit} containing the survival
 #'  curves for each population.}
-#'@author Marta Sestelo, Nora M. Villanueva.
+#'@author Nora M. Villanueva and Marta Sestelo.
 #'
 #'@examples
 #' library(clustcurv)

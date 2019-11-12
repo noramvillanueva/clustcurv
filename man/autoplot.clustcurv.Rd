@@ -18,7 +18,7 @@ same group) into the plot. By default it is \code{FALSE}.}
 
 \item{conf.int}{Logical flag indicating whether to plot confidence intervals.}
 
-\item{censor}{Logical flag indicating whether to plot censors.}
+\item{censor}{Only for method = "survival". Logical flag indicating whether to plot censors.}
 
 \item{xlab}{A title for the \code{x} axis.}
 
@@ -48,8 +48,8 @@ library(ggfortify)
 data(veteran)
 data(colonCS)
 
-cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
-fac = veteran$celltype, k = 2, algorithm = "kmeans")
+cl2 <- kclustcurv(y = veteran$time, weights = veteran$status,
+z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
 
 autoplot(cl2)
 autoplot(cl2, groups_by_colour = FALSE)
@@ -64,8 +64,9 @@ colonCSm <- na.omit(colonCSm)
 colonCSm$nodes[colonCSm$nodes >= 10] <- 10
 table(colonCSm$nodes) # ten levels
 
-res <- autoclustcurv(colonCSm$time, status = colonCSm$status,
-       fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
+res <- autoclustcurv(y = colonCSm$time, weights = colonCSm$status,
+       z = colonCSm$nodes, method = "survival", algorithm = "kmeans",
+       nboot = 20)
 
 autoplot(res)
 autoplot(res, groups_by_colour = FALSE)

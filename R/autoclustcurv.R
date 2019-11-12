@@ -55,7 +55,7 @@
 #' A pass-through option ("none") is also included.
 #'
 #'
-#'@author Nora M. Villanueva, Marta Sestelo.
+#'@author Nora M. Villanueva and Marta Sestelo.
 #'
 #'@examples
 #'\donttest{

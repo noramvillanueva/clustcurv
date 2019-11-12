@@ -16,7 +16,7 @@ ggplot2::autoplot
 #' @param centers  Draw the centroids (mean of the curves pertaining to the
 #' same group) into the plot. By default it is \code{FALSE}.
 #' @param conf.int Logical flag indicating whether to plot confidence intervals.
-#' @param censor Logical flag indicating whether to plot censors.
+#' @param censor Only for method = "survival". Logical flag indicating whether to plot censors.
 #' @param xlab A title for the \code{x} axis.
 #' @param ylab A title for the \code{y} axis.
 #' @param \ldots Other options.
@@ -37,8 +37,8 @@ ggplot2::autoplot
 #' data(veteran)
 #' data(colonCS)
 #'
-#' cl2 <- kgroups_surv(time = veteran$time, status = veteran$status,
-#' fac = veteran$celltype, k = 2, algorithm = "kmeans")
+#' cl2 <- kclustcurv(y = veteran$time, weights = veteran$status,
+#' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
 #'
 #' autoplot(cl2)
 #' autoplot(cl2, groups_by_colour = FALSE)
@@ -53,8 +53,9 @@ ggplot2::autoplot
 #' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
 #' table(colonCSm$nodes) # ten levels
 #'
-#' res <- autoclustcurv(colonCSm$time, status = colonCSm$status,
-#'        fac = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
+#' res <- autoclustcurv(y = colonCSm$time, weights = colonCSm$status,
+#'        z = colonCSm$nodes, method = "survival", algorithm = "kmeans",
+#'        nboot = 20)
 #'
 #' autoplot(res)
 #' autoplot(res, groups_by_colour = FALSE)
