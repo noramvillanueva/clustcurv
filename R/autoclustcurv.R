@@ -14,10 +14,11 @@
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
+#' @param h The kernel bandwidth smoothing parameter (for method = "regression").
 #' @param nboot Number of bootstrap repeats.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
-#' @param alpha Seed to be used in the procedure.
+#' @param alpha Significance level of the testing procedure. Defaults to 0.05.
 #' @param cluster A logical value. If  \code{TRUE} (default), the
 #'  testing procedure is  parallelized. Note that there are cases
 #'  (e.g., a low number of bootstrap repetitions) that R will gain in
@@ -66,6 +67,9 @@
 #'
 #' res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
 #' weights = veteran$status, method = "survival", algorithm = "kmeans")
+#'
+#' res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+#' method = "regression", algorithm = "kmeans", nboot = 20)
 #' }
 #' #res <- autoclustcurv(y = colonCS$time, z = colonCS$nodes,
 #' weigths = colonCS$status,  nboot = 20)
@@ -93,7 +97,7 @@
 
 
 autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
-                           kvector = NULL, kbin = 50,
+                           kvector = NULL, kbin = 50, h = -1,
                            nboot = 100, algorithm = "kmeans", alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL,
                            multiple = FALSE, multiple.method = "holm"){
@@ -122,7 +126,7 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
 
 
 
-  if(is.null(kvector)) kvector <- c(1:100)
+  if(is.null(kvector)) kvector <- c(1:(length(unique(z))-1))
 
   accept <- 0
   ii <- 1
@@ -147,7 +151,7 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
     }else if(method == "regression"){
 
     aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
-                     h = -1, ngrid = kbin, algorithm = algorithm, seed = seed,
+                     h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
                      cluster = cluster)
 
     }else{

@@ -5,9 +5,10 @@
 \title{Clustering survival curves}
 \usage{
 autoclustcurv(y, x, z, weights = NULL, method = "survival",
-  kvector = NULL, kbin = 50, nboot = 100, algorithm = "kmeans",
-  alpha = 0.05, cluster = FALSE, ncores = NULL, seed = NULL,
-  multiple = FALSE, multiple.method = "holm")
+  kvector = NULL, kbin = 50, h = -1, nboot = 100,
+  algorithm = "kmeans", alpha = 0.05, cluster = FALSE,
+  ncores = NULL, seed = NULL, multiple = FALSE,
+  multiple.method = "holm")
 }
 \arguments{
 \item{y}{Survival time (method = "survival") or response variable (method = "regression").}
@@ -28,12 +29,14 @@ checking.}
 \item{kbin}{Size of the grid over which the survival functions
 are to be estimated.}
 
+\item{h}{The kernel bandwidth smoothing parameter (for method = "regression").}
+
 \item{nboot}{Number of bootstrap repeats.}
 
 \item{algorithm}{A character string specifying which clustering algorithm is used,
 i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}
 
-\item{alpha}{Seed to be used in the procedure.}
+\item{alpha}{Significance level of the testing procedure. Defaults to 0.05.}
 
 \item{cluster}{A logical value. If  \code{TRUE} (default), the
 testing procedure is  parallelized. Note that there are cases
@@ -89,6 +92,9 @@ data(colonCS)
 
 res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
 weights = veteran$status, method = "survival", algorithm = "kmeans")
+
+res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+method = "regression", algorithm = "kmeans")
 }
 #res <- autoclustcurv(y = colonCS$time, z = colonCS$nodes,
 weigths = colonCS$status,  nboot = 20)

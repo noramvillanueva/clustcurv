@@ -124,6 +124,8 @@ kgroups <- function(x, y, f, nboot = 100, K = 3, h, ngrid, algorithm, seed,
  # t3 <- sum(unlist(sapply(comb,function(x){return(x[1])})))
 #  t4 <- sum(unlist(sapply(comb,function(x){return(x[2])})))
 
+
+  if (nboot != 0){
   n <- length(x)
   pred <- numeric(n)
   for (i in 1:nf) {
@@ -164,10 +166,9 @@ kgroups <- function(x, y, f, nboot = 100, K = 3, h, ngrid, algorithm, seed,
   }
 
 
- # pvalue <- c()
- # for (i in 1:4) {
+
     pvalue <- mean(Tboot >= t)
-#  }
+}
   return(list(pvalue = pvalue, t = t, muhat = Mf, xgrid = grid,
               levels = levels(factor(f)), centers = Mg, cluster = A$cluster,
               grid = grid))

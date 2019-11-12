@@ -3,7 +3,7 @@
 S3method(autoplot,clustcurv)
 export(autoclustcurv)
 export(autoplot)
-export(kgroups_surv)
+export(kclustcurv)
 import(ggfortify)
 importFrom(Gmedian,kGmedian)
 importFrom(doParallel,registerDoParallel)
