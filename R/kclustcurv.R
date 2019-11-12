@@ -11,6 +11,7 @@
 #' time of the process; 0 if the total time is censored and 1 otherwise.
 #' @param k An integer specifying the number of groups of curves to be
 #'  performed.
+#' @param method A character string specifying which method is used, "survival" or "regression".
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
 #' @param h The kernel bandwidth smoothing parameter (for method = "regression").
@@ -36,27 +37,24 @@
 #' data(veteran)
 #'
 #' # Survival: 2 groups k-means
-#' cl2 <- kclustcurv(time = veteran$time, status = veteran$status,
-#' fac = veteran$celltype, k = 2, algorithm = "kmeans")
+#' s2 <- kclustcurv(y = veteran$time, weights = veteran$status,
+#' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
 #'
 #' data.frame(level = cl2$level, cluster = cl2$cluster)
 #'
 #'
-#' # Survival: 2 groups k-medians
-#' cl2 <- kclustcurv(time = veteran$time, status = veteran$status,
-#' fac = veteran$celltype, method = "survival", k = 2, algorithm = "kmedians")
-#'
-#' data.frame(level = cl2$level, cluster = cl2$cluster)
-#'
-#'
-#'
-#' # Survival: 3 groups
-#' cl3 <- kclustcurv(time = veteran$time, status = veteran$status,
-#' fac = veteran$celltype, method = "survival", k = 3, algorithm = "kmeans")
+#' # Survival: 3 groups k-medians
+#' s3 <- kclustcurv(y = veteran$time, weights = veteran$status,
+#' z = veteran$celltype, k = 3, method = "survival", algorithm = "kmedians")
 #'
 #' data.frame(level = cl3$level, cluster = cl3$cluster)
 #'
 #'
+#' # Regression: 2 groups k-means
+#' r2 <- kclustcurv(y = barnacle5$DW, x = barnacle5$RC,
+#' z = barnacle5$F, k = 2, method = "regression", algorithm = "kmeans")
+#'
+#' data.frame(level = r2$level, cluster = r2$cluster)
 #'
 #'
 #'
@@ -66,7 +64,7 @@
 #' @export
 
 
-kclustcurv <- function(y, x, z, weights, k, method = "survival", kbin = 50,
+kclustcurv <- function(y, x, z, weights = NULL, k, method = "survival", kbin = 50,
                          h = -1, algorithm = "kmeans", seed = NULL){
   if (!is.null(seed)) set.seed(seed)
   time <- y
@@ -80,9 +78,10 @@ kclustcurv <- function(y, x, z, weights, k, method = "survival", kbin = 50,
   lab <- levels(f)
   ff <- as.integer(f)
 
-  data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
+
 
   if(method == "survival"){
+    data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
     # measure
     aux <- Tvalue(data, k, kbin, method = algorithm)
     tsample <- aux$t
@@ -104,7 +103,7 @@ kclustcurv <- function(y, x, z, weights, k, method = "survival", kbin = 50,
   }
   res <- list(measure = as.numeric(tsample), levels = lab,
               cluster = as.numeric(cluster), centers = h0, curves = h1)
-  class(res) <- c("kgroups_surv", "clustcurv_surv")
+  class(res) <- c("kclustcurv", "clustcurv")
   return(res)
 }
 

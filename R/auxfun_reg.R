@@ -168,6 +168,8 @@ kgroups <- function(x, y, f, nboot = 100, K = 3, h, ngrid, algorithm, seed,
 
 
     pvalue <- mean(Tboot >= t)
+  }else{
+  pvalue <- NULL
 }
   return(list(pvalue = pvalue, t = t, muhat = Mf, xgrid = grid,
               levels = levels(factor(f)), centers = Mg, cluster = A$cluster,
