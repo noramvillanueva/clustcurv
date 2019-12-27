@@ -45,6 +45,9 @@ library(clustcurv)
 library(condSURV)
 library(ggplot2)
 library(ggfortify)
+
+# Survival
+
 data(veteran)
 data(colonCS)
 
@@ -54,6 +57,16 @@ z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
 autoplot(cl2)
 autoplot(cl2, groups_by_colour = FALSE)
 autoplot(cl2, centers = TRUE)
+
+# Regression
+
+r2 <- kclustcurv(y = barnacle5$DW, x = barnacle5$RC,
+z = barnacle5$F, k = 2, method = "regression", algorithm = "kmeans")
+
+autoplot(r2)
+autoplot(r2, groups_by_colour = FALSE)
+autoplot(r2, centers = TRUE)
+
 \donttest{
 colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
                       nodes = colonCS$nodes)
