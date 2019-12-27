@@ -84,7 +84,7 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
 
   x <- object
   k <- length(unique(x$cluster))
-  colgr <- wes_palette("Zissou1", k, type = c("continuous"))
+  colgr <- wes_palette("Cavalcanti1", k, type = c("continuous"))
 
   if(x$method == "survival"){
 
