@@ -76,6 +76,7 @@ ggplot2::autoplot
 #' autoplot(res, centers = TRUE)
 #' }
 #' @importFrom wesanderson wes_palette
+#' @importFrom RColorBrewer brewer.pal
 #' @export
 
 autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
@@ -85,6 +86,8 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
   x <- object
   k <- length(unique(x$cluster))
   colgr <- wes_palette("Cavalcanti1", k, type = c("continuous"))
+
+  colgr <- brewer.pal(n = k, name = "Dark2")
 
   if(x$method == "survival"){
 
