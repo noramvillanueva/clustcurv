@@ -85,8 +85,7 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
 
   x <- object
   k <- length(unique(x$cluster))
-  colgr <- wes_palette("Cavalcanti1", k, type = c("continuous"))
-
+  #colgr <- wes_palette("Cavalcanti1", k, type = c("continuous"))
   colgr <- brewer.pal(n = k, name = "Dark2")
 
   if(x$method == "survival"){
