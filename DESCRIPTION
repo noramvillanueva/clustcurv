@@ -3,7 +3,7 @@ Type: Package
 Title: Determining Groups in Multiples Curves
 URL: https://github.com/noramvillanueva/clustcurv
 BugReports: http://github.com/noramvillanueva/clustcurv/issues
-Version: 1.0.0
+Version: 2.0.0
 Date: 2019-03-15
 Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
 Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role = c("aut", "cre"),
