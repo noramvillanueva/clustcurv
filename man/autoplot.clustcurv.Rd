@@ -16,7 +16,7 @@
 \item{centers}{Draw the centroids (mean of the curves pertaining to the
 same group) into the plot. By default it is \code{FALSE}.}
 
-\item{conf.int}{Logical flag indicating whether to plot confidence intervals.}
+\item{conf.int}{Only for method = "survival". Logical flag indicating whether to plot confidence intervals.}
 
 \item{censor}{Only for method = "survival". Logical flag indicating whether to plot censors.}
 
@@ -31,7 +31,7 @@ A ggplot object, so you can use common features from
 ggplot2 package to manipulate the plot.
 }
 \description{
-Useful for drawing the estimated survival functions grouped by
+Useful for drawing the estimated functions grouped by
 color and the centroids (mean curve of the curves pertaining to the
 same group).
 }

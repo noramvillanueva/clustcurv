@@ -2,7 +2,7 @@
 % Please edit documentation in R/kclustcurv.R
 \name{kclustcurv}
 \alias{kclustcurv}
-\title{k-groups of survival curves}
+\title{k-groups of multiple curves}
 \usage{
 kclustcurv(y, x, z, weights = NULL, k, method = "survival",
   kbin = 50, h = -1, algorithm = "kmeans", seed = NULL)
@@ -45,7 +45,7 @@ A list containing the following items:
  curves for each population.}
 }
 \description{
-Function for grouping survival curves, given a number k,
+Function for grouping survival or regression curves, given a number k,
 based on the k-means or k-medians algorithm.
 }
 \examples{

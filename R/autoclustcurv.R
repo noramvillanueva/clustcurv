@@ -1,6 +1,6 @@
-#' Clustering survival curves
+#' Clustering multiple curves
 #'
-#' @description Function for grouping survival curves based on the k-means or
+#' @description Function for grouping survival or regression curves based on the k-means or
 #' k-medians algorithm. It returns the number of groups and the assignement.
 #'
 #' @param y Survival time (method = "survival") or response variable (method = "regression").
@@ -65,14 +65,15 @@
 #' data(veteran)
 #' data(colonCS)
 #'
+#'# Survival framework
 #' res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
 #' weights = veteran$status, method = "survival", algorithm = "kmeans")
 #'
+#'# Regression framework
 #' res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
 #' method = "regression", algorithm = "kmeans", nboot = 20)
 #' }
-#' #res <- autoclustcurv(y = colonCS$time, z = colonCS$nodes,
-#' weigths = colonCS$status,  nboot = 20)
+
 #'
 #'
 #' @importFrom survival survfit

@@ -8,7 +8,7 @@ ggplot2::autoplot
 
 #' Visualization of \code{clustcurv} objects with ggplot2 graphics
 #'
-#' @description Useful for drawing the estimated survival functions grouped by
+#' @description Useful for drawing the estimated functions grouped by
 #' color and the centroids (mean curve of the curves pertaining to the
 #' same group).
 #'
@@ -16,7 +16,7 @@ ggplot2::autoplot
 #' @param groups_by_colour A specification for the plotting groups by color.
 #' @param centers  Draw the centroids (mean of the curves pertaining to the
 #' same group) into the plot. By default it is \code{FALSE}.
-#' @param conf.int Logical flag indicating whether to plot confidence intervals.
+#' @param conf.int Only for method = "survival". Logical flag indicating whether to plot confidence intervals.
 #' @param censor Only for method = "survival". Logical flag indicating whether to plot censors.
 #' @param xlab A title for the \code{x} axis.
 #' @param ylab A title for the \code{y} axis.
