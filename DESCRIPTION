@@ -4,15 +4,15 @@ Title: Determining Groups in Multiples Curves
 URL: https://github.com/noramvillanueva/clustcurv
 BugReports: http://github.com/noramvillanueva/clustcurv/issues
 Version: 2.0.0
-Date: 2019-03-15
+Date: 2019-12-30
 Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
 Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role = c("aut", "cre"),
   comment = c(ORCID = "0000-0001-8085-2745")),
   person("Marta", "Sestelo",email= "sestelo@uvigo.es", role = "aut"))
-Description: A method for determining groups in multiple survival
+Description: A method for determining groups in multiple 
     curves with an automatic selection of their number based on k-means or 
     k-medians algorithms. The selection of the optimal number is provided by 
-    bootstrap methods.
+    bootstrap methods. The methodology can be applied both in regression and survival framework.
      Implemented methods are:
     Grouping multiple survival curves described by Villanueva et al. (2018) <doi:10.1002/sim.8016>.
 Depends:
