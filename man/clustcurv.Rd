@@ -6,10 +6,11 @@
 \alias{clustcurv-package}
 \title{\code{clustcurv}: Determining Groups in Multiple Curves.}
 \description{
-This package provides a method for determining groups in multiple survival
+This package provides a method for determining groups in multiple
 curves with an automatic selection of their number based on k-means or
 k-medians algorithms. The selection of the optimal number is provided by
-bootstrap methods.
+bootstrap methods. The methodology can be applied both in regression
+and survival framework.
 }
 \details{
 \tabular{ll}{ Package: \tab clustcurv \cr Type: \tab Package\cr
@@ -17,10 +18,10 @@ bootstrap methods.
 
 \code{clustcurv} is designed along lines similar to those of other \code{R}
 packages. This software helps the user determine groups in multiple curves
-(survival curves in the current version). In addition, it enables both numerical
-and graphical outputs to be displayed (by means og ggplot2). The package provides
-the  \code{kgroups_surv()} function that groups the curves given a number k and
-the \code{clustcurv_surv()} function that selects the optimal number of groups
+(survival and regression curves). In addition, it enables both numerical
+and graphical outputs to be displayed (by means of ggplot2). The package provides
+the  \code{kclustcurv()} function that groups the curves given a number k and
+the \code{autoclustcurv()} function that selects the optimal number of groups
  automatically through a boostrap-based test. The \code{autoplot()} function
  let the user draws the resulted estimated curves coloured by groups.
 
