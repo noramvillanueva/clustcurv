@@ -27,6 +27,8 @@ collected along the intertidal zone from five sites of the Atlantic coast of Gal
 data(barnacle5)
 head(barnacle5)
 
+
+
 }
 \references{
 Sestelo, M. and Roca-Pardinas, J. (2011). A new approach to estimation of
@@ -38,4 +40,7 @@ aspects of its biology and management. Journal of Shellfish Research,
 Sestelo, M., Villanueva, N.M., Meira-Machado, L., Roca-Pardinas, J. (2017).
 npregfast: An R Package for Nonparametric Estimation and Inference in Life
 Sciences. Journal of Statistical Software, 82(12), 1-27.
+}
+\author{
+Marta Sestelo
 }

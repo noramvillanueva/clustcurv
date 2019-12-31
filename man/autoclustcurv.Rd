@@ -2,7 +2,7 @@
 % Please edit documentation in R/autoclustcurv.R
 \name{autoclustcurv}
 \alias{autoclustcurv}
-\title{Clustering survival curves}
+\title{Clustering multiple curves}
 \usage{
 autoclustcurv(y, x, z, weights = NULL, method = "survival",
   kvector = NULL, kbin = 50, h = -1, nboot = 100,
@@ -70,7 +70,7 @@ A list containing the following items:
  \item{curves}{An object containing the fitted curves for each population.}
 }
 \description{
-Function for grouping survival curves based on the k-means or
+Function for grouping survival or regression curves based on the k-means or
 k-medians algorithm. It returns the number of groups and the assignement.
 }
 \details{
@@ -90,14 +90,14 @@ library(condSURV)
 data(veteran)
 data(colonCS)
 
+# Survival framework
 res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
 weights = veteran$status, method = "survival", algorithm = "kmeans")
 
+# Regression framework
 res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
 method = "regression", algorithm = "kmeans", nboot = 20)
 }
-#res <- autoclustcurv(y = colonCS$time, z = colonCS$nodes,
-weigths = colonCS$status,  nboot = 20)
 
 
 }

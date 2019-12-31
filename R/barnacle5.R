@@ -19,9 +19,13 @@
 #'  \code{barca}, \code{laxe}, and \code{lens}.}
 #'  }
 #'
-#' @examples
+#'@examples
 #' data(barnacle5)
 #' head(barnacle5)
+#'
+#'
+#'
+#'@author Marta Sestelo
 #'
 #'@references
 #'

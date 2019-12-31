@@ -1,6 +1,6 @@
-#' k-groups of survival curves
+#' k-groups of multiple curves
 #'
-#' @description Function for grouping survival curves, given a number k,
+#' @description Function for grouping survival or regression curves, given a number k,
 #' based on the k-means or k-medians algorithm.
 #'
 #' @param y Survival time (method = "survival") or response variable (method = "regression").
