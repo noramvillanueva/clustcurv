@@ -11,17 +11,17 @@ autoclustcurv(y, x, z, weights = NULL, method = "survival",
   multiple.method = "holm")
 }
 \arguments{
-\item{y}{Survival time (method = "survival") or response variable (method = "regression").}
+\item{y}{Survival time (method = 'survival') or response variable (method = 'regression').}
 
-\item{x}{Only for method = "regression". Dependent variable.}
+\item{x}{Only for method = 'regression'. Dependent variable.}
 
 \item{z}{Categorical variable indicating the population to which
 the observations belongs.}
 
-\item{weights}{Only for method = "survival". Censoring indicator of the survival
+\item{weights}{Only for method = 'survival'. Censoring indicator of the survival
 time of the process; 0 if the total time is censored and 1 otherwise.}
 
-\item{method}{A character string specifying which method is used, "survival" or "regression".}
+\item{method}{A character string specifying which method is used, 'survival' or 'regression'.}
 
 \item{kvector}{A vector specifying the number of groups of curves to be
 checking.}
@@ -29,7 +29,7 @@ checking.}
 \item{kbin}{Size of the grid over which the survival functions
 are to be estimated.}
 
-\item{h}{The kernel bandwidth smoothing parameter (for method = "regression").}
+\item{h}{The kernel bandwidth smoothing parameter (for method = 'regression').}
 
 \item{nboot}{Number of bootstrap repeats.}
 
@@ -66,7 +66,7 @@ A list containing the following items:
  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
  which each curve is allocated.}
  \item{centers}{An object containing the centroids
- (mean of the curves pertaining to the same group).}
+ (mean of the curves pertaining to the samet group).}
  \item{curves}{An object containing the fitted curves for each population.}
 }
 \description{
@@ -76,11 +76,11 @@ k-medians algorithm. It returns the number of groups and the assignement.
 \details{
 The adjustment methods include the Bonferroni correction ("bonferroni")
 in which the p-values are multiplied by the number of comparisons.
-Less conservative corrections are also included by Holm (1979) ("holm"),
-Hochberg (1988) ("hochberg"), Hommel (1988) ("hommel"),
-Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), and
-Benjamini & Yekutieli (2001) ("BY"), respectively.
-A pass-through option ("none") is also included.
+Less conservative corrections are also included by Holm (1979) ('holm'),
+Hochberg (1988) ('hochberg'), Hommel (1988) ('hommel'),
+Benjamini & Hochberg (1995) ('BH' or its alias 'fdr'), and
+Benjamini & Yekutieli (2001) ('BY'), respectively.
+A pass-through option ('none') is also included.
 }
 \examples{
 \donttest{
@@ -92,14 +92,12 @@ data(colonCS)
 
 # Survival framework
 res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
-weights = veteran$status, method = "survival", algorithm = "kmeans")
+weights = veteran$status, method = 'survival', algorithm = 'kmeans')
 
 # Regression framework
 res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
-method = "regression", algorithm = "kmeans", nboot = 20)
+method = 'regression', algorithm = 'kmeans', nboot = 20)
 }
-
-
 }
 \author{
 Nora M. Villanueva and Marta Sestelo.

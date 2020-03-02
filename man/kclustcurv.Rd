@@ -57,14 +57,14 @@ data(veteran)
 s2 <- kclustcurv(y = veteran$time, weights = veteran$status,
 z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
 
-data.frame(level = cl2$level, cluster = cl2$cluster)
+data.frame(level = s2$level, cluster = s2$cluster)
 
 
-# Survival: 3 groups k-medians
-s3 <- kclustcurv(y = veteran$time, weights = veteran$status,
-z = veteran$celltype, k = 3, method = "survival", algorithm = "kmedians")
+# Survival: 2 groups k-medians
+s22 <- kclustcurv(y = veteran$time, weights = veteran$status,
+z = veteran$celltype, k = 2, method = "survival", algorithm = "kmedians")
 
-data.frame(level = cl3$level, cluster = cl3$cluster)
+data.frame(level = s22$level, cluster = s22$cluster)
 
 
 # Regression: 2 groups k-means
