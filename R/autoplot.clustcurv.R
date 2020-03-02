@@ -124,33 +124,42 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
   }else{ #method regression
 
       if(!isTRUE(centers)){
-        colnames(x$curves) <- x$levels
-        data <- cbind(x = x$grid, x$curves)
-        data <- tidyr::gather(data.frame(data), levels, y, 2:dim(data)[2])
+        #colnames(x$curves) <- x$levels
+        #data <- cbind(x = x$grid, x$curves)
+        #data <- tidyr::gather(data.frame(data), levels, y, 2:dim(data)[2])
+        data <- x$data
+        data$y <- unlist(x$curves)
+        names(data) <- c("x", "y", "levels")
 
         plot1 <- ggplot2::qplot(x, y, data = data, colour = levels, geom = "line")
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
         if (isTRUE(groups_by_colour)){
-          plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster][ii])
+          plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster])
           plot2
         }else{
           plot1
         }
       }else{
 
-        colnames(x$curves) <- x$levels
-        data <- cbind(x = x$grid, x$curves)
-        data <- tidyr::gather(data.frame(data), levels, y, 2:dim(data)[2])
+        #colnames(x$curves) <- x$levels
+        #data <- cbind(x = x$grid, x$curves)
+        #data <- tidyr::gather(data.frame(data), levels, y, 2:dim(data)[2])
+        data <- x$data
+        data$y <- unlist(x$curves)
+        names(data) <- c("x", "y", "levels")
 
         plot1 <- ggplot2::qplot(x, y, data = data, colour = levels, geom = "line")
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
-        plot2 <- plot1 + ggplot2::scale_color_manual(values = c(colgr[x$cluster][ii]))
+        plot2 <- plot1 + ggplot2::scale_color_manual(values = c(colgr[x$cluster]))
 
-        colnames(x$centers) <- unique(x$cluster)
-        data2 <- cbind(x = x$grid, x$centers)
-
-        data2 <- tidyr::gather(data.frame(data2), cluster, y, 2:dim(data2)[2],
-                               factor_key = TRUE)
+        #colnames(x$centers) <- unique(x$cluster)
+        #data2 <- cbind(x = x$grid, x$centers)
+        data2 <- x$data
+        data2$y <- unlist(x$centers)
+        data2$f <-x$levels[x$cluster][data2$f]
+        names(data2) <- c("x", "y", "cluster")
+        #data2 <- tidyr::gather(data.frame(data2), cluster, y, 2:dim(data2)[2],
+        #                       factor_key = TRUE)
         levels(data2$cluster) <- paste(" G", 1:k, sep = "")
         #data2$cluster <- factor(data2$cluster)
 
@@ -161,11 +170,12 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
 
 
 
+        ggplot2::qplot(x, y, data = data2, colour = cluster, geom = "point")
 
        plot2 + ggplot2::geom_line(data = data2,
-                                   ggplot2::aes(x = x, y = y, colour = cluster),
+                                   ggplot2::aes(x = data2$x, y = data2$y, colour = data2$cluster),
                                   size = 0.8) +
-          ggplot2::scale_color_manual(values = c( rep(1,k), colgr[x$cluster][ii]))
+          ggplot2::scale_color_manual(values = c( rep(1,k), colgr[x$cluster]))
 
 
 
