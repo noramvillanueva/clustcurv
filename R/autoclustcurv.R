@@ -3,18 +3,18 @@
 #' @description Function for grouping survival or regression curves based on the k-means or
 #' k-medians algorithm. It returns the number of groups and the assignement.
 #'
-#' @param y Survival time (method = "survival") or response variable (method = "regression").
-#' @param x Only for method = "regression". Dependent variable.
+#' @param y Survival time (method = 'survival') or response variable (method = 'regression').
+#' @param x Only for method = 'regression'. Dependent variable.
 #' @param z Categorical variable indicating the population to which
 #' the observations belongs.
-#' @param weights Only for method = "survival". Censoring indicator of the survival
+#' @param weights Only for method = 'survival'. Censoring indicator of the survival
 #' time of the process; 0 if the total time is censored and 1 otherwise.
-#' @param method A character string specifying which method is used, "survival" or "regression".
+#' @param method A character string specifying which method is used, 'survival' or 'regression'.
 #' @param kvector A vector specifying the number of groups of curves to be
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
-#' @param h The kernel bandwidth smoothing parameter (for method = "regression").
+#' @param h The kernel bandwidth smoothing parameter (for method = 'regression').
 #' @param nboot Number of bootstrap repeats.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
@@ -43,16 +43,16 @@
 #'  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
 #'  which each curve is allocated.}
 #'  \item{centers}{An object containing the centroids
-#'  (mean of the curves pertaining to the same group).}
+#'  (mean of the curves pertaining to the samet group).}
 #'  \item{curves}{An object containing the fitted curves for each population.}
 #'
 #'@details The adjustment methods include the Bonferroni correction ("bonferroni")
 #' in which the p-values are multiplied by the number of comparisons.
-#' Less conservative corrections are also included by Holm (1979) ("holm"),
-#' Hochberg (1988) ("hochberg"), Hommel (1988) ("hommel"),
-#' Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), and
-#' Benjamini & Yekutieli (2001) ("BY"), respectively.
-#' A pass-through option ("none") is also included.
+#' Less conservative corrections are also included by Holm (1979) ('holm'),
+#' Hochberg (1988) ('hochberg'), Hommel (1988) ('hommel'),
+#' Benjamini & Hochberg (1995) ('BH' or its alias 'fdr'), and
+#' Benjamini & Yekutieli (2001) ('BY'), respectively.
+#' A pass-through option ('none') is also included.
 #'
 #'
 #'@author Nora M. Villanueva and Marta Sestelo.
@@ -67,15 +67,14 @@
 #'
 #'# Survival framework
 #' res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
-#' weights = veteran$status, method = "survival", algorithm = "kmeans")
+#' weights = veteran$status, method = 'survival', algorithm = 'kmeans')
 #'
 #'# Regression framework
 #' res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
-#' method = "regression", algorithm = "kmeans", nboot = 20)
+#' method = 'regression', algorithm = 'kmeans', nboot = 20)
 #' }
 
-#'
-#'
+#' @importFrom survival Surv
 #' @importFrom survival survfit
 #' @importFrom parallel detectCores
 #' @importFrom parallel makeCluster
@@ -87,6 +86,7 @@
 #' @importFrom doParallel registerDoParallel stopImplicitCluster
 #' @importFrom splines interpSpline
 #' @importFrom npregfast frfast
+#' @importFrom stats lm predict
 #' @export
 
 
@@ -97,25 +97,83 @@
 
 
 
-autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
+autoclustcurv <- function(y, x, z, weights = NULL, method = 'survival',
                            kvector = NULL, kbin = 50, h = -1,
-                           nboot = 100, algorithm = "kmeans", alpha = 0.05,
+                           nboot = 100, algorithm = 'kmeans', alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL,
-                           multiple = FALSE, multiple.method = "holm"){
+                           multiple = FALSE, multiple.method = 'holm'){
 
-  #---------------
-  time <- y
-  status <- weights
-  fac <- z
+  # Defining error codes
+  error.code.0 <- "Argument seed must be an object of type numeric."
+  error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
+  error.code.2 <- "Argument algorithm must be a string with 'kmeans' or 'kmedians'."
+  error.code.3 <- "Argument multiple must be an object of type logical."
+  error.code.4 <- "Argument multiple.method must be an object of type string."
+  error.code.5 <- "Argument multiple.method must be some of the correction methods: 'bonferroni', 'holm', 'hochberg', etc."
+  error.code.6 <- "Argument kvector must be an object of type numeric."
+  error.code.7 <- "Argument weights is missing and it is required when method is 'survival'."
+  error.code.8 <- "Argument weights must be a vector of binary numbers."
+  error.code.9 <- "Argument x is missing and it is required when method is 'regression'."
+  error.code.10 <- "Argument y is missing and it is required when method is 'survival'."
+  error.code.11 <- "Argument y is missing and it is required when method is 'regression'."
 
 
+  # Checking method  as strings and type
+  if(missing(method)){
+    stop(error.code.1)
+  }else if (!is.character(method) ) {
+    stop(error.code.1)
+  }else if (nchar(method)!= 8 & nchar(method)!= 10) {
+    stop(error.code.1)
+  }else if(method != 'survival' & method != 'regression') {
+    stop(error.code.1)
+  }
 
-  if (!is.null(seed)) set.seed(seed)
+  # Checking algorithm  as string and type
+  if (!is.character(algorithm) ) {
+    stop(error.code.2)
+  }else if (nchar(algorithm)!= 6 & nchar(algorithm)!= 8) {
+    stop(error.code.2)
+  }else if(algorithm != 'kmeans' & algorithm != 'kmedians') {
+    stop(error.code.2)
+  }
+
+  # Checking multiple  as logical
+  if (!is.logical(multiple) ) {
+    stop(error.code.3)
+  }
+
+  # Checking multiple.method as string
+  if (!is.character(multiple.method)  )  {
+    stop(error.code.4)
+  }else if(nchar(multiple.method) == 0){
+      stop(error.code.5)
+  }
+
+
+  # Checking seed as numeric
+  if (!is.null(seed)) {
+    if(!is.numeric(seed)){
+      stop(error.code.0)
+    }
+    set.seed(seed)
+  }
+
+  # Checking kvector
+  if(is.null(kvector)) {
+    kvector <- c(1:(length(unique(z))-1))
+  }else{
+    if(!is.numeric(kvector)){
+      stop(error.code.6)
+    }
+  }
+
+
 
   #---------------
   if (isTRUE(cluster)) {
     if (is.null(ncores)) {
-      num_cores <- detectCores() - 1
+      num_cores <- parallel::detectCores() - 1
     }else{
       num_cores <- ncores
     }
@@ -124,10 +182,9 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
     on.exit(stopImplicitCluster())
   }
   #------------------
-
-
-
-  if(is.null(kvector)) kvector <- c(1:(length(unique(z))-1))
+  time <- y
+  status <- weights
+  fac <- z
 
   accept <- 0
   ii <- 1
@@ -144,19 +201,38 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
     }
 
 
-    if(method == "survival"){
+    if(method == 'survival'){
+      if(missing(weights)) {
+        stop(error.code.7)
+      }else if(length(unique(weights)) > 2){
+          stop(error.code.8)
+      }else if(sum(unique(weights))>1 | sum(unique(weights))<0){
+          stop(error.code.8)
+      }
+
+      if(missing(y)) {
+        stop(error.code.10)
+      }
+
     aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
                      kbin = kbin, nboot = nboot, algorithm = algorithm,
                      seed = seed, cluster = cluster)
-    aux[[ii]]$grid <- NULL
-    }else if(method == "regression"){
+    data <- NULL
+
+    }else if(method == 'regression'){
+
+      if(missing(x)) {
+        stop(error.code.9)
+      }
+      if(missing(y)) {
+        stop(error.code.11)
+      }
+
 
     aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
                      h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
                      cluster = cluster)
 
-    }else{
-      stop("The argument method has to be 'survival' or 'regression'.")
     }
 
 
@@ -199,12 +275,15 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
 
   # muhat under h0 and under h1
 
-  if(method == "survival"){
+  if(method == 'survival'){
   h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
   h1 <- survfit(Surv(time, status) ~ fac)
   }else{
-  h0 <- aux$centers
-  h1 <- aux$muhat
+    data <- data.frame(x = x, y = y, f = z)
+  #h0 <- aux$centers
+    h0 <- by(data, aux$cluster[data$f], muhatrfast2, h = h)
+  #h1 <- aux$muhat
+  h1 <- by(data, data$f, muhatrfast2, h = h)
   }
 
   }else{
@@ -212,10 +291,15 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
     aux$levels <- NA
     aux$cluster <- NA
     h0 <- NA
-    if(method == "survival"){
+    if(method == 'survival'){
     h1 <- survfit(Surv(time, status) ~ fac)
     }else{
-    h1 <- aux$muhat
+    #h1 <- aux$muhat
+      data <- data.frame(x = x, y = y, f = z)
+      h1 <- by(data, data$f, muhatrfast2, h = h)
+
+
+
     }
     cat("\n")
     cat(paste("The number 'k' of clusters has not been found, try another kvector.", "\n"), sep = "")
@@ -225,7 +309,7 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = "survival",
 
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
-              centers = h0, curves = h1, method = method, grid = aux$grid)
+              centers = h0, curves = h1, method = method, data = data)
   class(res) <- "clustcurv"
   return(res)
 

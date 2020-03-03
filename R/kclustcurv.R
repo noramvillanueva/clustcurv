@@ -40,14 +40,14 @@
 #' s2 <- kclustcurv(y = veteran$time, weights = veteran$status,
 #' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
 #'
-#' data.frame(level = cl2$level, cluster = cl2$cluster)
+#' data.frame(level = s2$level, cluster = s2$cluster)
 #'
 #'
-#' # Survival: 3 groups k-medians
-#' s3 <- kclustcurv(y = veteran$time, weights = veteran$status,
-#' z = veteran$celltype, k = 3, method = "survival", algorithm = "kmedians")
+#' # Survival: 2 groups k-medians
+#' s22 <- kclustcurv(y = veteran$time, weights = veteran$status,
+#' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmedians")
 #'
-#' data.frame(level = cl3$level, cluster = cl3$cluster)
+#' data.frame(level = s22$level, cluster = s22$cluster)
 #'
 #'
 #' # Regression: 2 groups k-means
@@ -66,7 +66,39 @@
 
 kclustcurv <- function(y, x, z, weights = NULL, k, method = "survival", kbin = 50,
                          h = -1, algorithm = "kmeans", seed = NULL){
-  if (!is.null(seed)) set.seed(seed)
+
+
+  # Defining error codes
+  error.code.0 <- "Argument seed must be a numeric."
+  error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
+  error.code.2 <- "Argument algorithm must be a string with 'kmeans' or 'kmedians'."
+
+  # Checking method  as strings and type
+  if (!is.character(method) ) {
+    stop(error.code.1)
+  }else if (nchar(method)!= 8 & nchar(method)!= 10) {
+    stop(error.code.1)
+  }else if(method != 'survival' & method != 'regression') {
+    stop(error.code.1)
+  }
+
+  # Checking algorithm  as string and type
+  if (!is.character(algorithm) ) {
+    stop(error.code.2)
+  }else if (nchar(algorithm)!= 6 & nchar(algorithm)!= 8) {
+    stop(error.code.2)
+  }else if(algorithm != 'kmeans' & algorithm != 'kmedians') {
+    stop(error.code.2)
+  }
+
+  # Checking seed as numeric
+  if (!is.null(seed)) {
+    if(!is.numeric(seed)){
+      stop(error.code.0)
+    }
+    set.seed(seed)
+  }
+
   time <- y
   status <- weights
   fac <- z

@@ -1,14 +1,3 @@
-# Functions
-
-
-library(mgcv)
-library(splines)
-library(doParallel)
-library(npregfast)
-library(KernSmooth)
-library(doRNG)
-
-
 
 
 # Funtion to obtain the estimates by kernel
@@ -31,6 +20,26 @@ muhatrfast <- function(x, grid, h){
   return(fit)
 }
 
+
+# Funtion to obtain the estimates by kernel
+muhatrfast2 <- function(x, h){
+  d <- data.frame(x = x[, 1], y = x[, 2])
+  # print(c(length(d$x), "n", x[1, 3]))
+  if (length(d$x) > 10) {
+    model <- frfast(y ~ x, data = d, kbin = 200,
+                    h0 = h, p = 2, nboot = 1)
+    #model <- frfast(y ~ s(x), data = d, kbin = length(grid),
+    #                h0 = h, p = 2, nboot = 1, smooth = "splines")
+    fit <- predict(model, newdata = data.frame(x = d$x))$Estimation[,1]
+  }else if (length(d$x) > 5) {
+    fit <- as.numeric(predict(lm(y ~ poly(x, 3), data = d),
+                              newdata = data.frame(x = d$x), type = "response"))
+  }else{
+    fit <- as.numeric(predict(lm(y ~ x, data = d),
+                              newdata = data.frame(x = d$x), type = "response"))
+  }
+  return(fit)
+}
 
 
 

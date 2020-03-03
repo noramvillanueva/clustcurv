@@ -4,7 +4,7 @@ Title: Determining Groups in Multiples Curves
 URL: https://github.com/noramvillanueva/clustcurv
 BugReports: http://github.com/noramvillanueva/clustcurv/issues
 Version: 2.0.0
-Date: 2019-12-30
+Date: 2020-03-01
 Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
 Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role = c("aut", "cre"),
   comment = c(ORCID = "0000-0001-8085-2745")),
@@ -28,7 +28,11 @@ Imports:
     doRNG,
     Gmedian, 
     survival,
-    wesanderson
+    wesanderson,
+    npregfast,
+    tidyr,
+    RColorBrewer,
+    KernSmooth
 Suggests:
     testthat,
     usethis,
