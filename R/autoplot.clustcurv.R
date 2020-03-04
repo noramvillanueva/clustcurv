@@ -155,9 +155,17 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
         #colnames(x$centers) <- unique(x$cluster)
         #data2 <- cbind(x = x$grid, x$centers)
         data2 <- x$data
+        data2$f <- x$levels[x$cluster[data2$f]]
+        sp <- split(data2, data2$f)
+        data2 <- as.data.frame(data.table::rbindlist(sp))
         data2$y <- unlist(x$centers)
-        data2$f <-x$levels[x$cluster][data2$f]
+        #data2$f <-x$levels[x$cluster][data2$f]
+
+
+
+
         names(data2) <- c("x", "y", "cluster")
+        data2$cluster <- as.factor(data2$cluster)
         #data2 <- tidyr::gather(data.frame(data2), cluster, y, 2:dim(data2)[2],
         #                       factor_key = TRUE)
         levels(data2$cluster) <- paste(" G", 1:k, sep = "")
@@ -170,7 +178,8 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
 
 
 
-        ggplot2::qplot(x, y, data = data2, colour = cluster, geom = "point")
+
+         #   ggplot2::qplot(x, y, data = data2, colour = cluster, geom = "point")
 
        plot2 + ggplot2::geom_line(data = data2,
                                    ggplot2::aes(x = data2$x, y = data2$y, colour = data2$cluster),

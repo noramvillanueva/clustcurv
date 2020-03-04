@@ -130,14 +130,19 @@ kclustcurv <- function(y, x, z, weights = NULL, k, method = "survival", kbin = 5
 
     tsample <- aux$t
     cluster <- aux$cluster
-    h0 <- aux$centers
-    h1 <- aux$muhat
+    #h0 <- aux$centers
+    #h1 <- aux$muhat
+    data <- data.frame(x = x, y = y, f = z)
+    data0 <- data
+    data0$f <- aux$levels[aux$cluster[data$f]]
+    h0 <- by(data0, data0$f, muhatrfast2, h = h)
+    h1 <- by(data, data$f, muhatrfast2, h = h)
   }
 
 
   res <- list(measure = as.numeric(tsample), levels = lab,
               cluster = as.numeric(cluster), centers = h0, curves = h1,
-              method = method, grid = aux$grid)
+              method = method, data = data)
   class(res) <- c("kclustcurv", "clustcurv")
   return(res)
 }

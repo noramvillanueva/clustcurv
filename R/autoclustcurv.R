@@ -281,7 +281,9 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = 'survival',
   }else{
     data <- data.frame(x = x, y = y, f = z)
   #h0 <- aux$centers
-    h0 <- by(data, aux$cluster[data$f], muhatrfast2, h = h)
+    data0 <- data
+    data0$f <- aux$levels[aux$cluster[data$f]]
+    h0 <- by(data0, data0$f, muhatrfast2, h = h)
   #h1 <- aux$muhat
   h1 <- by(data, data$f, muhatrfast2, h = h)
   }
