@@ -9,9 +9,14 @@ branches:
 
 r_github_packages:
   - r-lib/covr
+  - r-lib/testthat
+
+env:
+  - PKG_TARBALL=clustcurv_2.0.0.1000.tar.gz
 
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - tar -C .. -xf $PKG_TARBALL
+      - xvfb-run Rscript -e 'covr::codecov()'
 
 warnings_are_errors: true
 
@@ -21,3 +26,6 @@ notifications:
 
     on_success: change # default: always
     on_failure: always # default: always
+
+script:
+  - R CMD check *tar.gz --as-cran
