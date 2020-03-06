@@ -32,7 +32,8 @@ Imports:
     npregfast,
     tidyr,
     RColorBrewer,
-    KernSmooth
+    KernSmooth,
+    data.table
 Suggests:
     testthat,
     usethis,

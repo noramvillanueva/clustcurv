@@ -1,5 +1,6 @@
 #' @importFrom ggplot2 autoplot
 #' @importFrom tidyr gather
+#' @importFrom data.table rbindlist
 #' @import ggfortify
 #' @export
 ggplot2::autoplot
@@ -84,9 +85,13 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
           xlab = "Time", ylab = "Survival", ...){
 
   x <- object
+  y <- c()
   k <- length(unique(x$cluster))
-  #colgr <- wes_palette("Cavalcanti1", k, type = c("continuous"))
-  colgr <- brewer.pal(n = k, name = "Dark2")
+  if(k < 3){
+    colgr <- brewer.pal(n = 3, name = "Dark2")
+    #colgr <- wes_palette("Cavalcanti1", k, type = c("continuous"))
+  }else{colgr <- brewer.pal(n = k, name = "Dark2")}
+
 
   if(x$method == "survival"){
 
@@ -185,9 +190,6 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
                                    ggplot2::aes(x = data2$x, y = data2$y, colour = data2$cluster),
                                   size = 0.8) +
           ggplot2::scale_color_manual(values = c( rep(1,k), colgr[x$cluster]))
-
-
-
 
 
     }
