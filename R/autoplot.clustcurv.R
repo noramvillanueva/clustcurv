@@ -87,10 +87,12 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
   x <- object
   y <- c()
   k <- length(unique(x$cluster))
+
   if(k < 3){
     colgr <- brewer.pal(n = 3, name = "Dark2")
-    #colgr <- wes_palette("Cavalcanti1", k, type = c("continuous"))
-  }else{colgr <- brewer.pal(n = k, name = "Dark2")}
+  }else{
+    colgr <- brewer.pal(n = k, name = "Dark2")
+    }
 
 
   if(x$method == "survival"){
@@ -128,11 +130,11 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
 
   }else{ #method regression
 
-      if(!isTRUE(centers)){
-        #colnames(x$curves) <- x$levels
-        #data <- cbind(x = x$grid, x$curves)
-        #data <- tidyr::gather(data.frame(data), levels, y, 2:dim(data)[2])
+      if(isFALSE(centers)){
+
         data <- x$data
+        data <- data[order(data$f),]
+        data$f <- as.factor(data$f)
         data$y <- unlist(x$curves)
         names(data) <- c("x", "y", "levels")
 
@@ -146,51 +148,27 @@ autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
         }
       }else{
 
-        #colnames(x$curves) <- x$levels
-        #data <- cbind(x = x$grid, x$curves)
-        #data <- tidyr::gather(data.frame(data), levels, y, 2:dim(data)[2])
         data <- x$data
+        data <- data[order(data$f),]
+        data$f <- as.factor(data$f)
         data$y <- unlist(x$curves)
         names(data) <- c("x", "y", "levels")
 
-        plot1 <- ggplot2::qplot(x, y, data = data, colour = levels, geom = "line")
-        ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
-        plot2 <- plot1 + ggplot2::scale_color_manual(values = c(colgr[x$cluster]))
-
-        #colnames(x$centers) <- unique(x$cluster)
-        #data2 <- cbind(x = x$grid, x$centers)
         data2 <- x$data
         data2$f <- x$levels[x$cluster[data2$f]]
-        sp <- split(data2, data2$f)
-        data2 <- as.data.frame(data.table::rbindlist(sp))
+        data2 <- data2[order(data2$f),]
+        data2$f <- as.factor(data2$f)
         data2$y <- unlist(x$centers)
-        #data2$f <-x$levels[x$cluster][data2$f]
+        names(data2) <- c("x", "y", "levels")
+        levels(data2$levels) <- paste(" G", 1:k, sep = "")
+
+        dat <- rbind(data, data2)
 
 
-
-
-        names(data2) <- c("x", "y", "cluster")
-        data2$cluster <- as.factor(data2$cluster)
-        #data2 <- tidyr::gather(data.frame(data2), cluster, y, 2:dim(data2)[2],
-        #                       factor_key = TRUE)
-        levels(data2$cluster) <- paste(" G", 1:k, sep = "")
-        #data2$cluster <- factor(data2$cluster)
-
-        #levels(data2$cluster) <- c(2,1)
-        #data2$cluster <- as.numeric(as.character(data2$cluster))
-
-        #data2 <- data.frame(x = x$grid, y = x$center[,1], cluster = rep(1, length(x$grid)))
-
-
-
-
-         #   ggplot2::qplot(x, y, data = data2, colour = cluster, geom = "point")
-
-       plot2 + ggplot2::geom_line(data = data2,
-                                   ggplot2::aes(x = data2$x, y = data2$y, colour = data2$cluster),
-                                  size = 0.8) +
-          ggplot2::scale_color_manual(values = c( rep(1,k), colgr[x$cluster]))
-
+        plot1 <- ggplot2::qplot(x, y, data = dat, colour = levels, geom = "line")
+        ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
+        plot2 <- plot1 + ggplot2::scale_color_manual(values = c(colgr[x$cluster], rep(1,k)))
+        plot2
 
     }
 
