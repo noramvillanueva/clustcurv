@@ -58,7 +58,6 @@
 #'@author Nora M. Villanueva and Marta Sestelo.
 #'
 #'@examples
-#'\donttest{
 #' library(clustcurv)
 #' library(survival)
 #' library(condSURV)
@@ -67,12 +66,14 @@
 #'
 #'# Survival framework
 #' res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
-#' weights = veteran$status, method = 'survival', algorithm = 'kmeans')
+#' weights = veteran$status, method = 'survival', algorithm = 'kmeans',
+#' nboot = 2)
 #'
 #'# Regression framework
 #' res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
-#' method = 'regression', algorithm = 'kmeans', nboot = 20)
-#' }
+#' method = 'regression', algorithm = 'kmeans', nboot = 2)
+#'
+
 
 #' @importFrom survival Surv
 #' @importFrom survival survfit

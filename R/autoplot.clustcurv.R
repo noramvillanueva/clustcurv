@@ -49,6 +49,8 @@ ggplot2::autoplot
 #' autoplot(cl2, groups_by_colour = FALSE)
 #' autoplot(cl2, centers = TRUE)
 #'
+#'
+#'\donttest{
 #' # Regression
 #'
 #' r2 <- kclustcurv(y = barnacle5$DW, x = barnacle5$RC,
@@ -58,7 +60,7 @@ ggplot2::autoplot
 #' autoplot(r2, groups_by_colour = FALSE)
 #' autoplot(r2, centers = TRUE)
 #'
-#'\donttest{
+#'
 #' colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
 #'                       nodes = colonCS$nodes)
 #'

@@ -19,7 +19,7 @@ test_that( "Survival fit computed correctly", {
 
 
 test_that("Regression fit computed correctly", {
-  expected <- c(1,3,2,2,1)
+  expected <- c(2,1,1,1,2)
   fit <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                        method = 'regression', algorithm = "kmeans", nboot = 5,
                        seed = 300716)
