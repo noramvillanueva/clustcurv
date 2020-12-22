@@ -22,11 +22,11 @@ muhatrfast <- function(x, grid, h){
 
 
 # Funtion to obtain the estimates by kernel
-muhatrfast2 <- function(x, h){
+muhatrfast2 <- function(x, h, kbin){
   d <- data.frame(x = x[, 1], y = x[, 2])
   # print(c(length(d$x), "n", x[1, 3]))
   if (length(d$x) > 10) {
-    model <- frfast(y ~ x, data = d, kbin = 200,
+    model <- frfast(y ~ x, data = d, kbin = kbin,
                     h0 = h, p = 2, nboot = 1)
     #model <- frfast(y ~ s(x), data = d, kbin = length(grid),
     #                h0 = h, p = 2, nboot = 1, smooth = "splines")

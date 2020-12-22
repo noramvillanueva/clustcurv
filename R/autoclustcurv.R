@@ -99,7 +99,7 @@
 
 
 autoclustcurv <- function(y, x, z, weights = NULL, method = 'survival',
-                           kvector = NULL, kbin = 50, h = -1,
+                           kvector = NULL, kbin = 50, p = 2, h = -1,
                            nboot = 100, algorithm = 'kmeans', alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL,
                            multiple = FALSE, multiple.method = 'holm'){
@@ -284,9 +284,9 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = 'survival',
   #h0 <- aux$centers
     data0 <- data
     data0$f <- aux$levels[aux$cluster[data$f]]
-    h0 <- by(data0, data0$f, muhatrfast2, h = h)
+    h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
   #h1 <- aux$muhat
-  h1 <- by(data, data$f, muhatrfast2, h = h)
+  h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
   }
 
   }else{
@@ -299,7 +299,7 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = 'survival',
     }else{
     #h1 <- aux$muhat
       data <- data.frame(x = x, y = y, f = z)
-      h1 <- by(data, data$f, muhatrfast2, h = h)
+      h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
 
 
 

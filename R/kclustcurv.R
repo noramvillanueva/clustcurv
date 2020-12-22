@@ -135,8 +135,8 @@ kclustcurv <- function(y, x, z, weights = NULL, k, method = "survival", kbin = 5
     data <- data.frame(x = x, y = y, f = z)
     data0 <- data
     data0$f <- aux$levels[aux$cluster[data$f]]
-    h0 <- by(data0, data0$f, muhatrfast2, h = h)
-    h1 <- by(data, data$f, muhatrfast2, h = h)
+    h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
+    h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
   }
 
 
