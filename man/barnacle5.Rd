@@ -4,7 +4,8 @@
 \name{barnacle5}
 \alias{barnacle5}
 \title{Barnacle data}
-\format{\code{barnacle5} is a data frame with 5000 cases (rows) and
+\format{
+\code{barnacle5} is a data frame with 5000 cases (rows) and
 3 variables (columns).
 
 Note that \code{barnacle} data set from the \code{npregfast} package
@@ -14,7 +15,8 @@ gives the same three variables (columns) but for two sites, thus 2000 cases (row
  \item{RC}{Rostro-carinal lenght (in mm).}
  \item{F}{Factor indicating the sites of harvest: \code{laxe}, \code{lens},
  \code{barca}, \code{laxe}, and \code{lens}.}
- }}
+ }
+}
 \usage{
 barnacle5
 }

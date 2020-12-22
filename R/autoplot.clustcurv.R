@@ -7,18 +7,18 @@ ggplot2::autoplot
 
 
 
-#' Visualization of \code{clustcurv} objects with ggplot2 graphics
+#' Visualization of \code{clustcurves} objects with ggplot2 graphics
 #'
 #' @description Useful for drawing the estimated functions grouped by
 #' color and the centroids (mean curve of the curves pertaining to the
 #' same group).
 #'
-#' @param object Object of \code{clustcurv} class.
+#' @param object Object of \code{clustcurves} class.
 #' @param groups_by_colour A specification for the plotting groups by color.
 #' @param centers  Draw the centroids (mean of the curves pertaining to the
 #' same group) into the plot. By default it is \code{FALSE}.
-#' @param conf.int Only for method = "survival". Logical flag indicating whether to plot confidence intervals.
-#' @param censor Only for method = "survival". Logical flag indicating whether to plot censors.
+#' @param conf.int Only for survival curves. Logical flag indicating whether to plot confidence intervals.
+#' @param censor Only for survival curves. Logical flag indicating whether to plot censors.
 #' @param xlab A title for the \code{x} axis.
 #' @param ylab A title for the \code{y} axis.
 #' @param \ldots Other options.
@@ -42,8 +42,8 @@ ggplot2::autoplot
 #' data(veteran)
 #' data(colonCS)
 #'
-#' cl2 <- kclustcurv(y = veteran$time, weights = veteran$status,
-#' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
+#' cl2 <- ksurvcurves(time = veteran$time, status = veteran$status,
+#' x = veteran$celltype, k = 2, algorithm = "kmeans")
 #'
 #' autoplot(cl2)
 #' autoplot(cl2, groups_by_colour = FALSE)
@@ -53,8 +53,8 @@ ggplot2::autoplot
 #'\donttest{
 #' # Regression
 #'
-#' r2 <- kclustcurv(y = barnacle5$DW, x = barnacle5$RC,
-#' z = barnacle5$F, k = 2, method = "regression", algorithm = "kmeans")
+#' r2 <- kregcurves(y = barnacle5$DW, x = barnacle5$RC,
+#' z = barnacle5$F, k = 2, algorithm = "kmeans")
 #'
 #' autoplot(r2)
 #' autoplot(r2, groups_by_colour = FALSE)
@@ -70,9 +70,8 @@ ggplot2::autoplot
 #' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
 #' table(colonCSm$nodes) # ten levels
 #'
-#' res <- autoclustcurv(y = colonCSm$time, weights = colonCSm$status,
-#'        z = colonCSm$nodes, method = "survival", algorithm = "kmeans",
-#'        nboot = 20)
+#' res <- survclustcurves(time = colonCSm$time, status = colonCSm$status,
+#'        x = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
 #'
 #' autoplot(res)
 #' autoplot(res, groups_by_colour = FALSE)
@@ -82,7 +81,7 @@ ggplot2::autoplot
 #' @importFrom RColorBrewer brewer.pal
 #' @export
 
-autoplot.clustcurv <- function(object = object, groups_by_colour = TRUE,
+autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
           centers = FALSE, conf.int = FALSE, censor = FALSE,
           xlab = "Time", ylab = "Survival", ...){
 

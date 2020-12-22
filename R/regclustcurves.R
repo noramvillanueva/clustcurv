@@ -1,20 +1,17 @@
-#' Clustering multiple curves
+#' Clustering multiple regression curves
 #'
-#' @description Function for grouping survival or regression curves based on the k-means or
+#' @description Function for grouping regression curves based on the k-means or
 #' k-medians algorithm. It returns the number of groups and the assignement.
 #'
-#' @param y Survival time (method = 'survival') or response variable (method = 'regression').
-#' @param x Only for method = 'regression'. Dependent variable.
+#' @param y Response variable.
+#' @param x Dependent variable.
 #' @param z Categorical variable indicating the population to which
 #' the observations belongs.
-#' @param weights Only for method = 'survival'. Censoring indicator of the survival
-#' time of the process; 0 if the total time is censored and 1 otherwise.
-#' @param method A character string specifying which method is used, 'survival' or 'regression'.
 #' @param kvector A vector specifying the number of groups of curves to be
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
-#' @param h The kernel bandwidth smoothing parameter (for method = 'regression').
+#' @param h The kernel bandwidth smoothing parameter.
 #' @param nboot Number of bootstrap repeats.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
@@ -59,19 +56,10 @@
 #'
 #'@examples
 #' library(clustcurv)
-#' library(survival)
-#' library(condSURV)
-#' data(veteran)
-#' data(colonCS)
-#'
-#'# Survival framework
-#' res <- autoclustcurv(y = veteran$time, z = veteran$celltype,
-#' weights = veteran$status, method = 'survival', algorithm = 'kmeans',
-#' nboot = 2)
 #'
 #'# Regression framework
-#' res2 <- autoclustcurv(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
-#' method = 'regression', algorithm = 'kmeans', nboot = 2)
+#' res <- regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+#' algorithm = 'kmeans', nboot = 2)
 #'
 
 
@@ -98,37 +86,39 @@
 
 
 
-autoclustcurv <- function(y, x, z, weights = NULL, method = 'survival',
-                           kvector = NULL, kbin = 50, p = 2, h = -1,
+regclustcurves <- function(y, x, z,
+                           kvector = NULL, kbin = 50, h = -1,
                            nboot = 100, algorithm = 'kmeans', alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL,
                            multiple = FALSE, multiple.method = 'holm'){
 
+  method <- "regression"
+
   # Defining error codes
   error.code.0 <- "Argument seed must be an object of type numeric."
-  error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
+  #error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
   error.code.2 <- "Argument algorithm must be a string with 'kmeans' or 'kmedians'."
   error.code.3 <- "Argument multiple must be an object of type logical."
   error.code.4 <- "Argument multiple.method must be an object of type string."
   error.code.5 <- "Argument multiple.method must be some of the correction methods: 'bonferroni', 'holm', 'hochberg', etc."
   error.code.6 <- "Argument kvector must be an object of type numeric."
-  error.code.7 <- "Argument weights is missing and it is required when method is 'survival'."
-  error.code.8 <- "Argument weights must be a vector of binary numbers."
-  error.code.9 <- "Argument x is missing and it is required when method is 'regression'."
-  error.code.10 <- "Argument y is missing and it is required when method is 'survival'."
-  error.code.11 <- "Argument y is missing and it is required when method is 'regression'."
+  #error.code.7 <- "Argument weights is missing and it is required when method is 'survival'."
+  #error.code.8 <- "Argument weights must be a vector of binary numbers."
+  error.code.9 <- "Argument x is missing and it is required."
+  #error.code.10 <- "Argument y is missing and it is required when method is 'survival'."
+  error.code.11 <- "Argument y is missing and it is required."
 
 
-  # Checking method  as strings and type
-  if(missing(method)){
-    stop(error.code.1)
-  }else if (!is.character(method) ) {
-    stop(error.code.1)
-  }else if (nchar(method)!= 8 & nchar(method)!= 10) {
-    stop(error.code.1)
-  }else if(method != 'survival' & method != 'regression') {
-    stop(error.code.1)
-  }
+  # # Checking method  as strings and type
+  # if(missing(method)){
+  #   stop(error.code.1)
+  # }else if (!is.character(method) ) {
+  #   stop(error.code.1)
+  # }else if (nchar(method)!= 8 & nchar(method)!= 10) {
+  #   stop(error.code.1)
+  # }else if(method != 'survival' & method != 'regression') {
+  #   stop(error.code.1)
+  # }
 
   # Checking algorithm  as string and type
   if (!is.character(algorithm) ) {
@@ -313,7 +303,7 @@ autoclustcurv <- function(y, x, z, weights = NULL, method = 'survival',
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
               centers = h0, curves = h1, method = method, data = data)
-  class(res) <- "clustcurv"
+  class(res) <- "clustcurves"
   return(res)
 
 } #end clustcurv

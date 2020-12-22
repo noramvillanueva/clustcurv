@@ -1,20 +1,17 @@
-#' k-groups of multiple curves
+#' k-groups of multiple regression curves
 #'
-#' @description Function for grouping survival or regression curves, given a number k,
+#' @description Function for grouping regression curves, given a number k,
 #' based on the k-means or k-medians algorithm.
 #'
-#' @param y Survival time (method = "survival") or response variable (method = "regression").
-#' @param x Only for method = "regression". Dependent variable.
+#' @param y Response variable.
+#' @param x Dependent variable.
 #' @param z Categorical variable indicating the population to which
 #' the observations belongs.
-#' @param weights Only for method = "survival". Censoring indicator of the survival
-#' time of the process; 0 if the total time is censored and 1 otherwise.
 #' @param k An integer specifying the number of groups of curves to be
 #'  performed.
-#' @param method A character string specifying which method is used, "survival" or "regression".
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
-#' @param h The kernel bandwidth smoothing parameter (for method = "regression").
+#' @param h The kernel bandwidth smoothing parameter.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
 #' @param seed Seed to be used in the procedure.
@@ -25,34 +22,18 @@
 #'  \item{levels}{Original levels of the variable \code{fac}.}
 #'  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
 #'  which each curve is allocated.}
-#'  \item{centers}{An object of class \code{survfit} containing the centroids
+#'  \item{centers}{An object containing the fitted centroids
 #'  (mean of the curves pertaining to the same group).}
-#'  \item{curves}{An object of class \code{survfit} containing the survival
+#'  \item{curves}{An object containing the fitted regression
 #'  curves for each population.}
 #'@author Nora M. Villanueva and Marta Sestelo.
 #'
 #'@examples
 #' library(clustcurv)
-#' library(survival)
-#' data(veteran)
-#'
-#' # Survival: 2 groups k-means
-#' s2 <- kclustcurv(y = veteran$time, weights = veteran$status,
-#' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmeans")
-#'
-#' data.frame(level = s2$level, cluster = s2$cluster)
-#'
-#'
-#' # Survival: 2 groups k-medians
-#' s22 <- kclustcurv(y = veteran$time, weights = veteran$status,
-#' z = veteran$celltype, k = 2, method = "survival", algorithm = "kmedians")
-#'
-#' data.frame(level = s22$level, cluster = s22$cluster)
-#'
 #'
 #' # Regression: 2 groups k-means
-#' r2 <- kclustcurv(y = barnacle5$DW, x = barnacle5$RC,
-#' z = barnacle5$F, k = 2, method = "regression", algorithm = "kmeans")
+#' r2 <- kregcurves(y = barnacle5$DW, x = barnacle5$RC,
+#' z = barnacle5$F, k = 2, algorithm = "kmeans")
 #'
 #' data.frame(level = r2$level, cluster = r2$cluster)
 #'
@@ -64,23 +45,24 @@
 #' @export
 
 
-kclustcurv <- function(y, x, z, weights = NULL, k, method = "survival", kbin = 50,
-                         h = -1, algorithm = "kmeans", seed = NULL){
+kregcurves <- function(y, x, z, k, kbin = 50, h = -1,
+                       algorithm = "kmeans", seed = NULL){
 
+  method <- "regression"
 
   # Defining error codes
   error.code.0 <- "Argument seed must be a numeric."
-  error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
+  #error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
   error.code.2 <- "Argument algorithm must be a string with 'kmeans' or 'kmedians'."
 
-  # Checking method  as strings and type
-  if (!is.character(method) ) {
-    stop(error.code.1)
-  }else if (nchar(method)!= 8 & nchar(method)!= 10) {
-    stop(error.code.1)
-  }else if(method != 'survival' & method != 'regression') {
-    stop(error.code.1)
-  }
+  # # Checking method  as strings and type
+  # if (!is.character(method) ) {
+  #   stop(error.code.1)
+  # }else if (nchar(method)!= 8 & nchar(method)!= 10) {
+  #   stop(error.code.1)
+  # }else if(method != 'survival' & method != 'regression') {
+  #   stop(error.code.1)
+  # }
 
   # Checking algorithm  as string and type
   if (!is.character(algorithm) ) {
@@ -143,7 +125,7 @@ kclustcurv <- function(y, x, z, weights = NULL, k, method = "survival", kbin = 5
   res <- list(measure = as.numeric(tsample), levels = lab,
               cluster = as.numeric(cluster), centers = h0, curves = h1,
               method = method, data = data)
-  class(res) <- c("kclustcurv", "clustcurv")
+  class(res) <- c("kclustcurv", "clustcurves")
   return(res)
 }
 
