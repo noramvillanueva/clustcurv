@@ -139,7 +139,7 @@ ksurvcurves <- function(time, status = NULL, x, k, kbin = 50,
   res <- list(measure = as.numeric(tsample), levels = lab,
               cluster = as.numeric(cluster), centers = h0, curves = h1,
               method = method, data = data)
-  class(res) <- c("kclustcurv", "clustcurves")
+  class(res) <- c("kcurves", "clustcurves")
   return(res)
 }
 

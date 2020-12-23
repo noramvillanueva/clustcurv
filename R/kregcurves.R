@@ -125,7 +125,7 @@ kregcurves <- function(y, x, z, k, kbin = 50, h = -1,
   res <- list(measure = as.numeric(tsample), levels = lab,
               cluster = as.numeric(cluster), centers = h0, curves = h1,
               method = method, data = data)
-  class(res) <- c("kclustcurv", "clustcurves")
+  class(res) <- c("kcurves", "clustcurves")
   return(res)
 }
 
