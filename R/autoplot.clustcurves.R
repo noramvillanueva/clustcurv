@@ -79,6 +79,7 @@ ggplot2::autoplot
 #' }
 #' @importFrom wesanderson wes_palette
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom grDevices colorRamp
 #' @export
 
 autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,

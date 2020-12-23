@@ -1,0 +1,162 @@
+---
+title: "Clustering Multiple Nonparametric Curves"
+author: "[Nora M. Villanueva](https://noramvillanueva.github.io) & [Marta Sestelo](https://sestelo.github.io)"
+date: "`r Sys.Date()`"
+description: >
+  This vignette describes the usage of the main functions included in clustcurv package with two real data sets.
+output: rmarkdown::html_vignette
+vignette: |
+  %\VignetteIndexEntry{Clustering Multiple Nonparametric Curves} 
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+	warning = FALSE,
+	tidy.opts = list(
+		keep.blank.line = TRUE,
+		width.cutoff = 150
+		),
+	options(width = 150,fig.width=12, fig.height=8),
+	eval = TRUE
+)
+```
+
+> This vignette covers changes between versions 2.0.0 and 2.0.1.
+
+This document explains how to use clustcurv [clustcurv](https://cran.r-project.org/package=clustcurv) R package for clustering multiple 
+nonparametric curves, under the survival and regression framework. To this end, we
+illustrate the use of clustcurv R package using some real data sets. In the case
+of the survival context, the algorithm to determine groups automatically  were 
+applied to the German breast cancer data included in the [condSURV](https://cran.r-project.org/package=condSURV) package. For 
+the regression analysis, the  clustcurv R package includes a data set called 
+ `data(barnacle5)` with measurements of rostro-carinal length and dry weight of barnacles
+collected from five sites of the northwest of Spain. 
+
+
+# Clustering multiple survival curves 
+
+We will use German breast cancer data `data(gbcsCS)` to illustrate the package capabilities to build clusters of survival curves based on a covariate. This data set is available in condSURV package. A total of 686 patients with primary node positive breast cancer were recruited between July 1984 and December 1989 and 16 variables were measured such as age of the patient (`age`), menopausal status (`menopause`), hormonal therapy (`hormone`), tumour size (in mm,`size`), tumor grade (`grade`) and number of positive nodes (`nodes`). In addition to these and other variables, the recurrence free survival time (in days,`rectime`) and the corresponding censoring indicator (0 - censored, 1 - event) were also recorded.
+
+## Introduction
+
+After regular installation with `install.packages()`, then load the packages and the data set with
+
+```{r}
+library(clustcurv)
+library(condSURV)
+data(gbcsCS)
+head(gbcsCS[, c(5:10, 13, 14)])
+```
+
+
+The first three patients have developed a recurrence shown by `censrec` variable equals to 1, unlike the following three which take the value of 0. This variable along with other two, `rectime` and `nodes`, will be taken into account for applying the algorithm for clustering survival curves. The number of positive nodes have been grouped from 1 to > 13 because of its low numbers onwards. Below, the steps for this preprocessed are shown
+
+```{r}
+table(gbcsCS$nodes)
+gbcsCS[gbcsCS$nodes > 13,'nodes'] <- 14
+gbcsCS$nodes <- factor(gbcsCS$nodes)
+levels(gbcsCS$nodes)[14]<- '>13'
+table(gbcsCS$nodes)
+```
+
+## Algorithm for determing groups of survival curves
+
+### Based on $K$-medians 
+
+Estimates of the survival curves are obtained using the `ksurvcurves()` function, or equivalently, `survclustcurves()`. The main difference between them is that `ksurvcurves()`, given a fixed value of $K$, allows determing the group for which each survival function belongs. By  contrast,  `survclustcurves()` is able to determine automatically the number of groups. The functions will verify if data has been introduced correctly and will create  `kcurves` and `clutcurves` objects, respectively. Both functions allow determining groups using the optimization algorithm $K$-means or $K$-medians (e.g. `algorithm = 'kmeans'`, or `algorithm = 'kmedians'`). The first three arguments must be introduced, where `time` is a vector with event-times, `status` for their corresponding indicator statuses, and `x` is the categorical covariate. 
+
+
+By means of the `ksurvcurves()` function and including, for example, the arguments `k = 3` and `algorithm = 'kmedians'`, the estimates and the group for which each survival function belongs can be obtained as follows, 
+
+```{r}
+fit.kgbcs<- ksurvcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, x = gbcsCS$nodes,
+                   algorithm = 'kmedians', k = 3, seed = 300716)
+```
+
+Additionally, one can be interesting to know, not only, the assignment of the survival curves to the group which they belong but also, the automatic selection of their number. As we mentioned, it is possible by means of the `survclustcurves()`function. The following input commands provide an example of the output using, as well, the $K$-medians algorithm (i.e. `algorithm = 'kmedians'`)
+
+```{r}
+fit.gbcs <- survclustcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, x = gbcsCS$nodes,
+                     nboot = 500, seed = 300716, algorithm = 'kmedians', cluster = TRUE)
+``` 
+
+In the above function it is also included an argument for reducing executing time by means of parallelizing the testing procedure. This is `cluster = TRUE`. Related to this argument,  the number of cores to be used in the parallelized procedure can be specified with the argument `ncores`. By default, `ncores = NULL`, so that the number is equal to the number of cores of the machine - 1.
+
+
+The following piece of code can be executed for using the `summary()` function. 
+```{r}
+summary(fit.kgbcs)
+
+summary(fit.gbcs)
+```
+
+
+As can be seen, the `summary()` function, as well as the `print()` function, can be used to obtained some brief information about the output from `ksurvcurves()` and `survclustcurves()`.
+
+
+The graphical representation of the fitted model can be easily obtained where can be observed the estimated survival curves for each level of the factor nodes by means of the Kaplan-Meier estimator. As expected, the survival of patients can be influenced by the number of lymph nodes, patient’s recurrence time rises with the decrease of lymph nodes. The plot can be obtained with the function `autoplot()`, specifying the argument `groups_by_color = FALSE`. 
+
+
+```{r}
+autoplot(fit.gbcs , groups_by_colour = FALSE)
+```
+
+
+The assignment of the curves to the three groups can be observed in the following plot simply typing `groups_by_color = TRUE`. 
+
+```{r}
+autoplot(fit.gbcs , groups_by_colour = TRUE)
+```
+
+
+### Based on $K$-means
+
+
+Equivalently, the following piece of code shows the input commands and the results obtained with the `algorithm = 'kmeans'`. However, the number of groups and the assignments are different as those ones obtained with the `algorithm = 'kmedians'`. Although this situation is not so common, in some real applications it can happen.
+```{r}
+fit.gbcs2 <- survclustcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, seed = 300716,
+                      x = gbcsCS$nodes, algorithm = 'kmeans', cluster = TRUE, nboot = 500)
+```
+
+
+
+# Clustering multiple regression curves 
+
+We will use barnacle’s growth data `data(barnacle5)` to illustrate the package capabilities to build clusters of regression curves based on a covariate. This data set (`barnacle5`) is available in the clustcurv package. A total of 5000 specimens were collected from five sites  of the region’s Atlantic coastline and corresponds to the stretches of coast where this species is harvested: Punta do Mouro, Punta Lens, Punta de la Barca, Punta del Boy and Punta del Alba. Two biometric variables of each specimen were measured: `RC` (Rostro-carinal length, maximum distance across the capitulum between the ends of the rostral and carinal plates) and `DW` (Dry Weight).
+
+
+```{r}
+data("barnacle5")
+head(barnacle5)
+```
+
+
+Here, the idea is to know the relation between `RC` and `DW` variables along the coast, i.e., to analyze if the barnacle’s growth is similar in all locations `F` or by contrast, if it is possible to detect geographical differentiation in growth. To do this,  the `regclustcurves()` function will be  used with the input variables `y`, `x`, `z`, by means of executing the following piece of code
+
+
+```{r}
+fit.bar <- regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+                          nboot = 500, seed = 300716, algorithm = 'kmeans', cluster = TRUE)
+```
+
+The output of this function can be observed with `print()` or `summary()` functions. Below, there is an example of this
+
+```{r}
+print(fit.bar)
+summary(fit.bar)
+```
+
+
+
+Equivalent to the example shown before with survival curves, the results obtained above can be plotted using the `autoplot()` with following input command, 
+
+```{r}
+autoplot(fit.bar, groups_by_color = TRUE)
+```
+
+> Never mind -> `install.packages('clustcurv')`
