@@ -36,7 +36,7 @@ data(colonCS)
 
 # Survival framework
 ressurv <- survclustcurves(time = veteran$time, status = veteran$status,
-x = veteran$celltype, algorithm = 'kmeans', nboot = 100)
+x = veteran$celltype, algorithm = 'kmeans', nboot = 2)
 
 summary(ressurv)
 
