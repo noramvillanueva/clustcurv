@@ -89,12 +89,13 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
   y <- c()
   k <- length(unique(x$cluster))
 
-  if(k < 3){
-    colgr <- brewer.pal(n = 3, name = "Dark2")
-  }else{
-    colgr <- brewer.pal(n = k, name = "Dark2")
-    }
-
+   if(k < 3){
+     colgr <- brewer.pal(n = 3, name = "Dark2")
+   }else if(k<9){
+     colgr <- brewer.pal(n = k, name = "Dark2")
+     }else{
+  colgr <- colorRampPalette(brewer.pal(n = 8, name = "Dark2"))(k)
+     }
 
   if(x$method == "survival"){
 
