@@ -36,7 +36,7 @@ i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}
 }
 \value{
 A list containing the following items:
-\item{measure}{A measure of...}
+\item{measure}{Value of the test statistics.}
  \item{levels}{Original levels of the variable \code{x}.}
  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
  which each curve is allocated.}

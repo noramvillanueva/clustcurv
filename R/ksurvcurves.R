@@ -18,7 +18,7 @@
 #'
 #'@return
 #'A list containing the following items:
-#'\item{measure}{A measure of...}
+#'\item{measure}{Value of the test statistics.}
 #'  \item{levels}{Original levels of the variable \code{x}.}
 #'  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
 #'  which each curve is allocated.}
@@ -138,7 +138,7 @@ ksurvcurves <- function(time, status = NULL, x, k, kbin = 50,
 
   res <- list(measure = as.numeric(tsample), levels = lab,
               cluster = as.numeric(cluster), centers = h0, curves = h1,
-              method = method, data = data)
+              method = method, data = data, algorithm = algorithm, call = match.call())
   class(res) <- c("kcurves", "clustcurves")
   return(res)
 }

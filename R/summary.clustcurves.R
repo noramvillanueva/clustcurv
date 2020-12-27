@@ -44,8 +44,13 @@
 
 
 summary.clustcurves <- function(object, ...){
-  cat("Clustering curves in ", object$num_groups,
+  cat("\nCall: ","\n")
+  print(object$call)
+  cat("\nClustering curves in ", object$num_groups,
       " groups", "\n", sep = "")
+  cat("\nNumber of observations: ",dim(object$data)[1])
+  cat("\nNumber of variables: ", dim(object$data)[2])
+  cat("\nCluster method: ", object$algorithm, "\n")
   cat("\nFactor's levels:\n")
   print(object$levels, ...)
   cat("\nClustering factor's levels:\n")

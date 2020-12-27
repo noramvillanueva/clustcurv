@@ -35,7 +35,7 @@
 #'@return
 #'A list containing the following items:
 #'  \item{table}{A data frame containing the null hypothesis tested, the values
-#'  of the test statistics and the obtained pvalues.}
+#'  of the test statistic and the obtained pvalues.}
 #'  \item{levels}{Original levels of the variable \code{x}.}
 #'  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
 #'  which each curve is allocated.}
@@ -308,7 +308,8 @@ survclustcurves <- function(time, status = NULL, x,
 
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
-              centers = h0, curves = h1, method = method, data = data)
+              centers = h0, curves = h1, method = method, data = data, algorithm = algorithm,
+              call = match.call())
   class(res) <- "clustcurves"
   return(res)
 

@@ -67,7 +67,7 @@ pvalues are adjunted by using one of several methods for multiple comparisons.}
 \value{
 A list containing the following items:
  \item{table}{A data frame containing the null hypothesis tested, the values
- of the test statistics and the obtained pvalues.}
+ of the test statistic and the obtained pvalues.}
  \item{levels}{Original levels of the variable \code{z}.}
  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
  which each curve is allocated.}

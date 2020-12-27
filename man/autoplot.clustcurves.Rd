@@ -12,6 +12,7 @@
   censor = FALSE,
   xlab = "Time",
   ylab = "Survival",
+  interactive = FALSE,
   ...
 )
 }

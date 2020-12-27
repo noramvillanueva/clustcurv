@@ -32,8 +32,9 @@ Imports:
     npregfast,
     tidyr,
     RColorBrewer,
+    grDevices,
     KernSmooth,
-    data.table
+    plotly
 Suggests:
     testthat,
     usethis,

@@ -80,11 +80,12 @@ ggplot2::autoplot
 #' @importFrom wesanderson wes_palette
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRamp
+#' @importFrom plotly ggplotly
 #' @export
 
 autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
           centers = FALSE, conf.int = FALSE, censor = FALSE,
-          xlab = "Time", ylab = "Survival", ...){
+          xlab = "Time", ylab = "Survival", interactive = FALSE, ...){
 
   x <- object
   y <- c()
@@ -108,9 +109,9 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
 
   if (isTRUE(groups_by_colour)){
     plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster])
-    plot2
+    if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
   }else{
-    plot1
+    if(isTRUE(interactive)){ggplotly(plot1)}else{plot1}
   }
 
   }else{
@@ -127,7 +128,8 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
 
       plot2 <- plot1 + ggplot2::geom_step(data = data,
                         ggplot2::aes_string(x = "t", y = "surv", group = "cen"), size = 1)
-      plot2
+
+      if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
 
   }
 
@@ -145,9 +147,9 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
         if (isTRUE(groups_by_colour)){
           plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster])
-          plot2
+          if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
         }else{
-          plot1
+          if(isTRUE(interactive)){ggplotly(plot1)}else{plot1}
         }
       }else{
 
@@ -171,7 +173,7 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
         plot1 <- ggplot2::qplot(x, y, data = dat, colour = levels, geom = "line")
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
         plot2 <- plot1 + ggplot2::scale_color_manual(values = c(colgr[x$cluster], rep(1,k)))
-        plot2
+        if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
 
     }
 

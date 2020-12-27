@@ -42,8 +42,13 @@
 
 
 summary.kcurves <- function(object, ...){
-  cat("Clustering curves in ", length(unique(object$cluster)),
+  cat("\nCall: ","\n")
+  print(object$call)
+  cat("\nClustering curves in ", length(unique(object$cluster)),
       " groups", "\n", sep = "")
+  cat("\nNumber of observations: ",dim(object$data)[1])
+  cat("\nNumber of variables: ", dim(object$data)[2])
+  cat("\nCluster method: ", object$algorithm, "\n")
   cat("\nFactor's levels:\n")
   print(object$levels, ...)
   cat("\nClustering factor's levels:\n")
