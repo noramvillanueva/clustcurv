@@ -5,10 +5,13 @@ print.clustcurves <- function(x = model, ...) {
     model <- x
     cat("\nCall: ","\n")
     print(model$call)
-    cat("\nClustering curves in ", length(unique(object$cluster)),
+    cat("\nClustering curves in ", length(unique(model$cluster)),
         " groups", "\n", sep = "")
-    cat("\nNumber of observations: ",dim(model$data)[1])
-    cat("\nNumber of variables: ", dim(model$data)[2])
+    if(model$method == "survival"){
+      cat("\nNumber of observations: ",length(model$centers$time))
+    }else{
+      cat("\nNumber of observations: ",dim(model$data)[1])
+    }
     cat("\nCluster method: ", model$algorithm)
   }else{
     stop("Argument x must be either 'clustcurves' object.")

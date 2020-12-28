@@ -89,7 +89,7 @@
 
 
 survclustcurves <- function(time, status = NULL, x,
-                           kvector = NULL, kbin = 50, h = -1,
+                           kvector = NULL, kbin = 50,
                            nboot = 100, algorithm = 'kmeans', alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL,
                            multiple = FALSE, multiple.method = 'holm'){
@@ -216,21 +216,23 @@ survclustcurves <- function(time, status = NULL, x,
                      seed = seed, cluster = cluster)
     data <- NULL
 
-    }else if(method == 'regression'){
-
-      if(missing(x)) {
-        stop(error.code.9)
-      }
-      if(missing(y)) {
-        stop(error.code.11)
-      }
-
-
-    aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
-                     h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
-                     cluster = cluster)
-
     }
+
+    #   if(method == 'regression'){
+    #
+    #   # if(missing(x)) {
+    #   #   stop(error.code.9)
+    #   # }
+    #   # if(missing(y)) {
+    #   #   stop(error.code.11)
+    #   # }
+    #
+    #
+    # aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
+    #                  h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
+    #                  cluster = cluster)
+    #
+    # }
 
 
     pval[ii] <- aux[[ii]]$pvalue
@@ -275,15 +277,16 @@ survclustcurves <- function(time, status = NULL, x,
   if(method == 'survival'){
   h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
   h1 <- survfit(Surv(time, status) ~ fac)
-  }else{
-    data <- data.frame(x = x, y = y, f = z)
-  #h0 <- aux$centers
-    data0 <- data
-    data0$f <- aux$levels[aux$cluster[data$f]]
-    h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
-  #h1 <- aux$muhat
-  h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
   }
+  #   else{
+  #   data <- data.frame(x = x, y = y, f = z)
+  # #h0 <- aux$centers
+  #   data0 <- data
+  #   data0$f <- aux$levels[aux$cluster[data$f]]
+  #   h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
+  # #h1 <- aux$muhat
+  # h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
+  # }
 
   }else{
     k <- paste( ">", k, sep ="")
@@ -292,19 +295,19 @@ survclustcurves <- function(time, status = NULL, x,
     h0 <- NA
     if(method == 'survival'){
     h1 <- survfit(Surv(time, status) ~ fac)
-    }else{
-    #h1 <- aux$muhat
-      data <- data.frame(x = x, y = y, f = z)
-      h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
-
-
-
     }
+    # else{
+    # #h1 <- aux$muhat
+    #   data <- data.frame(x = x, y = y, f = z)
+    #   h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
+    #
+    #
+    #
+    # }
     cat("\n")
     cat(paste("The number 'k' of clusters has not been found, try another kvector.", "\n"), sep = "")
 
   }
-
 
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),

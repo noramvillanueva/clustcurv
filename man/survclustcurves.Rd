@@ -10,7 +10,6 @@ survclustcurves(
   x,
   kvector = NULL,
   kbin = 50,
-  h = -1,
   nboot = 100,
   algorithm = "kmeans",
   alpha = 0.05,

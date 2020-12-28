@@ -1,4 +1,4 @@
-context("test-kgroups")
+context("test-kregcurves")
 
 
 library(survival)

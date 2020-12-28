@@ -153,10 +153,10 @@ summary(fit.bar)
 
 
 
-Equivalent to the example shown before with survival curves, the results obtained above can be plotted using the `autoplot()` with following input command, 
+Equivalent to the example shown before with survival curves, the results obtained above can be plotted using the `autoplot()`  with the argument `interactive = TRUE` for an interactive graphic, as follows 
 
 ```{r}
-autoplot(fit.bar, groups_by_color = TRUE)
+autoplot(fit.bar, groups_by_color = TRUE, interactive = TRUE)
 ```
 
 > Never mind -> `install.packages('clustcurv')`

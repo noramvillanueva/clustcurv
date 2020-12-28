@@ -82,7 +82,7 @@ kregcurves <- function(y, x, z, k, kbin = 50, h = -1,
   }
 
   time <- y
-  status <- weights
+ # status <- weights
   fac <- z
 
   nf <- nlevels(factor(fac))
@@ -94,17 +94,17 @@ kregcurves <- function(y, x, z, k, kbin = 50, h = -1,
 
 
 
-  if(method == "survival"){
-    data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
-    # measure
-    aux <- Tvalue(data, k, kbin, method = algorithm)
-    tsample <- aux$t
-    cluster <- aux$res$cluster
-
-    # muhat under h0 and under h1
-    h0 <- survfit(Surv(ttilde, status) ~ aux$res$cluster[data$ff], data = data)
-    h1 <- survfit(Surv(ttilde, status) ~ ff, data = data)
-  }
+  # if(method == "survival"){
+  #   data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
+  #   # measure
+  #   aux <- Tvalue(data, k, kbin, method = algorithm)
+  #   tsample <- aux$t
+  #   cluster <- aux$res$cluster
+  #
+  #   # muhat under h0 and under h1
+  #   h0 <- survfit(Surv(ttilde, status) ~ aux$res$cluster[data$ff], data = data)
+  #   h1 <- survfit(Surv(ttilde, status) ~ ff, data = data)
+  # }
   if(method == "regression"){
     aux <- kgroups(x = x, y = y, f = z, nboot = 0, K = k,
                          h = h, ngrid = kbin, algorithm = algorithm, seed = seed,

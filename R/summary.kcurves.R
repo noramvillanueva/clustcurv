@@ -46,8 +46,11 @@ summary.kcurves <- function(object, ...){
   print(object$call)
   cat("\nClustering curves in ", length(unique(object$cluster)),
       " groups", "\n", sep = "")
-  cat("\nNumber of observations: ",dim(object$data)[1])
-  cat("\nNumber of variables: ", dim(object$data)[2])
+  if(object$method == "survival"){
+    cat("\nNumber of observations: ",length(object$centers$time))
+  }else{
+    cat("\nNumber of observations: ",dim(object$data)[1])
+  }
   cat("\nCluster method: ", object$algorithm, "\n")
   cat("\nFactor's levels:\n")
   print(object$levels, ...)

@@ -32,15 +32,14 @@ Imports:
     npregfast,
     tidyr,
     RColorBrewer,
-    grDevices,
-    KernSmooth,
-    plotly
+    grDevices
 Suggests:
     testthat,
     usethis,
     condSURV,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    plotly
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr

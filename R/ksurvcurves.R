@@ -119,21 +119,21 @@ ksurvcurves <- function(time, status = NULL, x, k, kbin = 50,
     h0 <- survfit(Surv(ttilde, status) ~ aux$res$cluster[data$ff], data = data)
     h1 <- survfit(Surv(ttilde, status) ~ ff, data = data)
   }
-  if(method == "regression"){
-    aux <- kgroups(x = x, y = y, f = z, nboot = 0, K = k,
-                         h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
-                         cluster = FALSE)
-
-    tsample <- aux$t
-    cluster <- aux$cluster
-    #h0 <- aux$centers
-    #h1 <- aux$muhat
-    data <- data.frame(x = x, y = y, f = z)
-    data0 <- data
-    data0$f <- aux$levels[aux$cluster[data$f]]
-    h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
-    h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
-  }
+  # if(method == "regression"){
+  #   aux <- kgroups(x = x, y = y, f = z, nboot = 0, K = k,
+  #                        h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
+  #                        cluster = FALSE)
+  #
+  #   tsample <- aux$t
+  #   cluster <- aux$cluster
+  #   #h0 <- aux$centers
+  #   #h1 <- aux$muhat
+  #   data <- data.frame(x = x, y = y, f = z)
+  #   data0 <- data
+  #   data0$f <- aux$levels[aux$cluster[data$f]]
+  #   h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
+  #   h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
+  # }
 
 
   res <- list(measure = as.numeric(tsample), levels = lab,

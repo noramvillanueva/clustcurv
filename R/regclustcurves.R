@@ -174,7 +174,7 @@ regclustcurves <- function(y, x, z,
   }
   #------------------
   time <- y
-  status <- weights
+  #status <- weights
   fac <- z
 
   accept <- 0
@@ -192,25 +192,27 @@ regclustcurves <- function(y, x, z,
     }
 
 
-    if(method == 'survival'){
-      if(missing(weights)) {
-        stop(error.code.7)
-      }else if(length(unique(weights)) > 2){
-          stop(error.code.8)
-      }else if(sum(unique(weights))>1 | sum(unique(weights))<0){
-          stop(error.code.8)
-      }
+    # if(method == 'survival'){
+    #   # if(missing(weights)) {
+    #   #   stop(error.code.7)
+    #   # }else if(length(unique(weights)) > 2){
+    #   #     stop(error.code.8)
+    #   # }else if(sum(unique(weights))>1 | sum(unique(weights))<0){
+    #   #     stop(error.code.8)
+    #   # }
+    #   #
+    #   # if(missing(y)) {
+    #   #   stop(error.code.10)
+    #   # }
+    #
+    # aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
+    #                  kbin = kbin, nboot = nboot, algorithm = algorithm,
+    #                  seed = seed, cluster = cluster)
+    # data <- NULL
+    #
+    # }else
 
-      if(missing(y)) {
-        stop(error.code.10)
-      }
-
-    aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
-                     kbin = kbin, nboot = nboot, algorithm = algorithm,
-                     seed = seed, cluster = cluster)
-    data <- NULL
-
-    }else if(method == 'regression'){
+      if(method == 'regression'){
 
       if(missing(x)) {
         stop(error.code.9)

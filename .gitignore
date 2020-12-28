@@ -6,3 +6,4 @@
 .Rbuildignore
 .DS_Store
 inst/doc
+.travis.yml

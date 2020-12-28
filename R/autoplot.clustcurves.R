@@ -1,6 +1,4 @@
 #' @importFrom ggplot2 autoplot
-#' @importFrom tidyr gather
-#' @importFrom data.table rbindlist
 #' @import ggfortify
 #' @export
 ggplot2::autoplot
@@ -21,6 +19,7 @@ ggplot2::autoplot
 #' @param censor Only for survival curves. Logical flag indicating whether to plot censors.
 #' @param xlab A title for the \code{x} axis.
 #' @param ylab A title for the \code{y} axis.
+#' @param interactive Logical flag indicating if an interactive plot with plotly is produced.
 #' @param \ldots Other options.
 #'
 #' @details See help page of the function \code{\link{autoplot.survfit}}.
@@ -58,6 +57,7 @@ ggplot2::autoplot
 #'
 #' autoplot(r2)
 #' autoplot(r2, groups_by_colour = FALSE)
+#' autoplot(r2, groups_by_colour = FALSE, interactive = TRUE)
 #' autoplot(r2, centers = TRUE)
 #'
 #'
@@ -79,13 +79,14 @@ ggplot2::autoplot
 #' }
 #' @importFrom wesanderson wes_palette
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom grDevices colorRamp
-#' @importFrom plotly ggplotly
+#' @importFrom grDevices colorRampPalette
 #' @export
 
 autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
           centers = FALSE, conf.int = FALSE, censor = FALSE,
           xlab = "Time", ylab = "Survival", interactive = FALSE, ...){
+
+
 
   x <- object
   y <- c()
@@ -109,9 +110,17 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
 
   if (isTRUE(groups_by_colour)){
     plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster])
-    if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
+    if(isTRUE(interactive)){
+      if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+    }else{
+        plot2
+      }
   }else{
-    if(isTRUE(interactive)){ggplotly(plot1)}else{plot1}
+    if(isTRUE(interactive)){
+      if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot1)}
+    }else{
+      plot1
+    }
   }
 
   }else{
@@ -129,7 +138,11 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
       plot2 <- plot1 + ggplot2::geom_step(data = data,
                         ggplot2::aes_string(x = "t", y = "surv", group = "cen"), size = 1)
 
-      if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
+      if(isTRUE(interactive)){
+        if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+      }else{
+        plot2
+      }
 
   }
 
@@ -147,9 +160,17 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
         if (isTRUE(groups_by_colour)){
           plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster])
-          if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
+          if(isTRUE(interactive)){
+            if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+          }else{
+            plot2
+          }
         }else{
-          if(isTRUE(interactive)){ggplotly(plot1)}else{plot1}
+          if(isTRUE(interactive)){
+            if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot1)}
+          }else{
+            plot1
+          }
         }
       }else{
 
@@ -173,7 +194,11 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
         plot1 <- ggplot2::qplot(x, y, data = dat, colour = levels, geom = "line")
         ii <- order(x$levels) # for solving the problem of ggplot legend (alphabetic order)
         plot2 <- plot1 + ggplot2::scale_color_manual(values = c(colgr[x$cluster], rep(1,k)))
-        if(isTRUE(interactive)){ggplotly(plot2)}else{plot2}
+        if(isTRUE(interactive)){
+          if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+        }else{
+          plot2
+        }
 
     }
 

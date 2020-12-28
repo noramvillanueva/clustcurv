@@ -32,6 +32,8 @@ same group) into the plot. By default it is \code{FALSE}.}
 
 \item{ylab}{A title for the \code{y} axis.}
 
+\item{interactive}{Logical flag indicating if an interactive plot with plotly is produced.}
+
 \item{\ldots}{Other options.}
 }
 \value{
@@ -75,6 +77,7 @@ z = barnacle5$F, k = 2, algorithm = "kmeans")
 
 autoplot(r2)
 autoplot(r2, groups_by_colour = FALSE)
+autoplot(r2, groups_by_colour = FALSE, interactive = TRUE)
 autoplot(r2, centers = TRUE)
 
 
