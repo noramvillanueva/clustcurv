@@ -58,7 +58,7 @@ to be used is equal to the number of cores of the machine - 1.}
 \item{seed}{Seed to be used in the procedure.}
 
 \item{multiple}{A logical value. If  \code{TRUE} (not default), the resulted
-pvalues are adjunted by using one of several methods for multiple comparisons.}
+pvalues are adjusted by using one of several methods for multiple comparisons.}
 
 \item{multiple.method}{Correction method. See Details.}
 }
@@ -70,12 +70,12 @@ A list containing the following items:
  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
  which each curve is allocated.}
  \item{centers}{An object containing the centroids
- (mean of the curves pertaining to the samet group).}
+ (mean of the curves pertaining to the same group).}
  \item{curves}{An object containing the fitted curves for each population.}
 }
 \description{
 Function for grouping survival  curves based on the k-means or
-k-medians algorithm. It returns the number of groups and the assignement.
+k-medians algorithm. It returns the number of groups and the assignment.
 }
 \details{
 The adjustment methods include the Bonferroni correction ("bonferroni")

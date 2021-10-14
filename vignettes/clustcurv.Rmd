@@ -5,11 +5,12 @@ date: "`r Sys.Date()`"
 description: >
   This vignette describes the usage of the main functions included in clustcurv package with two real data sets.
 output: rmarkdown::html_vignette
-vignette: |
-  %\VignetteIndexEntry{Clustering Multiple Nonparametric Curves} 
+vignette: >
+  %\VignetteIndexEntry{Clustering Multiple Nonparametric Curves}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -28,14 +29,14 @@ knitr::opts_chunk$set(
 
 > This vignette covers changes between versions 2.0.0 and 2.0.1.
 
-This document explains how to use clustcurv [clustcurv](https://cran.r-project.org/package=clustcurv) R package for clustering multiple 
+This document explains how to use  [clustcurv](https://cran.r-project.org/package=clustcurv) R package for clustering multiple 
 nonparametric curves, under the survival and regression framework. To this end, we
-illustrate the use of clustcurv R package using some real data sets. In the case
-of the survival context, the algorithm to determine groups automatically  were 
+illustrate the use of the package using some real data sets. In the case
+of the survival context, the algorithm to determine groups automatically  is 
 applied to the German breast cancer data included in the [condSURV](https://cran.r-project.org/package=condSURV) package. For 
 the regression analysis, the  clustcurv R package includes a data set called 
  `data(barnacle5)` with measurements of rostro-carinal length and dry weight of barnacles
-collected from five sites of the northwest of Spain. 
+collected from five sites of Galicia (northwest of Spain). 
 
 
 # Clustering multiple survival curves 
@@ -68,27 +69,27 @@ table(gbcsCS$nodes)
 
 ### Based on $K$-medians 
 
-Estimates of the survival curves are obtained using the `ksurvcurves()` function, or equivalently, `survclustcurves()`. The main difference between them is that `ksurvcurves()`, given a fixed value of $K$, allows determing the group for which each survival function belongs. By  contrast,  `survclustcurves()` is able to determine automatically the number of groups. The functions will verify if data has been introduced correctly and will create  `kcurves` and `clutcurves` objects, respectively. Both functions allow determining groups using the optimization algorithm $K$-means or $K$-medians (e.g. `algorithm = 'kmeans'`, or `algorithm = 'kmedians'`). The first three arguments must be introduced, where `time` is a vector with event-times, `status` for their corresponding indicator statuses, and `x` is the categorical covariate. 
+Clusters and estimates of the survival curves are obtained using the `ksurvcurves()` function or `survclustcurves()` function. The main difference between them is that `ksurvcurves()`, given a fixed value of $K$, allows determing the group for which each survival function belongs. In addition,  `survclustcurves()` is able to determine automatically the number of groups. The functions will verify if data has been introduced correctly and will create  `kcurves` and `clustcurves` objects, respectively. Both functions allow determining groups using the optimization algorithm $K$-means or $K$-medians (e.g. `algorithm = 'kmeans'`, or `algorithm = 'kmedians'`). The first three arguments must be introduced, where `time` is a vector with event-times, `status` for their corresponding indicator statuses, and `x` is the categorical covariate. 
 
 
-By means of the `ksurvcurves()` function and including, for example, the arguments `k = 3` and `algorithm = 'kmedians'`, the estimates and the group for which each survival function belongs can be obtained as follows, 
+By means of the `ksurvcurves()` function and filling, for example, the arguments `k = 3` and `algorithm = 'kmedians'`, the estimates and the group for which each survival function belongs can be obtained as follows, 
 
 ```{r}
 fit.kgbcs<- ksurvcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, x = gbcsCS$nodes,
-                   algorithm = 'kmedians', k = 3, seed = 300716)
+                   algorithm = 'kmedians', k = 4, seed = 300716)
 ```
 
-Additionally, one can be interesting to know, not only, the assignment of the survival curves to the group which they belong but also, the automatic selection of their number. As we mentioned, it is possible by means of the `survclustcurves()`function. The following input commands provide an example of the output using, as well, the $K$-medians algorithm (i.e. `algorithm = 'kmedians'`)
+Additionally, one can be interesting to know, not only, the assignment of the survival curves to the group which they belong but also, the automatic selection of the number of groups. As we mentioned, it is possible by means of the `survclustcurves()`function. The following input command provides an example of the output using, as well, the $K$-medians algorithm (i.e. `algorithm = 'kmedians'`)
 
 ```{r}
 fit.gbcs <- survclustcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, x = gbcsCS$nodes,
-                     nboot = 500, seed = 300716, algorithm = 'kmedians', cluster = TRUE)
+                     nboot = 100, seed = 300716, algorithm = 'kmedians')
 ``` 
 
 In the above function it is also included an argument for reducing executing time by means of parallelizing the testing procedure. This is `cluster = TRUE`. Related to this argument,  the number of cores to be used in the parallelized procedure can be specified with the argument `ncores`. By default, `ncores = NULL`, so that the number is equal to the number of cores of the machine - 1.
 
 
-The following piece of code can be executed for using the `summary()` function. 
+The following piece of code can be executed for obtaining a small summary of the fit
 ```{r}
 summary(fit.kgbcs)
 
@@ -99,28 +100,29 @@ summary(fit.gbcs)
 As can be seen, the `summary()` function, as well as the `print()` function, can be used to obtained some brief information about the output from `ksurvcurves()` and `survclustcurves()`.
 
 
-The graphical representation of the fitted model can be easily obtained where can be observed the estimated survival curves for each level of the factor nodes by means of the Kaplan-Meier estimator. As expected, the survival of patients can be influenced by the number of lymph nodes, patient’s recurrence time rises with the decrease of lymph nodes. The plot can be obtained with the function `autoplot()`, specifying the argument `groups_by_color = FALSE`. 
+The graphical representation of the fitted model can be easily obtained using the function `autoplot()`. The plot obtained, specifying the arguments `groups_by_color = FALSE` and `interactive = TRUE`, represents the estimated survival curves for each level of the factor nodes by means of the Kaplan-Meier estimator. As expected, the survival of patients can be influenced by the number of lymph nodes, patient’s recurrence time rises with the decrease of lymph nodes
 
-
-```{r}
-autoplot(fit.gbcs , groups_by_colour = FALSE)
+ 
+ 
+```{r, out.width= '100%', fig.align = "center"}
+autoplot(fit.gbcs , groups_by_colour = FALSE, interactive = TRUE)
 ```
 
 
-The assignment of the curves to the three groups can be observed in the following plot simply typing `groups_by_color = TRUE`. 
+The assignment of the curves to the three groups can be observed in the following plot simply typing `groups_by_color = TRUE` 
 
-```{r}
-autoplot(fit.gbcs , groups_by_colour = TRUE)
+```{r,out.width= '100%', fig.align = "center"}
+autoplot(fit.gbcs , groups_by_colour = TRUE, interactive = TRUE)
 ```
 
 
 ### Based on $K$-means
 
 
-Equivalently, the following piece of code shows the input commands and the results obtained with the `algorithm = 'kmeans'`. However, the number of groups and the assignments are different as those ones obtained with the `algorithm = 'kmedians'`. Although this situation is not so common, in some real applications it can happen.
+Equivalently, the following piece of code shows the input commands and the results obtained with the `algorithm = 'kmeans'`. The number of groups and the assignments are different as those ones obtained with the `algorithm = 'kmedians'`. Although this situation is not so common, in some real applications it can happen.
 ```{r}
 fit.gbcs2 <- survclustcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, seed = 300716,
-                      x = gbcsCS$nodes, algorithm = 'kmeans', cluster = TRUE, nboot = 500)
+                      x = gbcsCS$nodes, algorithm = 'kmeans', nboot = 100)
 ```
 
 
@@ -141,7 +143,7 @@ Here, the idea is to know the relation between `RC` and `DW` variables along the
 
 ```{r}
 fit.bar <- regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
-                          nboot = 500, seed = 300716, algorithm = 'kmeans', cluster = TRUE)
+                          nboot = 100, seed = 300716, algorithm = 'kmeans')
 ```
 
 The output of this function can be observed with `print()` or `summary()` functions. Below, there is an example of this
@@ -153,9 +155,9 @@ summary(fit.bar)
 
 
 
-Equivalent to the example shown before with survival curves, the results obtained above can be plotted using the `autoplot()`  with the argument `interactive = TRUE` for an interactive graphic, as follows 
+Equivalent to the example with survival curves shown before, the results obtained above can be plotted using the `autoplot()` 
 
-```{r}
+```{r, out.width= '100%', fig.align = "center"}
 autoplot(fit.bar, groups_by_color = TRUE, interactive = TRUE)
 ```
 

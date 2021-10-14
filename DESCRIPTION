@@ -2,13 +2,13 @@ Package: clustcurv
 Type: Package
 Title: Determining Groups in Multiples Curves
 URL: https://github.com/noramvillanueva/clustcurv
-BugReports: http://github.com/noramvillanueva/clustcurv/issues
+BugReports: https://github.com/noramvillanueva/clustcurv/issues
 Version: 2.0.1
 Date: 2020-12-23
 Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
 Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role = c("aut", "cre"),
   comment = c(ORCID = "0000-0001-8085-2745")),
-  person("Marta", "Sestelo",email= "sestelo@uvigo.es", role = "aut"))
+  person("Marta", "Sestelo",email= "sestelo@uvigo.es", role = "aut", comment = c(ORCID = "0000-0003-4284-6509")))
 Description: A method for determining groups in multiple 
     curves with an automatic selection of their number based on k-means or 
     k-medians algorithms. The selection of the optimal number is provided by 
@@ -28,18 +28,14 @@ Imports:
     doRNG,
     Gmedian, 
     survival,
-    wesanderson,
     npregfast,
-    tidyr,
     RColorBrewer,
     grDevices
 Suggests:
     testthat,
-    usethis,
     condSURV,
-    covr,
+    plotly,
     knitr,
-    rmarkdown,
-    plotly
+    rmarkdown
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr

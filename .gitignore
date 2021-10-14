@@ -7,3 +7,5 @@
 .DS_Store
 inst/doc
 .travis.yml
+doc
+Meta

@@ -77,7 +77,6 @@ ggplot2::autoplot
 #' autoplot(res, groups_by_colour = FALSE)
 #' autoplot(res, centers = TRUE)
 #' }
-#' @importFrom wesanderson wes_palette
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
 #' @export

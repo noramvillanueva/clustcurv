@@ -38,7 +38,7 @@ Villanueva, N. M., Sestelo, M., and  Meira-Machado, J. (2019). A method for
 Useful links:
 \itemize{
   \item \url{https://github.com/noramvillanueva/clustcurv}
-  \item Report bugs at \url{http://github.com/noramvillanueva/clustcurv/issues}
+  \item Report bugs at \url{https://github.com/noramvillanueva/clustcurv/issues}
 }
 
 }

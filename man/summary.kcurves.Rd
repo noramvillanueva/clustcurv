@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.kcurves.R
 \name{summary.kcurves}
 \alias{summary.kcurves}
-\title{Summarizing fits of \code{kcurves} class producted by \code{ksurvcurves} and
+\title{Summarizing fits of \code{kcurves} class produced by \code{ksurvcurves} and
 \code{kregcurves}}
 \usage{
 \method{summary}{kcurves}(object, ...)
@@ -17,7 +17,7 @@
 \code{summary.kcurves} computes and returns a list of summary
 information for a \code{kcurves} object.
 \item{levels}{Levels of the factor.}
-\item{cluster}{A vector containing the asignement of each factor's level to its group.}
+\item{cluster}{A vector containing the assignment of each factor's level to its group.}
 }
 \description{
 Takes a  kcurves object

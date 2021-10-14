@@ -5,7 +5,7 @@
 #'@docType data
 #'@usage barnacle5
 #'@description This barnacle data set gives the measurements of the variables
-#'dry weight (in g.) and rostro-carinal lenght (in mm) for 5000 barnacles
+#'dry weight (in g.) and rostro-carinal length (in mm) for 5000 barnacles
 #'collected along the intertidal zone from five sites of the Atlantic coast of Galicia (Spain).
 #'@format \code{barnacle5} is a data frame with 5000 cases (rows) and
 #'3 variables (columns).
@@ -14,7 +14,7 @@
 #'gives the same three variables (columns) but for two sites, thus 2000 cases (rows).
 #'\describe{
 #'  \item{DW}{Dry weight (in g.)}
-#'  \item{RC}{Rostro-carinal lenght (in mm).}
+#'  \item{RC}{Rostro-carinal length (in mm).}
 #'  \item{F}{Factor indicating the sites of harvest: \code{laxe}, \code{lens},
 #'  \code{barca}, \code{laxe}, and \code{lens}.}
 #'  }

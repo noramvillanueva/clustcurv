@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.clustcurves.R
 \name{summary.clustcurves}
 \alias{summary.clustcurves}
-\title{Summarizing fits of \code{kclustcurves} class producted by \code{survclustcurves} and
+\title{Summarizing fits of \code{kclustcurves} class produced by \code{survclustcurves} and
 \code{regclustcurves}}
 \usage{
 \method{summary}{clustcurves}(object, ...)
@@ -17,7 +17,7 @@
 \code{summary.clustcurves} computes and returns a list of summary
 information for a \code{clustcurves} object.
 \item{levels}{Levels of the factor.}
-\item{cluster}{A vector containing the asignement of each factor's level to its group.}
+\item{cluster}{A vector containing the assignment of each factor's level to its group.}
 \item{table}{A data.frame containing the results from the hypothesis test.}
 }
 \description{

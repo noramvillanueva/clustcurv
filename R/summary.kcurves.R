@@ -1,4 +1,4 @@
-#' Summarizing fits of \code{kcurves} class producted by \code{ksurvcurves} and
+#' Summarizing fits of \code{kcurves} class produced by \code{ksurvcurves} and
 #' \code{kregcurves}
 #'
 #' @description Takes a  kcurves object
@@ -13,7 +13,7 @@
 #' @return \code{summary.kcurves} computes and returns a list of summary
 #' information for a \code{kcurves} object.
 #' \item{levels}{Levels of the factor.}
-#' \item{cluster}{A vector containing the asignement of each factor's level to its group.}
+#' \item{cluster}{A vector containing the assignment of each factor's level to its group.}
 #'
 #'@author Nora M. Villanueva and Marta Sestelo.
 #'
@@ -47,7 +47,7 @@ summary.kcurves <- function(object, ...){
   cat("\nClustering curves in ", length(unique(object$cluster)),
       " groups", "\n", sep = "")
   if(object$method == "survival"){
-    cat("\nNumber of observations: ",length(object$centers$time))
+    cat("\nNumber of observations: ",length(object$centers$time)) #cambiar a lenght(object$curves$time)
   }else{
     cat("\nNumber of observations: ",dim(object$data)[1])
   }

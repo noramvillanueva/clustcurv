@@ -165,7 +165,7 @@ kgroups <- function(x, y, f, nboot = 100, K = 3, h, ngrid, algorithm, seed,
 
 
   if (isTRUE(cluster)) {
-  Tboot <- foreach(i = 1:nboot, .combine = cbind) %dorng%
+  Tboot <- foreach(i = 1:nboot, .combine = cbind, .export = "Tvalue_app") %dorng%
     Tvalue_app(yboot[, i], x = x, f = f, K = K, grid = grid,
                h = h, ngrid = ngrid, algorithm = algorithm)
   }else{

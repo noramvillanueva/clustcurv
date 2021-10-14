@@ -1,4 +1,4 @@
-#' Summarizing fits of \code{kclustcurves} class producted by \code{survclustcurves} and
+#' Summarizing fits of \code{kclustcurves} class produced by \code{survclustcurves} and
 #' \code{regclustcurves}
 #'
 #' @description Takes a  clustcurves object
@@ -13,7 +13,7 @@
 #' @return \code{summary.clustcurves} computes and returns a list of summary
 #' information for a \code{clustcurves} object.
 #' \item{levels}{Levels of the factor.}
-#' \item{cluster}{A vector containing the asignement of each factor's level to its group.}
+#' \item{cluster}{A vector containing the assignment of each factor's level to its group.}
 #' \item{table}{A data.frame containing the results from the hypothesis test.}
 #'@author Nora M. Villanueva and Marta Sestelo.
 #'

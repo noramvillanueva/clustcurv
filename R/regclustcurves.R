@@ -1,7 +1,7 @@
 #' Clustering multiple regression curves
 #'
 #' @description Function for grouping regression curves based on the k-means or
-#' k-medians algorithm. It returns the number of groups and the assignement.
+#' k-medians algorithm. It returns the number of groups and the assignment.
 #'
 #' @param y Response variable.
 #' @param x Dependent variable.
@@ -29,7 +29,7 @@
 #' to be used is equal to the number of cores of the machine - 1.
 #' @param seed Seed to be used in the procedure.
 #' @param multiple A logical value. If  \code{TRUE} (not default), the resulted
-#' pvalues are adjunted by using one of several methods for multiple comparisons.
+#' pvalues are adjusted by using one of several methods for multiple comparisons.
 #' @param multiple.method Correction method. See Details.
 #'
 #'@return
@@ -40,7 +40,7 @@
 #'  \item{cluster}{A vector of integers (from 1:k) indicating the cluster to
 #'  which each curve is allocated.}
 #'  \item{centers}{An object containing the centroids
-#'  (mean of the curves pertaining to the samet group).}
+#'  (mean of the curves pertaining to the same group).}
 #'  \item{curves}{An object containing the fitted curves for each population.}
 #'
 #'@details The adjustment methods include the Bonferroni correction ("bonferroni")
@@ -59,7 +59,7 @@
 #'
 #'# Regression framework
 #' res <- regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
-#' algorithm = 'kmeans', nboot = 2)
+#' algorithm = 'kmeans', nboot = 2, cluster = TRUE, ncores = 2)
 #'
 
 

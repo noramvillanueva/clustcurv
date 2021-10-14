@@ -184,7 +184,7 @@ testing_k <- function(time, status, fac, k, kbin, nboot,
 
   # bootstrap
   if (isTRUE(cluster)) {
-    tboot <- foreach(i = 1:nboot, .combine = cbind) %dorng%
+    tboot <- foreach(i = 1:nboot, .combine = cbind, .export = "bootstrap") %dorng%
       bootstrap(data, newf, k, kbin, method)
   }else{
     tboot <- foreach(i = 1:nboot, .combine = cbind) %do%
