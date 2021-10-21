@@ -1,4 +1,4 @@
-#' Clustering multiple survival curves
+#' Clustering multiple CIF curves
 #'
 #' @description Function for grouping survival  curves based on the k-means or
 #' k-medians algorithm. It returns the number of groups and the assignment.
@@ -88,31 +88,31 @@
 
 
 
-survclustcurves <- function(time, status = NULL, x,
-                           kvector = NULL, kbin = 50,
-                           nboot = 100, algorithm = 'kmeans', alpha = 0.05,
-                           cluster = FALSE, ncores = NULL, seed = NULL,
-                           multiple = FALSE, multiple.method = 'holm'){
+survcifcurves <- function(time, status = NULL, x,
+                            kvector = NULL, kbin = 50,
+                            nboot = 100, algorithm = 'kmeans', alpha = 0.05,
+                            cluster = FALSE, ncores = NULL, seed = NULL,
+                            multiple = FALSE, multiple.method = 'holm'){
 
 
   y <- time
   weights <- status
   z <- x
-  method <- "survival"
+  method <- "cif"
 
   # Defining error codes
   error.code.0 <- "Argument seed must be an object of type numeric."
- # error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
+  # error.code.1 <- "Argument method must be a string with 'survival' or 'regression'."
   error.code.2 <- "Argument algorithm must be a string with 'kmeans' or 'kmedians'."
   error.code.3 <- "Argument multiple must be an object of type logical."
   error.code.4 <- "Argument multiple.method must be an object of type string."
   error.code.5 <- "Argument multiple.method must be some of the correction methods: 'bonferroni', 'holm', 'hochberg', etc."
   error.code.6 <- "Argument kvector must be an object of type numeric."
   error.code.7 <- "Argument status is missing and it is required."
-  error.code.8 <- "Argument status must be a vector of binary numbers."
- # error.code.9 <- "Argument x is missing and it is required when method is 'regression'."
+  #error.code.8 <- "Argument status must be a vector of binary numbers."
+  # error.code.9 <- "Argument x is missing and it is required when method is 'regression'."
   error.code.10 <- "Argument y is missing and it is required."
- # error.code.11 <- "Argument y is missing and it is required when method is 'regression'."
+  # error.code.11 <- "Argument y is missing and it is required when method is 'regression'."
 
 
   # # Checking method  as strings and type
@@ -131,7 +131,7 @@ survclustcurves <- function(time, status = NULL, x,
     stop(error.code.2)
   }else if (nchar(algorithm)!= 6 & nchar(algorithm)!= 8) {
     stop(error.code.2)
-  }else if(algorithm != 'kmeans' & algorithm != 'kmedians') {
+  }else if(algorithm != "kmeans" & algorithm != "kmedians") {
     stop(error.code.2)
   }
 
@@ -144,7 +144,7 @@ survclustcurves <- function(time, status = NULL, x,
   if (!is.character(multiple.method)  )  {
     stop(error.code.4)
   }else if(nchar(multiple.method) == 0){
-      stop(error.code.5)
+    stop(error.code.5)
   }
 
 
@@ -198,27 +198,43 @@ survclustcurves <- function(time, status = NULL, x,
     }
 
 
-    if(method == 'survival'){
+
       if(missing(weights)) {
         stop(error.code.7)
-      }else if(length(unique(weights)) > 2){
-          stop(error.code.8)
-      }else if(sum(unique(weights))>1 | sum(unique(weights))<0){
-          stop(error.code.8)
       }
+      #else if(length(unique(weights)) > 2){
+      #  stop(error.code.8)
+     # }else if(sum(unique(weights))>1 | sum(unique(weights))<0){
+     #   stop(error.code.8)
+     # }
 
       if(missing(y)) {
         stop(error.code.10)
       }
 
-    aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
-                     kbin = kbin, nboot = nboot, algorithm = algorithm,
-                     seed = seed, cluster = cluster)
-    data <- NULL
 
-    }
+      aux[[ii]] <- testing_k_cif(time = time, status = status, fac = fac, k = k,
+                             kbin = kbin, nboot = nboot, algorithm = algorithm,
+                             seed = seed, cluster = cluster)
+      data <- NULL
 
 
+
+    #   if(method == 'regression'){
+    #
+    #   # if(missing(x)) {
+    #   #   stop(error.code.9)
+    #   # }
+    #   # if(missing(y)) {
+    #   #   stop(error.code.11)
+    #   # }
+    #
+    #
+    # aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
+    #                  h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
+    #                  cluster = cluster)
+    #
+    # }
 
 
     pval[ii] <- aux[[ii]]$pvalue
@@ -235,53 +251,68 @@ survclustcurves <- function(time, status = NULL, x,
         aux <- aux[[ind_list]]
         accept <- 1
         break
-        }
       }
+    }
 
     if(aux[[ii]]$pvalue >= alpha){
       aux <- aux[[ii]]
       accept <- 1
       break
-      }
+    }
     ii <- ii + 1
   }
 
 
   if (accept == 1) {
 
-  if(k == 1){
-    cat("\n")
-    cat(paste("Finally, there is one cluster.", "\n"), sep = "")
-  }else{
-    cat("\n")
-    cat(paste("Finally, there are",k, "clusters.", "\n"), sep = "")
-  }
+    if(k == 1){
+      cat("\n")
+      cat(paste("Finally, there is one cluster.", "\n"), sep = "")
+    }else{
+      cat("\n")
+      cat(paste("Finally, there are",k, "clusters.", "\n"), sep = "")
+    }
 
 
-  # muhat under h0 and under h1
+    # muhat under h0 and under h1
 
-  if(method == 'survival'){
-  h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
-  h1 <- survfit(Surv(time, status) ~ fac)
-  }
-  #   else{
-  #   data <- data.frame(x = x, y = y, f = z)
-  # #h0 <- aux$centers
-  #   data0 <- data
-  #   data0$f <- aux$levels[aux$cluster[data$f]]
-  #   h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
-  # #h1 <- aux$muhat
-  # h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
-  # }
+
+
+    cluster <- c(1,aux$cluster+1)
+
+    # muhat under h0 and under h1
+    data <- data.frame(time = time, status = status)
+    data$status0 <- cluster[fac] - 1
+    h0 <- Cuminc(time = "time", status = "status0", data = data)
+    h1 <- Cuminc(time = "time", status = "status", data = data)
+
+
+
+
+
+
+      #h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
+     # h1 <- survfit(Surv(time, status) ~ fac)
+
+    #   else{
+    #   data <- data.frame(x = x, y = y, f = z)
+    # #h0 <- aux$centers
+    #   data0 <- data
+    #   data0$f <- aux$levels[aux$cluster[data$f]]
+    #   h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
+    # #h1 <- aux$muhat
+    # h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
+    # }
 
   }else{
     k <- paste( ">", k, sep ="")
     aux$levels <- NA
     aux$cluster <- NA
     h0 <- NA
-    if(method == 'survival'){
-    h1 <- survfit(Surv(time, status) ~ fac)
-    }
+
+      #h1 <- survfit(Surv(time, status) ~ fac)
+    data <- data.frame(time = time, status = status)
+    h1 <- Cuminc(time = "time", status = "status", data = data)
     # else{
     # #h1 <- aux$muhat
     #   data <- data.frame(x = x, y = y, f = z)
@@ -296,7 +327,7 @@ survclustcurves <- function(time, status = NULL, x,
   }
 
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
-              levels = aux$levels, cluster = as.numeric(aux$cluster),
+              levels = aux$levels, cluster = cluster,
               centers = h0, curves = h1, method = method, data = data, algorithm = algorithm,
               call = match.call())
   class(res) <- "clustcurves"

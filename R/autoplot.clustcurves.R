@@ -145,7 +145,7 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
 
   }
 
-  }else{ #method regression
+  }else if(x$method == "regression"){ #method regression
 
       if(isFALSE(centers)){
 
@@ -198,6 +198,56 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
         }else{
           plot2
         }
+
+    }
+
+  }else{ #method cif
+
+
+    if(isFALSE(centers)){
+
+      #CORREGIR legend
+
+      plot1 <- plot(x$curves, use.ggplot = TRUE, legend = x$levels[-1], ylim =c(0, max(x$curves[,-c(1:2)])))
+
+
+      if (isTRUE(groups_by_colour)){
+        plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster[-1]])
+        if(isTRUE(interactive)){
+          if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+        }else{
+          plot2
+        }
+      }else{
+        if(isTRUE(interactive)){
+          if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot1)}
+        }else{
+          plot1
+        }
+      }
+
+
+
+    }else{
+
+     # FALTA
+      # data <- data.frame(t = x$centers$time,
+      #                    surv = x$centers$surv,
+      #                    cen = factor(unlist(sapply(1:k, function(x, y){rep(x, y[x])},
+      #                                               y = x$centers$strata))))
+      #
+      # plot1 <- autoplot(x$curves, conf.int = conf.int, censor = censor, xlab = xlab,
+      #                   ylab = ylab, ...) + ggplot2::scale_color_manual(values = colgr[x$cluster])
+      #
+      #
+      # plot2 <- plot1 + ggplot2::geom_step(data = data,
+      #                                     ggplot2::aes_string(x = "t", y = "surv", group = "cen"), size = 1)
+      #
+      # if(isTRUE(interactive)){
+      #   if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
+      # }else{
+      #   plot2
+      # }
 
     }
 

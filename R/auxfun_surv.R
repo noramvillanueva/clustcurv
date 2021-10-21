@@ -1,4 +1,3 @@
-#mas...
 
 #globalVariables(c("res", "K", "cluster") )
 
