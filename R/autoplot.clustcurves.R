@@ -3,8 +3,6 @@
 #' @export
 ggplot2::autoplot
 
-
-
 #' Visualization of \code{clustcurves} objects with ggplot2 graphics
 #'
 #' @description Useful for drawing the estimated functions grouped by
