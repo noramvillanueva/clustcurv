@@ -7,9 +7,12 @@
 kcifcurves(
   time,
   status = NULL,
-  x,
+  x = NULL,
+  max_time = NULL,
+  labels = NULL,
   k,
   kbin = 50,
+  weights = NULL,
   algorithm = "kmeans",
   seed = NULL
 )
@@ -23,11 +26,15 @@ time of the process; 0 if the total time is censored and 1 otherwise.}
 \item{x}{Categorical variable indicating the population to which
 the observations belongs.}
 
+\item{labels}{TODO}
+
 \item{k}{An integer specifying the number of groups of curves to be
 performed.}
 
 \item{kbin}{Size of the grid over which the survival functions
 are to be estimated.}
+
+\item{weights}{TODO}
 
 \item{algorithm}{A character string specifying which clustering algorithm is used,
 i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}

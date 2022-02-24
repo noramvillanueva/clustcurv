@@ -8,8 +8,11 @@ survcifcurves(
   time,
   status = NULL,
   x,
+  max_time = NULL,
+  labels = NULL,
   kvector = NULL,
   kbin = 50,
+  weights = NULL,
   nboot = 100,
   algorithm = "kmeans",
   alpha = 0.05,
@@ -29,11 +32,17 @@ time of the process; 0 if the total time is censored and 1 otherwise.}
 \item{x}{Categorical variable indicating the population to which
 the observations belongs.}
 
+\item{max_time}{TODO}
+
+\item{labels}{TODO}
+
 \item{kvector}{A vector specifying the number of groups of curves to be
 checking.}
 
 \item{kbin}{Size of the grid over which the survival functions
 are to be estimated.}
+
+\item{weights}{TODO}
 
 \item{nboot}{Number of bootstrap repeats.}
 

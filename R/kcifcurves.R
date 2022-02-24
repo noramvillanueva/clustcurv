@@ -8,10 +8,13 @@
 #' time of the process; 0 if the total time is censored and 1 otherwise.
 #' @param x Categorical variable indicating the population to which
 #' the observations belongs.
+#' @max_time TODO
+#' @param labels TODO
 #' @param k An integer specifying the number of groups of curves to be
 #'  performed.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
+#' @param weights TODO
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
 #' @param seed Seed to be used in the procedure.
@@ -55,12 +58,13 @@
 #' @export
 
 
-kcifcurves <- function(time, status = NULL, x, k, kbin = 50,
+kcifcurves <- function(time, status = NULL, x = NULL, max_time = NULL,
+                       labels = NULL, k, kbin = 50, weights = NULL,
                         algorithm = "kmeans", seed = NULL){
 
 
   y <- time
-  weights <- status
+  #weights <- status
   z <- x
   method <- "cif"
 
@@ -96,7 +100,7 @@ kcifcurves <- function(time, status = NULL, x, k, kbin = 50,
   }
 
   time <- y
-  status <- weights
+  #status <- weights
   fac <- z
 
   nf <- nlevels(factor(fac))
@@ -106,24 +110,30 @@ kcifcurves <- function(time, status = NULL, x, k, kbin = 50,
   lab <- levels(f)
   ff <- as.integer(f)
 
+  if(is.null(fac)) fac <- NA
+  if(is.null(f)) f <- NA
+  if(is.null(ff)) ff <- NA
 
 
 
-    data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
+    #data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
+    data <- data.frame(ttilde = time, status = status)
     # measure
-    aux <- Tvalue_cif(data, k, kbin, method = algorithm)
+    aux <- Tvalue_cif(data, k, kbin, method = algorithm, group = x,
+                      max_time = max_time, weights)
     tsample <- aux$t
     #cluster <- aux$res$cluster
     cluster <- c(1,aux$res$cluster+1)
 
     # muhat under h0 and under h1
-    data$status0 <- cluster[data$ff] - 1
+    data$status0 <- cluster[data$status+1] - 1
     h0 <- Cuminc(time = "ttilde", status = "status0", data = data)
     h1 <- Cuminc(time = "ttilde", status = "status", data = data)
 
+  labels <- factor(labels)
 
 
-  res <- list(measure = as.numeric(tsample), levels = lab,
+  res <- list(measure = as.numeric(tsample), levels = levels(labels),
               cluster = as.numeric(cluster), centers = h0, curves = h1,
               method = method, data = data, algorithm = algorithm, call = match.call())
   class(res) <- c("kcurves", "clustcurves")

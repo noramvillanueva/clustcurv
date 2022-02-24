@@ -8,10 +8,13 @@
 #' time of the process; 0 if the total time is censored and 1 otherwise.
 #' @param x Categorical variable indicating the population to which
 #' the observations belongs.
+#' @param max_time TODO
+#' @param labels TODO
 #' @param kvector A vector specifying the number of groups of curves to be
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
+#' @param weights TODO
 #' @param nboot Number of bootstrap repeats.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
@@ -88,15 +91,15 @@
 
 
 
-survcifcurves <- function(time, status = NULL, x,
-                            kvector = NULL, kbin = 50,
+survcifcurves <- function(time, status = NULL, x, max_time = NULL, labels = NULL,
+                            kvector = NULL, kbin = 50, weights = NULL,
                             nboot = 100, algorithm = 'kmeans', alpha = 0.05,
                             cluster = FALSE, ncores = NULL, seed = NULL,
                             multiple = FALSE, multiple.method = 'holm'){
 
 
   y <- time
-  weights <- status
+  #weights <- status
   z <- x
   method <- "cif"
 
@@ -158,7 +161,8 @@ survcifcurves <- function(time, status = NULL, x,
 
   # Checking kvector
   if(is.null(kvector)) {
-    kvector <- c(1:(length(unique(z))-1))
+    #kvector <- c(1:(length(unique(z))-1))
+    kvector <- c(1:(max(status)-1))
   }else{
     if(!is.numeric(kvector)){
       stop(error.code.6)
@@ -180,7 +184,7 @@ survcifcurves <- function(time, status = NULL, x,
   }
   #------------------
   time <- y
-  status <- weights
+  #status <- weights
   fac <- z
 
   accept <- 0
@@ -199,7 +203,7 @@ survcifcurves <- function(time, status = NULL, x,
 
 
 
-      if(missing(weights)) {
+      if(missing(status)) {
         stop(error.code.7)
       }
       #else if(length(unique(weights)) > 2){
@@ -215,26 +219,11 @@ survcifcurves <- function(time, status = NULL, x,
 
       aux[[ii]] <- testing_k_cif(time = time, status = status, fac = fac, k = k,
                              kbin = kbin, nboot = nboot, algorithm = algorithm,
-                             seed = seed, cluster = cluster)
+                             seed = seed, cluster = cluster, max_time = max_time,
+                             weights = weights)
       data <- NULL
 
 
-
-    #   if(method == 'regression'){
-    #
-    #   # if(missing(x)) {
-    #   #   stop(error.code.9)
-    #   # }
-    #   # if(missing(y)) {
-    #   #   stop(error.code.11)
-    #   # }
-    #
-    #
-    # aux[[ii]] <- kgroups(x = x, y = y, f = z, nboot = nboot, K = k,
-    #                  h = h, ngrid = kbin, algorithm = algorithm, seed = seed,
-    #                  cluster = cluster)
-    #
-    # }
 
 
     pval[ii] <- aux[[ii]]$pvalue
@@ -282,27 +271,13 @@ survcifcurves <- function(time, status = NULL, x,
 
     # muhat under h0 and under h1
     data <- data.frame(time = time, status = status)
-    data$status0 <- cluster[fac] - 1
+    data$status0 <- cluster[status+1] - 1
     h0 <- Cuminc(time = "time", status = "status0", data = data)
     h1 <- Cuminc(time = "time", status = "status", data = data)
 
 
 
 
-
-
-      #h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
-     # h1 <- survfit(Surv(time, status) ~ fac)
-
-    #   else{
-    #   data <- data.frame(x = x, y = y, f = z)
-    # #h0 <- aux$centers
-    #   data0 <- data
-    #   data0$f <- aux$levels[aux$cluster[data$f]]
-    #   h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
-    # #h1 <- aux$muhat
-    # h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
-    # }
 
   }else{
     k <- paste( ">", k, sep ="")
