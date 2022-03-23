@@ -1,3 +1,4 @@
+
 #globalVariables(c("res", "K", "cluster") )
 
 #function for fitting an exponential model
