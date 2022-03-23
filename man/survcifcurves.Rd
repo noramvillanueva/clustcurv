@@ -15,6 +15,8 @@ survcifcurves(
   weights = NULL,
   nboot = 100,
   algorithm = "kmeans",
+  bagging = FALSE,
+  nsamples = 5,
   alpha = 0.05,
   cluster = FALSE,
   ncores = NULL,
@@ -48,6 +50,10 @@ are to be estimated.}
 
 \item{algorithm}{A character string specifying which clustering algorithm is used,
 i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}
+
+\item{bagging}{TODO}
+
+\item{nsamples}{TODO}
 
 \item{alpha}{Significance level of the testing procedure. Defaults to 0.05.}
 

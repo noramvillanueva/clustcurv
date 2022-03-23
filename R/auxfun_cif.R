@@ -1,18 +1,55 @@
+
+#Function for generating a bootstrap sample and for estimating the CIF curves on it
+# it is needed to choose the estimation under h0 or h1 (null argument)
+one_cif_bag <- function(data, under, kbin, max_time, bag = TRUE){
+  if(bag == TRUE){
+    ii <- sample.int(dim(data)[1], replace = TRUE)
+    data2 <- data[ii, ]
+  }else{
+    data2 <- data
+  }
+
+  if(under == "h0"){
+    h <- Cuminc(time = "ttilde", status = "status0", data = data2)
+  }else{
+    h <- Cuminc(time = "ttilde", status = "status", data = data2)
+  }
+
+  if(is.null(max_time)) max_time <- max(data$ttilde)
+
+  xbin <- seq(from = min(data$ttilde), to = max_time, length.out = kbin)
+  aux <- summary(h, times = xbin, extend = TRUE)
+  muhat <- aux$pstate[,-1]
+}
+
+
+# Function for obtaining CIF mean estimates after bagging
+cif_bagging <- function(number, data, kbin, under, max_time){
+  if(number == 1){
+    out2 <- replicate(n = number, one_cif_bag(data, under,  kbin, max_time, bag = FALSE), simplify = FALSE)
+    out2 <- out2[[1]]
+  }else{
+    out <- replicate(n = number, one_cif_bag(data, under,  kbin, max_time, bag = TRUE), simplify = TRUE)
+    out2 <- matrix(rowMeans(out), nrow = kbin, ncol = length(unique(data$status))-1)
+  }
+
+}
+
+
+
 # function for obtaining estimates for each curve under h0 and under h1
 # (for using in the test statistics) in a GRID. For h0, it is used the mean of the curves that
 # belong to the same cluster
-chat_grid_cif_mean <- function(h1, h0, data, ii, xbin, j){
-  jscen <- c(1:max(data$status+1))[ii == j+1]
-  aux1 <- summary(h1, times = xbin, extend = TRUE)
-  aux1 <- aux1$pstate
-  surv1 <- c(aux1[, jscen])
+chat_grid_cif_mean <- function(h1, data, ii, j){
+  jscen <- c(1:max(data$status+1))[ii == j +1] - 1
+  surv1 <- c(h1[, jscen])
   if(length(jscen) == 1){
-    surv0 <- aux1[, jscen]
+    surv0 <- h1[, jscen]
   }else{
-    surv0 <- rowMeans(aux1[, jscen])
+    surv0 <- rowMeans(h1[, jscen])
   }
   surv0 <- rep(surv0, length(jscen))
-  ff <- rep(jscen, each = length(xbin))
+  ff <- rep(jscen, each = dim(h1)[1])
   ress <- data.frame(surv1, surv0, ff)
   return(ress)
 }
@@ -45,20 +82,12 @@ chat_grid_cif <- function(h1, h0, data, ii, kbin, j){
 
 # test statistic (valid for kmeans or kmedians algorithm, fill in method argument)
 Tvalue_cif <- function(data, K, kbin, method, group = NULL, max_time = max_time,
-                       weights = NULL){
+                       weights = NULL, bag, nsamples){
 
-  if(is.null(group)){
-    h1 <- Cuminc(time = "ttilde", status = "status", data = data)
-  }else{
-  h1 <- Cuminc(time = "ttilde", status = "status", data = data, group = "f")
- }
-  if(is.null(max_time)) max_time <- max(data$ttilde)
+ if (bag == "FALSE") nsamples <- 1
+ muhat <- cif_bagging(number = nsamples, data = data, kbin = kbin,
+                      under = "h1", max_time = max_time)
 
-  xbin <- seq(from = min(data$ttilde), to = max_time, length.out = kbin)
-  aux <- summary(h1, times = xbin)
-
-
-  muhat <- aux$pstate[,-1]
 
   if(method == "kmeans"){
     res <- kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500)
@@ -74,10 +103,23 @@ Tvalue_cif <- function(data, K, kbin, method, group = NULL, max_time = max_time,
 
   ii <- c(1,res$cluster+1)
   data$status0 <- ii[data$status+1] - 1
-  h0 <- Cuminc(time = "ttilde", status = "status0", data = data)
+
+  #h0 <- cif_bagging(number = nsamples, data = data, kbin = kbin,
+   #                 under = "h0", max_time = max_time)
+
+  #h0 <- Cuminc(time = "ttilde", status = "status0", data = data)
 
   mchat <- do.call("rbind", lapply(1:K,
-                                   function(x){chat_grid_cif_mean(h1, h0, data, ii, xbin, x)}))
+                                   function(x){chat_grid_cif_mean(muhat, data, ii, x)}))
+
+
+
+
+  if(is.null(max_time)) max_time <- max(data$ttilde)
+  xbin <- seq(from = min(data$ttilde), to = max_time, length.out = kbin)
+
+
+
 
 
   if(is.null(weights)){
@@ -128,7 +170,7 @@ Tvalue_cif <- function(data, K, kbin, method, group = NULL, max_time = max_time,
   if(method == "kmedians"){
     t <- sum(tapply(abs(u), mchat$f, sum))
   }
-  return(list(t = t, res = res))
+  return(list(t = t, res = res, muhat = muhat, xbin = xbin))
 }
 
 
@@ -157,14 +199,15 @@ simpleboot_cif <- function(x){
 
 
 # simple bootstrap taking into account the groups under H_0
-bootstrap_cif <- function(data, newf, K, kbin, method, group, max_time, weights){
+bootstrap_cif <- function(data, newf, K, kbin, method, group, max_time, weights,
+                          bag, nsamples){
     aux <- by(data, newf, simpleboot_cif)
     databoot <- data.frame()
     for (i in 1:(K+1)) {
       databoot <- rbind(databoot,aux[[i]])
     }
     tboot <- Tvalue_cif(databoot, K, kbin, method, group = group, max_time = max_time,
-                        weights)$t
+                        weights, bag = bag, nsamples = nsamples)$t
 
 }
 
@@ -173,7 +216,7 @@ bootstrap_cif <- function(data, newf, K, kbin, method, group, max_time, weights)
 # function testing H_0 (k)
 testing_k_cif <- function(time, status, fac, k, kbin, nboot,
                       algorithm, seed, cluster, max_time = max_time,
-                      weights){
+                      weights, bag, nsamples){
   method <- algorithm
   nf <- nlevels(factor(fac))
 
@@ -191,20 +234,25 @@ testing_k_cif <- function(time, status, fac, k, kbin, nboot,
 
   # statistic from the sample
   aux <- Tvalue_cif(data, k, kbin, method, group = fac, max_time = max_time,
-                    weights)
+                    weights, bag = bag, nsamples = nsamples)
   tsample <- aux$t
 
   #newf <- aux$res$cluster[data$ff]
 
   newf <- c(1,aux$res$cluster+1)[data$status + 1]
 
+  newf <- newf - 1
+
+
   # bootstrap
   if (isTRUE(cluster)) {
     tboot <- foreach(i = 1:nboot, .combine = cbind, .export = "bootstrap_cif") %dorng%
-      bootstrap_cif(data, newf, k, kbin, method, group = fac, max_time = max_time, weights)
+      bootstrap_cif(data, newf, k, kbin, method, group = fac, max_time = max_time,
+                    weights, bag = bag, nsamples = nsamples)
   }else{
     tboot <- foreach(i = 1:nboot, .combine = cbind) %do%
-      bootstrap_cif(data, newf, k, kbin, method, group = fac, max_time = max_time, weights)
+      bootstrap_cif(data, newf, k, kbin, method, group = fac, max_time = max_time,
+                    weights, bag = bag, nsamples = nsamples)
   }
   pvalue <- mean(unlist(tboot) >= tsample)
 
