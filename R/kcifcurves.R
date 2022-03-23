@@ -17,6 +17,8 @@
 #' @param weights TODO
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
+#' @param bagging TODO
+#' @param nsamples TODO
 #' @param seed Seed to be used in the procedure.
 #'
 #'@return
@@ -60,7 +62,8 @@
 
 kcifcurves <- function(time, status = NULL, x = NULL, max_time = NULL,
                        labels = NULL, k, kbin = 50, weights = NULL,
-                        algorithm = "kmeans", seed = NULL){
+                       algorithm = "kmeans", bagging = FALSE, nsamples = 5,
+                       seed = NULL){
 
 
   y <- time
@@ -120,7 +123,7 @@ kcifcurves <- function(time, status = NULL, x = NULL, max_time = NULL,
     data <- data.frame(ttilde = time, status = status)
     # measure
     aux <- Tvalue_cif(data, k, kbin, method = algorithm, group = x,
-                      max_time = max_time, weights)
+                      max_time = max_time, weights, bag = bagging, nsamples = nsamples)
     tsample <- aux$t
     #cluster <- aux$res$cluster
     cluster <- c(1,aux$res$cluster+1)
@@ -135,7 +138,9 @@ kcifcurves <- function(time, status = NULL, x = NULL, max_time = NULL,
 
   res <- list(measure = as.numeric(tsample), levels = levels(labels),
               cluster = as.numeric(cluster), centers = h0, curves = h1,
-              method = method, data = data, algorithm = algorithm, call = match.call())
+              method = method, data = data, algorithm = algorithm,
+              muhat = aux$muhat, xbin = aux$xbin,
+              call = match.call())
   class(res) <- c("kcurves", "clustcurves")
   return(res)
 }

@@ -14,6 +14,8 @@ kcifcurves(
   kbin = 50,
   weights = NULL,
   algorithm = "kmeans",
+  bagging = FALSE,
+  nsamples = 5,
   seed = NULL
 )
 }
@@ -38,6 +40,10 @@ are to be estimated.}
 
 \item{algorithm}{A character string specifying which clustering algorithm is used,
 i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}
+
+\item{bagging}{TODO}
+
+\item{nsamples}{TODO}
 
 \item{seed}{Seed to be used in the procedure.}
 }

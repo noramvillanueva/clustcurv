@@ -205,8 +205,13 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
     if(isFALSE(centers)){
 
       #CORREGIR legend
-
-      plot1 <- plot(x$curves, use.ggplot = TRUE, legend = x$levels[-1], ylim =c(0, max(x$curves[,-c(1:2)])))
+      if(conf.int == FALSE){
+         conf.type = "none"
+        }else{
+         conf.type = "log"
+        }
+      plot1 <- plot(x$curves, use.ggplot = TRUE, legend = x$levels[-1],
+                    ylim =c(0, max(x$curves[,-c(1:2)])), conf.type = conf.type)
 
 
       if (isTRUE(groups_by_colour)){

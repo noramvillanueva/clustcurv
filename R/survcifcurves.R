@@ -18,6 +18,8 @@
 #' @param nboot Number of bootstrap repeats.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
+#' @param bagging TODO
+#' @param nsamples TODO
 #' @param alpha Significance level of the testing procedure. Defaults to 0.05.
 #' @param cluster A logical value. If  \code{TRUE} (default), the
 #'  testing procedure is  parallelized. Note that there are cases
@@ -93,7 +95,8 @@
 
 survcifcurves <- function(time, status = NULL, x, max_time = NULL, labels = NULL,
                             kvector = NULL, kbin = 50, weights = NULL,
-                            nboot = 100, algorithm = 'kmeans', alpha = 0.05,
+                            nboot = 100, algorithm = 'kmeans', bagging = FALSE,
+                            nsamples = 5, alpha = 0.05,
                             cluster = FALSE, ncores = NULL, seed = NULL,
                             multiple = FALSE, multiple.method = 'holm'){
 
@@ -220,7 +223,7 @@ survcifcurves <- function(time, status = NULL, x, max_time = NULL, labels = NULL
       aux[[ii]] <- testing_k_cif(time = time, status = status, fac = fac, k = k,
                              kbin = kbin, nboot = nboot, algorithm = algorithm,
                              seed = seed, cluster = cluster, max_time = max_time,
-                             weights = weights)
+                             weights = weights, bag = bagging, nsamples = nsamples)
       data <- NULL
 
 
