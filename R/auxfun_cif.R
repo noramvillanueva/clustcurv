@@ -156,9 +156,55 @@ simpleboot_cif <- function(x){
 
 
 
+
+
 # simple bootstrap taking into account the groups under H_0
 bootstrap_cif <- function(data, newf, K, kbin, method, group, max_time, weights){
-    aux <- by(data, newf, simpleboot_cif)
+  aux <- by(data, newf, simpleboot_cif)
+  databoot <- data.frame()
+  for (i in 1:(K+1)) {
+    databoot <- rbind(databoot,aux[[i]])
+  }
+  h1 <- Cuminc(time = "ttilde", status = "status", data = databoot)
+  plot(h1)
+  print(table(databoot$status))
+  tboot <- Tvalue_cif(databoot, K, kbin, method, group = group, max_time = max_time,
+                      weights)$t
+
+
+
+
+}
+
+
+
+
+
+# bootstrap simple with weights  (CIFS) for using in each newf
+simpleboot_cif_weighted <- function(x, n){
+  if(x[1, 2] == 0) {
+    newd <- x
+  }else{
+    # d <- data.frame(ttilde = x[, 1], status = x[, 2])
+    w <- rep(n[1], length(x$status))
+    w[x$status == 2] <- n[2]
+    x$w <- as.vector(w)
+    #d <- data.frame(ttilde = x[, 1])
+    ii <- sample.int(length(x$status), length(x$status), replace = TRUE, prob = x$w)
+    newd <- x[ii, ]
+    newd <- newd[,-3]
+    #newd <- data.frame(ttilde = d[ii,], status = x[, 2], f = x[, 3], ff = x[, 4])
+  }
+  return(newd)
+}
+
+
+
+# simple bootstrap taking into account the groups under H_0
+bootstrap_cif_permutation <- function(data, newf, K, kbin, method, group, max_time, weights){
+    ns <- tapply(data$ttilde, data$status, length)
+    nsam <- round(sum(ns[-1])/2)
+    aux <- by(data, data$status, simpleboot_cif, n = nsam)
     databoot <- data.frame()
     for (i in 1:(K+1)) {
       databoot <- rbind(databoot,aux[[i]])
@@ -168,7 +214,31 @@ bootstrap_cif <- function(data, newf, K, kbin, method, group, max_time, weights)
 
 }
 
+# simple bootstrap taking into account the groups under H_0
+bootstrap_cif_balanced <- function(data, newf, K, kbin, method, group, max_time, weights){
+  nf <- table(data$status)
+  nrisk <- sum(nf[-1])
+  p <- nf/nrisk
+  p <- (1 - p)[-1]
 
+
+  aux <- by(data, newf, simpleboot_cif_weighted, n = p)
+  databoot <- data.frame()
+  #neach <- round(sum(table(aux[[2]]$status))/2)
+  #aux[[2]] <- balance(aux[[2]], neach, cat_col = "status")
+  #ii <- sample.int(dim(aux[[2]])[1], replace = T)
+  #aux[[2]] <- aux[[2]][ii, ]
+  for (i in 1:(K+1)) {
+    databoot <- rbind(databoot,aux[[i]])
+  }
+  #h1 <- Cuminc(time = "ttilde", status = "status", data = databoot)
+  #plot(h1)
+  #print(table(databoot$status))
+  tboot <- Tvalue_cif(databoot, K, kbin, method, group = group, max_time = max_time,
+                      weights)$t
+
+
+}
 
 # function testing H_0 (k)
 testing_k_cif <- function(time, status, fac, k, kbin, nboot,
@@ -188,7 +258,7 @@ testing_k_cif <- function(time, status, fac, k, kbin, nboot,
 
   data <- data.frame(ttilde = time, status = status)
   #data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
-
+  print(table(data$status))
   # statistic from the sample
   aux <- Tvalue_cif(data, k, kbin, method, group = fac, max_time = max_time,
                     weights)
@@ -201,10 +271,10 @@ testing_k_cif <- function(time, status, fac, k, kbin, nboot,
   # bootstrap
   if (isTRUE(cluster)) {
     tboot <- foreach(i = 1:nboot, .combine = cbind, .export = "bootstrap_cif") %dorng%
-      bootstrap_cif(data, newf, k, kbin, method, group = fac, max_time = max_time, weights)
+      bootstrap_cif_balanced(data, newf, k, kbin, method, group = fac, max_time = max_time, weights)
   }else{
     tboot <- foreach(i = 1:nboot, .combine = cbind) %do%
-      bootstrap_cif(data, newf, k, kbin, method, group = fac, max_time = max_time, weights)
+      bootstrap_cif_balanced(data, newf, k, kbin, method, group = fac, max_time = max_time, weights)
   }
   pvalue <- mean(unlist(tboot) >= tsample)
 
