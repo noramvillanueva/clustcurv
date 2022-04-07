@@ -222,10 +222,8 @@ simpleboot_cif_weighted <- function(x){
     pini <- prop.table(table(x$status))
     waux <- (1/length(pini)) * (1/pini)
     w <- rep(NA, length(x$status))
-    ii <- 0
     for (i in unique(x$status)){
-      ii <- ii + 1
-      w[x$status == i] <- waux[ii]
+      w[x$status == i] <- waux[paste0("",i,"")]
     }
     w <- w/sum(w)
     aux <- sample.int(length(x$status), length(x$status), replace = TRUE, prob = as.vector(w))
