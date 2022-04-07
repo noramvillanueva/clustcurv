@@ -18,7 +18,7 @@ chat_grid_cif_mean <- function(h1, h0, data, ii, xbin, j){
 }
 
 # function for obtaining estimates for each curve under h0 and under h1
-# (for using in the test estatistics) in a GRID
+# (for using in the test estatistics) in a GRID NO VALE!
 chat_grid_cif <- function(h1, h0, data, ii, kbin, j){
   mx <- max(data$ttilde[data$ff == j])
   #mx <- 70
@@ -171,32 +171,30 @@ bootstrap_cif <- function(data, newf, K, kbin, method, group, max_time, weights)
   tboot <- Tvalue_cif(databoot, K, kbin, method, group = group, max_time = max_time,
                       weights)$t
 
-
-
-
 }
 
 
 
 
 
-# bootstrap simple with weights  (CIFS) for using in each newf
-simpleboot_cif_weighted <- function(x, n){
-  if(x[1, 2] == 0) {
-    newd <- x
-  }else{
-    # d <- data.frame(ttilde = x[, 1], status = x[, 2])
-    w <- rep(n[1], length(x$status))
-    w[x$status == 2] <- n[2]
-    x$w <- as.vector(w)
-    #d <- data.frame(ttilde = x[, 1])
-    ii <- sample.int(length(x$status), length(x$status), replace = TRUE, prob = x$w)
-    newd <- x[ii, ]
-    newd <- newd[,-3]
-    #newd <- data.frame(ttilde = d[ii,], status = x[, 2], f = x[, 3], ff = x[, 4])
-  }
-  return(newd)
-}
+
+# # bootstrap simple with weights  (CIFS) for using in each newf
+# simpleboot_cif_weighted <- function(x, n){
+#   if(x[1, 2] == 0) {
+#     newd <- x
+#   }else{
+#     # d <- data.frame(ttilde = x[, 1], status = x[, 2])
+#     w <- rep(n[1], length(x$status))
+#     w[x$status == 2] <- n[2]
+#     x$w <- as.vector(w)
+#     #d <- data.frame(ttilde = x[, 1])
+#     ii <- sample.int(length(x$status), length(x$status), replace = TRUE, prob = x$w)
+#     newd <- x[ii, ]
+#     newd <- newd[,-3]
+#     #newd <- data.frame(ttilde = d[ii,], status = x[, 2], f = x[, 3], ff = x[, 4])
+#   }
+#   return(newd)
+# }
 
 
 
@@ -214,15 +212,57 @@ bootstrap_cif_permutation <- function(data, newf, K, kbin, method, group, max_ti
 
 }
 
-# simple bootstrap taking into account the groups under H_0
-bootstrap_cif_balanced <- function(data, newf, K, kbin, method, group, max_time, weights){
-  nf <- table(data$status)
-  nrisk <- sum(nf[-1])
-  p <- nf/nrisk
-  p <- (1 - p)[-1]
 
 
-  aux <- by(data, newf, simpleboot_cif_weighted, n = p)
+# bootstrap simple with weights  (CIFS) for using in each newf
+simpleboot_cif_weighted <- function(x){
+  if(x[1, 2] == 0) {
+    newd <- x
+  }else{
+    pini <- prop.table(table(x$status))
+    waux <- (1/length(pini)) * (1/pini)
+    w <- rep(NA, length(x$status))
+    ii <- 0
+    for (i in unique(x$status)){
+      ii <- ii + 1
+      w[x$status == i] <- waux[ii]
+    }
+    w <- w/sum(w)
+    aux <- sample.int(length(x$status), length(x$status), replace = TRUE, prob = as.vector(w))
+    newd <- x[aux, ]
+  }
+  return(newd)
+}
+
+
+
+# simple bootstrap taking into account the groups under H_0, the sampling is done according
+# to the
+bootstrap_cif_balanced <- function(data, newf, K, kbin, method, group,
+                                   max_time, weights){
+
+
+
+#
+#   x <- c(rep(0, 100), rep(1, 200), rep(2, 100), rep(3, 50), rep(4, 125))
+#
+#   pini <- prop.table(table(x))
+#   sumps <- sum(pini[-1])
+#   p <- pini[-1]/sumps
+#   waux <- (1/length(p)) * (1/p)
+#   waux <- waux/sum(waux)
+#   waux <- c(pini[1], (1-pini[1]) * waux) # incorporo la prob de clase 0
+#   w <- c(rep(waux[1], 100), rep(waux[2], 200), rep(waux[3], 100), rep(waux[4], 50), rep(waux[5], 125))
+#   w <- w/sum(w)
+#   ii <- sample.int(length(x), length(x), replace = TRUE, prob = as.vector(w))
+#   table(x)
+#   table(x[ii])
+#   prop.table(table(x[ii]))
+
+
+
+
+  aux <- by(data, newf, simpleboot_cif_weighted)
   databoot <- data.frame()
   #neach <- round(sum(table(aux[[2]]$status))/2)
   #aux[[2]] <- balance(aux[[2]], neach, cat_col = "status")
@@ -240,7 +280,7 @@ bootstrap_cif_balanced <- function(data, newf, K, kbin, method, group, max_time,
 
 }
 
-# function testing H_0 (k)
+# function for testing H_0 (k)
 testing_k_cif <- function(time, status, fac, k, kbin, nboot,
                       algorithm, seed, cluster, max_time = max_time,
                       weights){
@@ -257,15 +297,12 @@ testing_k_cif <- function(time, status, fac, k, kbin, nboot,
   ff <- as.integer(f)
 
   data <- data.frame(ttilde = time, status = status)
-  #data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
+
   print(table(data$status))
   # statistic from the sample
   aux <- Tvalue_cif(data, k, kbin, method, group = fac, max_time = max_time,
                     weights)
   tsample <- aux$t
-
-  #newf <- aux$res$cluster[data$ff]
-
   newf <- c(1,aux$res$cluster+1)[data$status + 1]
 
   # bootstrap
