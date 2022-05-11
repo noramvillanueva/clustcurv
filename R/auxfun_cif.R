@@ -240,32 +240,9 @@ bootstrap_cif_balanced <- function(data, newf, K, kbin, method, group,
                                    max_time, weights){
 
 
-
-#
-#   x <- c(rep(0, 100), rep(1, 200), rep(2, 100), rep(3, 50), rep(4, 125))
-#
-#   pini <- prop.table(table(x))
-#   sumps <- sum(pini[-1])
-#   p <- pini[-1]/sumps
-#   waux <- (1/length(p)) * (1/p)
-#   waux <- waux/sum(waux)
-#   waux <- c(pini[1], (1-pini[1]) * waux) # incorporo la prob de clase 0
-#   w <- c(rep(waux[1], 100), rep(waux[2], 200), rep(waux[3], 100), rep(waux[4], 50), rep(waux[5], 125))
-#   w <- w/sum(w)
-#   ii <- sample.int(length(x), length(x), replace = TRUE, prob = as.vector(w))
-#   table(x)
-#   table(x[ii])
-#   prop.table(table(x[ii]))
-
-
-
-
   aux <- by(data, newf, simpleboot_cif_weighted)
   databoot <- data.frame()
-  #neach <- round(sum(table(aux[[2]]$status))/2)
-  #aux[[2]] <- balance(aux[[2]], neach, cat_col = "status")
-  #ii <- sample.int(dim(aux[[2]])[1], replace = T)
-  #aux[[2]] <- aux[[2]][ii, ]
+
   for (i in 1:(K+1)) {
     databoot <- rbind(databoot,aux[[i]])
   }
