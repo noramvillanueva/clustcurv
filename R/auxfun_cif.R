@@ -92,12 +92,13 @@ Tvalue_cif <- function(data, K, kbin, method, group = NULL, max_time = max_time,
     d <- data.frame(y = wei, x = data$ttilde)
     w <- as.numeric(predict(lm(y ~ poly(x, 3), data = d),
                               newdata = data.frame(x = xbin), type = "response"))
-
+    ii <- which(w < 0)
+    w[ii] <- NA
 
     #kmw_fun <- splinefun(x= data$ttilde, y = wei, method = "natural")
     #w <- kmw_fun(xbin)
     w <- w**(-1/5)
-    w <- (w - min(w))/(max(w) - min(w))
+    w <- (w - min(w, na.rm = TRUE))/(max(w, na.rm = TRUE) - min(w, na.rm = TRUE))
     w <- rep(w, length(unique(data$status))-1)
 
 
@@ -123,10 +124,10 @@ Tvalue_cif <- function(data, K, kbin, method, group = NULL, max_time = max_time,
   u <- (mchat$surv1 - mchat$surv0)*w
 
   if(method == "kmeans"){
-    t <- sum(tapply(u^2, mchat$f, sum))
+    t <- sum(tapply(u^2, mchat$f, sum, na.rm = TRUE))
   }
   if(method == "kmedians"){
-    t <- sum(tapply(abs(u), mchat$f, sum))
+    t <- sum(tapply(abs(u), mchat$f, sum, na.rm = TRUE))
   }
   return(list(t = t, res = res))
 }
