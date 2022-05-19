@@ -288,7 +288,7 @@ testing_k_cif <- function(time, status, fac, k, kbin, nboot,
     tboot <- foreach(i = 1:nboot, .combine = cbind) %do%
       bootstrap_cif_balanced(data, newf, k, kbin, method, group = fac, max_time = max_time, weights)
   }
-  pvalue <- mean(unlist(tboot) >= tsample)
+  pvalue <- mean(unlist(tboot) >= tsample, na.rm = TRUE)
 
   return(list(pvalue = pvalue, t = tsample, levels = lab,
               cluster = as.numeric(aux$res$cluster)))
