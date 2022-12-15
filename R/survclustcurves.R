@@ -12,12 +12,22 @@
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
-#' @param nboot Number of bootstrap repeats.
+#' @param method  Procedure used for grouping survival curves. Default is \code{"LR"}
+#' Possible values are one of:
+#' - "LR": Regular Log-Rank test, sensitive to detect late differences.
+#' - "GB": Gehan-Breslow (generalized Wilcoxon), detect early differences.
+#' - "TW": Tarone-Ware, detect early differences.
+#' - "PP": Peto-Peto's modified survival estimate, more robust than
+#' Tharone-Ware or Gehan-Breslow, detect early differences
+#' - "mPP": modified Peto-Peto (by Andersen)
+#' - "FH": Fleming-Harrington (p = 1, q = 1)
+#' - "VSM": Villanueva, Sestelo & Meira-Machado bootstrap procedure.
+#' @param nboot Number of bootstrap repeats.Only for VSM method.
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
 #' @param alpha Significance level of the testing procedure. Defaults to 0.05.
 #' @param cluster A logical value. If  \code{TRUE} (default), the
-#'  testing procedure is  parallelized. Note that there are cases
+#'  bootstrap testing procedure is  parallelized. Note that there are cases
 #'  (e.g., a low number of bootstrap repetitions) that R will gain in
 #'  performance through serial computation. R takes time to distribute tasks
 #'  across the processors also it will need time for binding them all together
@@ -28,9 +38,7 @@
 #' in the parallelized procedure. If \code{NULL} (default), the number of cores
 #' to be used is equal to the number of cores of the machine - 1.
 #' @param seed Seed to be used in the procedure.
-#' @param multiple A logical value. If  \code{TRUE} (not default), the resulted
-#' pvalues are adjusted by using one of several methods for multiple comparisons.
-#' @param multiple.method Correction method. See Details.
+#' @param multiple.method Correction for multiple comparisons. See Details.
 #'
 #'@return
 #'A list containing the following items:
@@ -49,7 +57,8 @@
 #' Hochberg (1988) ('hochberg'), Hommel (1988) ('hommel'),
 #' Benjamini & Hochberg (1995) ('BH' or its alias 'fdr'), and
 #' Benjamini & Yekutieli (2001) ('BY'), respectively.
-#' A pass-through option ('none') is also included.
+#'
+#' This correction is not applied in the VSM method.
 #'
 #'
 #'@author Nora M. Villanueva and Marta Sestelo.
@@ -89,16 +98,16 @@
 
 
 survclustcurves <- function(time, status = NULL, x,
-                           kvector = NULL, kbin = 50,
+                           kvector = NULL, kbin = 50, method = "LR",
                            nboot = 100, algorithm = 'kmeans', alpha = 0.05,
                            cluster = FALSE, ncores = NULL, seed = NULL,
-                           multiple = FALSE, multiple.method = 'holm'){
+                           multiple.method = 'bonferroni'){
 
 
   y <- time
   weights <- status
   z <- x
-  method <- "survival"
+
 
   # Defining error codes
   error.code.0 <- "Argument seed must be an object of type numeric."
@@ -136,16 +145,16 @@ survclustcurves <- function(time, status = NULL, x,
   }
 
   # Checking multiple  as logical
-  if (!is.logical(multiple) ) {
-    stop(error.code.3)
-  }
+  # if (!is.logical(multiple) ) {
+  #   stop(error.code.3)
+  # }
 
   # Checking multiple.method as string
-  if (!is.character(multiple.method)  )  {
-    stop(error.code.4)
-  }else if(nchar(multiple.method) == 0){
-      stop(error.code.5)
-  }
+  # if (!is.character(multiple.method)  )  {
+  #   stop(error.code.4)
+  # }else if(nchar(multiple.method) == 0){
+  #     stop(error.code.5)
+  # }
 
 
   # Checking seed as numeric
@@ -198,7 +207,7 @@ survclustcurves <- function(time, status = NULL, x,
     }
 
 
-    if(method == 'survival'){
+
       if(missing(weights)) {
         stop(error.code.7)
       }else if(length(unique(weights)) > 2){
@@ -211,33 +220,34 @@ survclustcurves <- function(time, status = NULL, x,
         stop(error.code.10)
       }
 
+    if(method == "VSM"){
     aux[[ii]] <- testing_k(time = time, status = status, fac = fac, k = k,
                      kbin = kbin, nboot = nboot, algorithm = algorithm,
                      seed = seed, cluster = cluster)
-    data <- NULL
-
+    }else{
+      aux[[ii]] <- testing_k_LR(time = time, status = status, fac = fac, k = k,
+                             kbin = kbin, stat = method, nboot = nboot, algorithm = algorithm,
+                             seed = seed, cluster = cluster, correction = multiple.method)
     }
-
+    data <- NULL
 
 
 
     pval[ii] <- aux[[ii]]$pvalue
     tval[ii] <- aux[[ii]]$t
     h0tested[ii] <- k
-
-
-    if(isTRUE(multiple)){
-      pval <- p.adjust(pval, method = multiple.method)
-      ind <- pval >= alpha
-      if(sum(ind) > 0){
-        ind_list <- which(ind)[1]
-        k <- kvector[ind_list]
-        aux <- aux[[ind_list]]
-        accept <- 1
-        break
-        }
-      }
-
+    # multiple <- FALSE # for bootstrap procedure the correction is not applied
+    # if(isTRUE(multiple)){
+    #   pval <- p.adjust(pval, method = multiple.method)
+    #   ind <- pval >= alpha
+    #   if(sum(ind) > 0){
+    #     ind_list <- which(ind)[1]
+    #     k <- kvector[ind_list]
+    #     aux <- aux[[ind_list]]
+    #     accept <- 1
+    #     break
+    #     }
+    #   }
     if(aux[[ii]]$pvalue >= alpha){
       aux <- aux[[ii]]
       accept <- 1
@@ -257,39 +267,19 @@ survclustcurves <- function(time, status = NULL, x,
     cat(paste("Finally, there are",k, "clusters.", "\n"), sep = "")
   }
 
-
   # muhat under h0 and under h1
 
-  if(method == 'survival'){
-  h0 <- survfit(Surv(time, status) ~ aux$cluster[fac])
+  ii <- aux$cluster[as.factor(fac)]
+  h0 <- survfit(Surv(time, status) ~ ii)
   h1 <- survfit(Surv(time, status) ~ fac)
-  }
-  #   else{
-  #   data <- data.frame(x = x, y = y, f = z)
-  # #h0 <- aux$centers
-  #   data0 <- data
-  #   data0$f <- aux$levels[aux$cluster[data$f]]
-  #   h0 <- by(data0, data0$f, muhatrfast2, h = h, kbin = kbin)
-  # #h1 <- aux$muhat
-  # h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
-  # }
 
   }else{
     k <- paste( ">", k, sep ="")
     aux$levels <- NA
     aux$cluster <- NA
     h0 <- NA
-    if(method == 'survival'){
     h1 <- survfit(Surv(time, status) ~ fac)
-    }
-    # else{
-    # #h1 <- aux$muhat
-    #   data <- data.frame(x = x, y = y, f = z)
-    #   h1 <- by(data, data$f, muhatrfast2, h = h, kbin = kbin)
-    #
-    #
-    #
-    # }
+
     cat("\n")
     cat(paste("The number 'k' of clusters has not been found, try another kvector.", "\n"), sep = "")
 
