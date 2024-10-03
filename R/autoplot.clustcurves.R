@@ -90,9 +90,9 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
   k <- length(unique(x$cluster))
 
    if(k < 3){
-     colgr <- brewer.pal(n = 3, name = "Dark2")
+     colgr <- RColorBrewer:.brewer.pal(n = 3, name = "Dark2")
    }else if(k<9){
-     colgr <- brewer.pal(n = k, name = "Dark2")
+     colgr <- RColorBrewer::brewer.pal(n = k, name = "Dark2")
      }else{
   colgr <- colorRampPalette(brewer.pal(n = 8, name = "Dark2"))(k)
      }
@@ -207,9 +207,11 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
       #CORREGIR legend
 
       plot1 <- plot(x$curves, use.ggplot = TRUE, legend = x$levels[-1], ylim =c(0, max(x$curves[,-c(1:2)])))
+      #plot1 <- plot(x$curves, use.ggplot = TRUE,  ylim =c(0, max(x$curves[,-c(1:2)])))
 
 
       if (isTRUE(groups_by_colour)){
+
         plot2 <- plot1 + ggplot2::scale_color_manual(values = colgr[x$cluster[-1]])
         if(isTRUE(interactive)){
           if (requireNamespace("plotly", quietly=TRUE)) {plotly::ggplotly(plot2)}
