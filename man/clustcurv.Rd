@@ -2,8 +2,8 @@
 % Please edit documentation in R/clustcurv-package.R
 \docType{package}
 \name{clustcurv}
-\alias{clustcurv}
 \alias{clustcurv-package}
+\alias{clustcurv}
 \title{\code{clustcurv}: Determining Groups in Multiple Curves.}
 \description{
 This package provides a method for determining groups in multiple
