@@ -1,6 +1,6 @@
 citHeader("To cite clustcurv in publications, please use:")
 
-citEntry(entry = "Article",
+bibentry(entry = "Article",
   author = c("N. M. Villanueva", "M. Sestelo", "L. Meira-Machado"),
   title = "A Method for Determining Groups in Multiple Survival Curves",
   journal = "Statistics in Medicine",
