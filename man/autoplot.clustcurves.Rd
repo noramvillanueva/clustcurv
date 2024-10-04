@@ -46,7 +46,7 @@ color and the centroids (mean curve of the curves pertaining to the
 same group).
 }
 \details{
-See help page of the function \code{\link{autoplot.survfit}}.
+See help page of the function \code{\link[ggfortify:autoplot.survfit]{ggfortify::autoplot.survfit()}}.
 }
 \examples{
 

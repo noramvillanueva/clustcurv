@@ -21,7 +21,7 @@ ggplot2::autoplot
 #' @param \ldots Other options.
 #'
 #'
-#' @details See help page of the function \link[ggfortify::autoplot.survfit]{autoplot.survfit}.
+#' @details See help page of the function \code{\link[ggfortify:autoplot.survfit]{ggfortify::autoplot.survfit()}}.
 #'
 #' @return A ggplot object, so you can use common features from
 #' ggplot2 package to manipulate the plot.

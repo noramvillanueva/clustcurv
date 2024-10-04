@@ -1,11 +1,21 @@
-citHeader("To cite clustcurv in publications, please use:")
+bibentry(bibtype = "Article",
+  title        = "{clustcurv}: An {R} Package for Determining Groups in Multiple
+          Curves",
+  author       = c(person(given = c("Nora", "M."),
+                          family = "Villanueva",
+                          email = "nmvillanueva@uvigo.gal"),
+                   person(given = "Marta",
+                          family = "Sestelo"),
+                   person(given = "Luis",
+                          family = "Meira-Machado"),
+                   person(given = "Javier",
+                          family = "Roca-Pardi{\\~n}as")),
+  journal      = "The R Journal",
+  year         = "2021",
+  volume       = "13",
+  number       = "1",
+  pages        = "164--183",
+  doi          = "10.32614/RJ-2021-032",
 
-bibentry(entry = "Article",
-  author = c("N. M. Villanueva", "M. Sestelo", "L. Meira-Machado"),
-  title = "A Method for Determining Groups in Multiple Survival Curves",
-  journal = "Statistics in Medicine",
-  year = "2019",
-  volume = "38",
-  pages = "866-877",
-  textVersion = "N. M. Villanueva, M. Sestelo, L. Meira-Machado (2019).  A Method for Determining Groups in Multiple Survival Curves. Statistics in Medicine, 38:866--877."
+  header       = "To cite clustcurv in publications, please use:"
 )
