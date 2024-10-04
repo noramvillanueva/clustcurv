@@ -20,7 +20,8 @@ ggplot2::autoplot
 #' @param interactive Logical flag indicating if an interactive plot with plotly is produced.
 #' @param \ldots Other options.
 #'
-#' @details See help page of the function \code{\link{autoplot.survfit}}.
+#'
+#' @details See help page of the function \link[ggfortify::autoplot.survfit]{autoplot.survfit}.
 #'
 #' @return A ggplot object, so you can use common features from
 #' ggplot2 package to manipulate the plot.
