@@ -1,7 +1,4 @@
-#library(testthat)
 library(clustcurv)
-if (requireNamespace("testhat", quietly = TRUE)) {
-testthat::test_check("clustcurv")
-}else{
-  #nothing
-}
+testthat::skip_if_not_installed(testthat::test_check("clustcurv"))
+
+
