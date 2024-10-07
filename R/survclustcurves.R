@@ -57,9 +57,7 @@
 #'@examples
 #' library(clustcurv)
 #' library(survival)
-#' library(condSURV)
 #' data(veteran)
-#' data(colonCS)
 #'
 #'# Survival framework
 #' res <- survclustcurves(time = veteran$time, status = veteran$status,
