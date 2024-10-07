@@ -31,14 +31,12 @@ ggplot2::autoplot
 #'
 #' library(survival)
 #' library(clustcurv)
-#' library(condSURV)
 #' library(ggplot2)
 #' library(ggfortify)
 #'
 #' # Survival
 #'
 #' data(veteran)
-#' data(colonCS)
 #'
 #' cl2 <- ksurvcurves(time = veteran$time, status = veteran$status,
 #' x = veteran$celltype, k = 2, algorithm = "kmeans")

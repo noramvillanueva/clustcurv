@@ -33,7 +33,6 @@ Imports:
     grDevices
 Suggests:
     testthat,
-    condSURV,
     plotly,
     knitr,
     rmarkdown
