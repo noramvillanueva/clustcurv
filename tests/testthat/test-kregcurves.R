@@ -5,7 +5,7 @@ library(survival)
 
 data("barnacle5")
 
-test_that(
+testthat::skip_if_not_installed(testthat::test_that(
   "Output is correct in kroups_surv function",
   {
     #expected <- c("laxe",  "lens",  "barca", "boy","alba")
@@ -17,6 +17,6 @@ test_that(
     expect_named(actual, c("level", "cluster"))
     expect_is(actual, "data.frame")
   }
-)
+))
 
 
