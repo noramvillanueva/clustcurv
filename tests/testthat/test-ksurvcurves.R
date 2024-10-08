@@ -3,7 +3,6 @@ context("test-ksurvcurves")
 
 library(survival)
 
-data(veteran)
 
 testthat::test_that(
   "Output is correct in kroups_surv function",
@@ -14,8 +13,8 @@ testthat::test_that(
                          algorithm = 'kmeans', seed = 300716)
 
     actual <- data.frame(level = fit$level, cluster = fit$cluster)
-    #testthat::expect_named(actual, c("level", "cluster"))
-    #testthat::expect_is(actual, "data.frame")
+    testthat::expect_named(actual, c("level", "cluster"))
+    testthat::expect_is(actual, "data.frame")
   }
 )
 
