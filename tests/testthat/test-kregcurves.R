@@ -1,4 +1,4 @@
-context("test-kregcurves")
+testthat::context("test-kregcurves")
 
 
 library(survival)

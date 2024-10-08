@@ -1,4 +1,4 @@
-context("test-ksurvcurves")
+testthat::context("test-ksurvcurves")
 
 
 library(survival)

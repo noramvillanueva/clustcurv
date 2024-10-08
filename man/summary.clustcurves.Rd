@@ -30,9 +30,7 @@ and produces various useful summaries from it.
 \examples{
 library(clustcurv)
 library(survival)
-library(condSURV)
 data(veteran)
-data(colonCS)
 
 # Survival framework
 ressurv <- survclustcurves(time = veteran$time, status = veteran$status,

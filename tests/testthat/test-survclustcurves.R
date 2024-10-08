@@ -1,4 +1,4 @@
-context("test-survclustcurves")
+testthat::context("test-survclustcurves")
 
 library(survival)
 
