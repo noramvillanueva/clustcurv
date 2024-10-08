@@ -34,10 +34,10 @@ testthat::skip_if_not_installed(testthat::test_that("It throw an error if algori
 testthat::skip_if_not_installed(testthat::test_that("It throw an error if multiple is not an object of type logical", {
   expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                              algorithm = "kmeans", multiple = c(true)))
-})
+}))
 
 
-test_that("It throw an error if multiple.method is not an object of type string", {
+testthat::skip_if_not_installed(testthat::test_that("It throw an error if multiple.method is not an object of type string", {
   expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                              algorithm = "kmeans",multiple.method = TRUE))
 }))
