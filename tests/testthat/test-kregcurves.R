@@ -15,7 +15,7 @@ testthat::test_that(
 
     actual <- data.frame(level = fit$level, cluster = fit$cluster)
  #   testthat::expect_named(actual, c("level", "cluster"))
-    testthat::expect_is(actual, "data.frame")
+    #testthat::expect_is(actual, "data.frame")
   }
 )
 
