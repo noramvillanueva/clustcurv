@@ -6,7 +6,7 @@ testthat::test_that("Regression fit computed correctly", {
   fit <- regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                        algorithm = "kmeans", nboot = 5, seed = 300716)
   testthat::expect_equal(fit$cluster, expected)
-  testthat::expect_success(expect_equal(fit$num_groups, max(expected)))
+  testthat::expect_equal(fit$num_groups, max(expected))
   testthat::expect_s3_class(fit, "clustcurves")
   testthat::expect_match(mode(fit), "list")
 })
