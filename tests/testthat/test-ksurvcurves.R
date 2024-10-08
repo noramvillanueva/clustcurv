@@ -5,7 +5,7 @@ library(survival)
 
 data(veteran)
 
-testthat::skip_if_not_installed(testthat::test_that(
+testthat::test_that(
   "Output is correct in kroups_surv function",
   {
     #expected <- c("squamous", "smallcell", "adeno", "large" )
@@ -17,6 +17,6 @@ testthat::skip_if_not_installed(testthat::test_that(
     expect_named(actual, c("level", "cluster"))
     expect_is(actual, "data.frame")
   }
-))
+)
 
 
