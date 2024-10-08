@@ -14,8 +14,8 @@ testthat::test_that(
                          algorithm = 'kmeans', seed = 300716)
 
     actual <- data.frame(level = fit$level, cluster = fit$cluster)
-    expect_named(actual, c("level", "cluster"))
-    expect_is(actual, "data.frame")
+    testthat::expect_named(actual, c("level", "cluster"))
+    testthat::expect_is(actual, "data.frame")
   }
 )
 

@@ -6,58 +6,58 @@ testthat::test_that("Regression fit computed correctly", {
   expected <- c(2,1,1,1,2)
   fit <- regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                        algorithm = "kmeans", nboot = 5, seed = 300716)
-  expect_equal(fit$cluster, expected)
-  expect_success(expect_equal(fit$num_groups, max(expected)))
-  expect_s3_class(fit, "clustcurves")
-  expect_match(mode(fit), "list")
+  testthat::expect_equal(fit$cluster, expected)
+  testthat::expect_success(expect_equal(fit$num_groups, max(expected)))
+  testthat::expect_s3_class(fit, "clustcurves")
+  testthat::expect_match(mode(fit), "list")
 })
 
 
 
 testthat::test_that("It throw an error if seed argument is not an object of type numeric", {
-  expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                               algorithm = "kmeans", nboot = 5, seed = "300716"))
-  expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                               algorithm = "kmeans", nboot = 5, seed = factor(300716)))
 })
 
 
 
 testthat::test_that("It throw an error if algorithm is different from 'kmeans' or 'kmedians'", {
-  expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                              nboot = 10, algorithm = kmedia))
-  expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                              nboot = 10, algorithm = list(kmeans)))
 })
 
 
 testthat::test_that("It throw an error if multiple is not an object of type logical", {
-  expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                              algorithm = "kmeans", multiple = c(true)))
 })
 
 
 testthat::test_that("It throw an error if multiple.method is not an object of type string", {
-  expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                              algorithm = "kmeans",multiple.method = TRUE))
 })
 
 
 
 testthat::test_that("It throw an error if kvector is not an object of type numeric.", {
-  expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(regclustcurves(y = barnacle5$DW, x = barnacle5$RC, z = barnacle5$F,
                              method = 'regression', algorithm = "kmeans",
                              kvector = "3:4"))
 })
 
 
 testthat::test_that( "It throw an error if argument y is missing", {
-  expect_error(autoclustcurv(x = barnacle5$RC, z = barnacle5$F,
+  testthat::expect_error(autoclustcurv(x = barnacle5$RC, z = barnacle5$F,
                             algorithm = "kmeans", nboot = 5, seed = 300716))
 })
 
 testthat::test_that( "It throw an error if argument x is missing", {
 
-  expect_error(autoclustcurv(y = barnacle5$DW, z = barnacle5$F,
+  testthat::expect_error(autoclustcurv(y = barnacle5$DW, z = barnacle5$F,
                              algorithm = "kmeans", nboot = 5, seed = 300716))
 })
