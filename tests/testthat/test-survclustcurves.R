@@ -2,7 +2,6 @@ context("test-survclustcurves")
 
 library(survival)
 
-data(veteran)
 
 testthat::test_that( "Survival fit computed correctly", {
     expected <- c(2,1,1,2)

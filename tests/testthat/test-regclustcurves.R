@@ -1,6 +1,5 @@
 context("test-regclustcurves")
 
-data(veteran)
 
 testthat::test_that("Regression fit computed correctly", {
   expected <- c(2,1,1,1,2)
