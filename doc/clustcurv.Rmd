@@ -9,7 +9,6 @@ vignette: >
   %\VignetteIndexEntry{Clustering Multiple Nonparametric Curves}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  %\VignetteDepends{condSURV}
 ---
 
 
