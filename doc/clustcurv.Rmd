@@ -51,9 +51,9 @@ After regular installation with `install.packages()`, then load the packages and
 ```{r}
 library(clustcurv)
 if (!requireNamespace("condSURV", quietly = TRUE)) {
-  install.packages("condSURV")
-  library(condSURV)
-  gbcsCS <- condSURV::gbcsCS
+ # install.packages("condSURV")
+#  library(condSURV)
+ # gbcsCS <- condSURV::gbcsCS
 }
 
 
