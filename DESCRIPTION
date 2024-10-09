@@ -21,19 +21,19 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+    condSURV,
     doParallel,
-    foreach,
-    ggplot2,
-    ggfortify,
     doRNG,
+    foreach,
+    ggfortify,
+    ggplot2,
     Gmedian, 
-    survival,
+    grDevices,
     npregfast,
     RColorBrewer,
-    grDevices
+    survival
 Suggests:
     covr,
-    condSURV,
     knitr,
     plotly,
     rmarkdown,
