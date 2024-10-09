@@ -9,6 +9,7 @@ vignette: >
   %\VignetteIndexEntry{Clustering Multiple Nonparametric Curves}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{condSURV}
 ---
 
 
@@ -49,10 +50,12 @@ After regular installation with `install.packages()`, then load the packages and
 
 ```{r}
 library(clustcurv)
-if(!requireNamespace(condSURV, quietly = TRUE)) {
+if(!requireNamespace("condSURV", quietly = TRUE)) {
   install.packages("condSURV")
   gbcsCS <- condSURV::gbcsCS
-} 
+}else{
+   gbcsCS <- condSURV::gbcsCS
+}
 
 head(gbcsCS[, c(5:10, 13, 14)])
 ```
