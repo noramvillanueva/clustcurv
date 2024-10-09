@@ -1,4 +1,4 @@
-testthat::context("test-regclustcurves")
+#testthat::context("test-regclustcurves")
 
 
 testthat::test_that("Regression fit computed correctly", {
