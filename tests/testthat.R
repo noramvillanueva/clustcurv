@@ -1,5 +1,14 @@
-library(testthat)
-library(clustcurv)
-testthat::skip_if_not_installed(testthat::test_check("clustcurv"))
+# This file is part of the standard setup for testthat.
+# It is recommended that you do not modify it.
+#
+# Where should you do additional test configuration?
+# Learn more about the roles of various files in:
+# * https://r-pkgs.org/tests.html
+# * https://testthat.r-lib.org/reference/test_package.html#special-files
 
+library(testthat)
+
+if (identical(Sys.getenv("NOT_CRAN"), "true"))
+  library(clustcurv)
+  test_check("clustcurv")
 
