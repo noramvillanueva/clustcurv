@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 		width.cutoff = 150
 		),
 	options(width = 150,fig.width=12, fig.height=8),
-	eval = TRUE
+	eval = FALSE
 )
 ```
 
@@ -51,7 +51,7 @@ After regular installation with `install.packages()`, then load the packages and
 ```{r}
 library(clustcurv)
 if(!requireNamespace("condSURV", quietly = TRUE)) {
-  #options(repos = c(CRAN = "https://cloud.r-project.org"))
+  options(repos = c(CRAN = "https://cloud.r-project.org"))
   install.packages("condSURV")
   gbcsCS <- condSURV::gbcsCS
 }else{
