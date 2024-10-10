@@ -51,7 +51,7 @@ After regular installation with `install.packages()`, then load the packages and
 ```{r}
 library(clustcurv)
 if(!requireNamespace("condSURV", quietly = TRUE)) {
-  options(repos = c(CRAN = "https://cloud.r-project.org"))
+  #options(repos = c(CRAN = "https://cloud.r-project.org"))
   install.packages("condSURV")
   gbcsCS <- condSURV::gbcsCS
 }else{
