@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-> This vignette covers changes between versions 2.0.0 and 2.0.1.
+> This vignette covers changes between versions 2.0.1 and 2.0.2.
 
 This document explains how to use  [clustcurv](https://cran.r-project.org/package=clustcurv) R package for clustering multiple 
 nonparametric curves, under the survival and regression framework. To this end, we
