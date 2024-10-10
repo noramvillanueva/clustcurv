@@ -169,4 +169,4 @@ autoplot(fit.bar, groups_by_color = TRUE, interactive = TRUE)
 ```
 
 > Never mind -> `install.packages('clustcurv')`
-> Keep Calm and Test your code
+
