@@ -52,7 +52,6 @@ After regular installation with `install.packages()`, then load the packages and
 ```{r}
 library(clustcurv)
 library(survival)
-data(veteran)
 head(veteran)
 ```
 
