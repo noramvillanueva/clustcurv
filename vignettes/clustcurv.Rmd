@@ -34,7 +34,7 @@ This document explains how to use  [clustcurv](https://cran.r-project.org/packag
 nonparametric curves, under the survival and regression framework. To this end, we
 illustrate the use of the package using some real data sets. In the case
 of the survival context, the algorithm to determine groups automatically  is 
-applied to the German breast cancer data included in the [condSURV](https://cran.r-project.org/package=condSURV) package. For 
+applied to Veterans' Administration Lung Cancer Data [survival](https://cran.r-project.org/package=survival) package. For 
 the regression analysis, the  clustcurv R package includes a data set called 
  `data(barnacle5)` with measurements of rostro-carinal length and dry weight of barnacles
 collected from five sites of Galicia (northwest of Spain). 
