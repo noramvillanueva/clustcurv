@@ -32,7 +32,6 @@ Imports:
     RColorBrewer,
     survival
 Suggests:
-    condSURV,
     covr,
     knitr,
     plotly,
