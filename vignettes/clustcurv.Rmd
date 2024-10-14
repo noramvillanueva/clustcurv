@@ -9,7 +9,6 @@ vignette: >
   %\VignetteIndexEntry{Clustering Multiple Nonparametric Curves}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  %\VignetteDepends{condSURV}
 ---
 
 
@@ -23,8 +22,7 @@ knitr::opts_chunk$set(
 		keep.blank.line = TRUE,
 		width.cutoff = 150
 		),
-	options(width = 150,fig.width=12, fig.height=8),
-	eval = FALSE
+	options(width = 150,fig.width=12, fig.height=8)
 )
 ```
 
