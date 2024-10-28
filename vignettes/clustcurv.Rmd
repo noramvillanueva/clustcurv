@@ -27,21 +27,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-> This vignette covers changes between versions 2.0.0 and 2.0.1.
+> This vignette covers changes between versions 2.0.1 and 2.0.2.
 
-This document explains how to use  [clustcurv](https://cran.r-project.org/package=clustcurv) R package for clustering multiple 
-nonparametric curves, under the survival and regression framework. To this end, we
-illustrate the use of the package using some real data sets. In the case
-of the survival context, the algorithm to determine groups automatically  is 
-applied to the German breast cancer data included in the [condSURV](https://cran.r-project.org/package=condSURV) package. For 
-the regression analysis, the  clustcurv R package includes a data set called 
- `data(barnacle5)` with measurements of rostro-carinal length and dry weight of barnacles
-collected from five sites of Galicia (northwest of Spain). 
+This document explains how to use  [clustcurv](https://cran.r-project.org/package=clustcurv) R package for clustering multiple nonparametric curves, under the survival, the regression and competing risks framework. To this end, we illustrate the use of the package using some real data sets. In the case of the survival context, the algorithm to determine groups automatically  is applied to Veterans' Administration Lung Cancer Data [survival](https://cran.r-project.org/package=survival) package. For  the regression analysis, the  clustcurv R package includes a data set called  `data(barnacle5)` with measurements of rostro-carinal length and dry weight of barnacles collected from five sites of Galicia (northwest of Spain). For the cumulative incidence functions we illustrate the usefulness of the methods using data from leukemia patients from the EBMT [mstate](https://cran.r-project.org/package=mstate) package.
+
 
 
 # Clustering multiple survival curves 
 
-We will use German breast cancer data `data(gbcsCS)` to illustrate the package capabilities to build clusters of survival curves based on a covariate. This data set is available in condSURV package. A total of 686 patients with primary node positive breast cancer were recruited between July 1984 and December 1989 and 16 variables were measured such as age of the patient (`age`), menopausal status (`menopause`), hormonal therapy (`hormone`), tumour size (in mm,`size`), tumor grade (`grade`) and number of positive nodes (`nodes`). In addition to these and other variables, the recurrence free survival time (in days,`rectime`) and the corresponding censoring indicator (0 - censored, 1 - event) were also recorded.
+ 
+
+We will use Veterans' Administration Lung Cancer Data `data(veteran)` to illustrate the package capabilities to build clusters of survival curves based on a covariate. This data set is available in survival package. In this study, a total of 137 males with advanced inoperable lung cancer were randomized either a standard or test chemotherapy. The primary endpoint for therapy comparison was time to death recorded for each patient. Other covariates were also recorded. One of them is the categorical variable `histological type of tumor` with four levels: squamous, small cell, adeno, and large cell
+
 
 ## Introduction
 
@@ -49,21 +46,11 @@ After regular installation with `install.packages()`, then load the packages and
 
 ```{r}
 library(clustcurv)
-library(condSURV)
-data(gbcsCS)
-head(gbcsCS[, c(5:10, 13, 14)])
+library(survival)
+head(veteran)
 ```
 
 
-The first three patients have developed a recurrence shown by `censrec` variable equals to 1, unlike the following three which take the value of 0. This variable along with other two, `rectime` and `nodes`, will be taken into account for applying the algorithm for clustering survival curves. The number of positive nodes have been grouped from 1 to > 13 because of its low numbers onwards. Below, the steps for this preprocessed are shown
-
-```{r}
-table(gbcsCS$nodes)
-gbcsCS[gbcsCS$nodes > 13,'nodes'] <- 14
-gbcsCS$nodes <- factor(gbcsCS$nodes)
-levels(gbcsCS$nodes)[14]<- '>13'
-table(gbcsCS$nodes)
-```
 
 ## Algorithm for determing groups of survival curves
 
@@ -72,57 +59,51 @@ table(gbcsCS$nodes)
 Clusters and estimates of the survival curves are obtained using the `ksurvcurves()` function or `survclustcurves()` function. The main difference between them is that `ksurvcurves()`, given a fixed value of $K$, allows determing the group for which each survival function belongs. In addition,  `survclustcurves()` is able to determine automatically the number of groups. The functions will verify if data has been introduced correctly and will create  `kcurves` and `clustcurves` objects, respectively. Both functions allow determining groups using the optimization algorithm $K$-means or $K$-medians (e.g. `algorithm = 'kmeans'`, or `algorithm = 'kmedians'`). The first three arguments must be introduced, where `time` is a vector with event-times, `status` for their corresponding indicator statuses, and `x` is the categorical covariate. 
 
 
-By means of the `ksurvcurves()` function and filling, for example, the arguments `k = 3` and `algorithm = 'kmedians'`, the estimates and the group for which each survival function belongs can be obtained as follows, 
+One can be interesting to know the assignment of the survival curves to the group which they belong and  the automatic selection of the number of groups. As we mentioned, it is possible by means of the `survclustcurves()`function. The following input command provides an example of the output using, as well, the $K$-medians algorithm (i.e. `algorithm = 'kmedians'`)
+
+
 
 ```{r}
-fit.kgbcs<- ksurvcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, x = gbcsCS$nodes,
-                   algorithm = 'kmedians', k = 4, seed = 300716)
+res <- survclustcurves(time = veteran$time, status = veteran$status,
+x = veteran$celltype, algorithm = 'kmedians', nboot = 100, seed=300716)
 ```
-
-Additionally, one can be interesting to know, not only, the assignment of the survival curves to the group which they belong but also, the automatic selection of the number of groups. As we mentioned, it is possible by means of the `survclustcurves()`function. The following input command provides an example of the output using, as well, the $K$-medians algorithm (i.e. `algorithm = 'kmedians'`)
-
-```{r}
-fit.gbcs <- survclustcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, x = gbcsCS$nodes,
-                     nboot = 100, seed = 300716, algorithm = 'kmedians')
-``` 
 
 In the above function it is also included an argument for reducing executing time by means of parallelizing the testing procedure. This is `cluster = TRUE`. Related to this argument,  the number of cores to be used in the parallelized procedure can be specified with the argument `ncores`. By default, `ncores = NULL`, so that the number is equal to the number of cores of the machine - 1.
 
 
 The following piece of code can be executed for obtaining a small summary of the fit
 ```{r}
-summary(fit.kgbcs)
 
-summary(fit.gbcs)
+summary(res)
 ```
 
 
-As can be seen, the `summary()` function, as well as the `print()` function, can be used to obtained some brief information about the output from `ksurvcurves()` and `survclustcurves()`.
+As can be seen, the `summary()` function, as well as the `print()` function, can be used to obtained some brief information about the output from `survclustcurves()`.
 
 
-The graphical representation of the fitted model can be easily obtained using the function `autoplot()`. The plot obtained, specifying the arguments `groups_by_color = FALSE` and `interactive = TRUE`, represents the estimated survival curves for each level of the factor nodes by means of the Kaplan-Meier estimator. As expected, the survival of patients can be influenced by the number of lymph nodes, patient’s recurrence time rises with the decrease of lymph nodes
+The graphical representation of the fitted model can be easily obtained using the function `autoplot()`. The plot obtained, specifying the arguments `groups_by_color = FALSE` and `interactive = TRUE`, represents the estimated survival curves for each level of the factor nodes by means of the Kaplan-Meier estimator. As expected, the survival of patients can be influenced by the cellular type of the tumor.
 
- 
  
 ```{r, out.width= '100%', fig.align = "center"}
-autoplot(fit.gbcs , groups_by_colour = FALSE, interactive = TRUE)
+autoplot(res , groups_by_colour = FALSE, interactive = TRUE)
 ```
 
 
 The assignment of the curves to the three groups can be observed in the following plot simply typing `groups_by_color = TRUE` 
 
 ```{r,out.width= '100%', fig.align = "center"}
-autoplot(fit.gbcs , groups_by_colour = TRUE, interactive = TRUE)
+autoplot(res , groups_by_colour = TRUE, interactive = TRUE)
 ```
 
 
 ### Based on $K$-means
 
 
-Equivalently, the following piece of code shows the input commands and the results obtained with the `algorithm = 'kmeans'`. The number of groups and the assignments are different as those ones obtained with the `algorithm = 'kmedians'`. Although this situation is not so common, in some real applications it can happen.
+Equivalently, the following piece of code shows the input commands and the results obtained with the `algorithm = 'kmeans'`. The number of groups and the assignments are equal as those ones obtained with the `algorithm = 'kmedians'`. 
+
 ```{r}
-fit.gbcs2 <- survclustcurves(time = gbcsCS$rectime, status = gbcsCS$censrec, seed = 300716,
-                      x = gbcsCS$nodes, algorithm = 'kmeans', nboot = 100)
+res2 <- survclustcurves(time = veteran$time, status = veteran$status,
+x = veteran$celltype, algorithm = 'kmeans', nboot = 100, seed=300716)
 ```
 
 
@@ -160,5 +141,52 @@ Equivalent to the example with survival curves shown before, the results obtaine
 ```{r, out.width= '100%', fig.align = "center"}
 autoplot(fit.bar, groups_by_color = TRUE, interactive = TRUE)
 ```
+
+
+# Clustering multiple cumulative incidences functions
+
+The data set contains 8966 patients with acute myeloid leukemia, acute lymphoblastic leukemia, or chronic myeloid leukemia who received this type of transplant.
+
+
+Patients who undergo bone marrow transplantation (BMT) or other types of hematopoietic stem cell transplantation (HSCT) are at increased risk of developing a variety of complications that compete with each other, including relapse of the underlying disease, graft-versus-host disease (GvHD), and different kinds of infections like bacterial, viral, and fungal. Other causes of death in this data set are gathered in the category ``other''.  
+
+
+```{r}
+library(clustcurv)
+library(mstate)
+data("ebmt2")
+out <- table(ebmt2$cod) # causes of death
+table9 <- c(out[-1], out[1]) # reorder causes of death
+names(table9)[7] <- "Censored" # changed name of the last cause of death
+(table9 <- data.frame(t(table9)))
+```
+
+When we confront a data set like this one, with several competing risks, one may wish to know if the risk in patients can be influenced by the type of death. Maybe a good approximation could be to establish groups with the same risk or CIF. In order to do this, our proposed method is applied by means of executing the following piece of code
+
+```{r}
+# Testing the number of groups
+outtest <- survcifcurves(time = ebmt2$time, status = ebmt2$status, x = NULL,
+                         kvector = NULL,  kbin = 50, nboot = 200,
+                         algorithm = "kmeans", cluster = TRUE)
+summary(outtest)
+```
+
+The results suggest that it is possible to create four groups of CIFs. The first one is GvHD with the highest risk after BMT. The second one considers other causes and the third one is the relapse of the underlying disease, which risk becomes the highest  25 days after the medical intervention. Finally, different kinds of infections—Bacterial, Viral, and Fungal—are assigned to the same group (fourth one) with the lowest probability of risk, which is nearly constant over time a few days after the intervention. 
+
+
+
+The assignment of the curves to the four groups can be observed in the following figure grouped by colors.
+
+```{r}
+# Plotting the grouped CIFs 
+figure <- autoplot(outtest) + 
+  ggplot2::theme(legend.position="none") +
+  ggplot2::scale_color_manual(values = c("#E7298A","#D95F02", "#1B9E77", 
+                                         "#1B9E77", "#1B9E77",  "#7570B3" ))
+
+figure
+```
+
+
 
 > Never mind -> `install.packages('clustcurv')`
