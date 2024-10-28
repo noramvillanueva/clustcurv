@@ -1,7 +1,7 @@
 # clustcurv: Determining Groups in Multiple Curves
 
 [![DOI](https://zenodo.org/badge/98645393.svg)](https://doi.org/10.5281/zenodo.13889531)
-[![Build Status](https://travis-ci.org/noramvillanueva/clustcurv.svg?branch=master)](https://travis-ci.org/noramvillanueva/clustcurv)
+[![R-CMD-check](https://github.com/noramvillanueva/clustcurv/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/noramvillanueva/clustcurv/actions/workflows/R-CMD-check.yml)
 [![Coverage status](https://codecov.io/gh/noramvillanueva/clustcurv/branch/master/graph/badge.svg)](https://codecov.io/github/noramvillanueva/clustcurv?branch=master)
 [![CRAN status](https://www.r-pkg.org/badges/version/clustcurv)](https://cran.r-project.org/package=clustcurv)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/clustcurv)](https://cran.r-project.org/package=clustcurv)
