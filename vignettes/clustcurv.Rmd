@@ -3,7 +3,7 @@ title: "Clustering Multiple Nonparametric Curves"
 author: "[Nora M. Villanueva](https://noramvillanueva.github.io) & [Marta Sestelo](https://sestelo.github.io)"
 date: "`r Sys.Date()`"
 description: >
-  This vignette describes the usage of the main functions included in clustcurv package with two real data sets.
+  This vignette describes the usage of the main functions included in clustcurv package with three real data sets.
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Clustering Multiple Nonparametric Curves}
