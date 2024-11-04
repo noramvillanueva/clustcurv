@@ -5,6 +5,7 @@
 [![Coverage status](https://codecov.io/gh/noramvillanueva/clustcurv/branch/master/graph/badge.svg)](https://codecov.io/github/noramvillanueva/clustcurv?branch=master)
 [![CRAN status](https://www.r-pkg.org/badges/version/clustcurv)](https://cran.r-project.org/package=clustcurv)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/clustcurv)](https://cran.r-project.org/package=clustcurv)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/last-month/clustcurv?color=ff69b4)](https://cran.r-project.org/package=clustcurv)
 
 
 
