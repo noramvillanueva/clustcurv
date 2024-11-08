@@ -1,10 +1,11 @@
 Package: clustcurv
 Type: Package
-Title: Determining Groups in Multiples Curves
+Title: Determining Groups in Multiples Curves for survival, regression 
+     and competing risks analysis.
 URL: https://github.com/noramvillanueva/clustcurv
 BugReports: https://github.com/noramvillanueva/clustcurv/issues
-Version: 2.0.1.0001
-Date: 2020-12-23
+Version: 3.0.0.0001
+Date: 2024-10-24
 Maintainer: Nora M. Villanueva <nmvillanueva@uvigo.es>
 Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role = c("aut", "cre"),
   comment = c(ORCID = "0000-0001-8085-2745")),
@@ -12,9 +13,12 @@ Authors@R: c(person("Nora", "M. Villanueva",email= "nmvillanueva@uvigo.es", role
 Description: A method for determining groups in multiple 
     curves with an automatic selection of their number based on k-means or 
     k-medians algorithms. The selection of the optimal number is provided by 
-    bootstrap methods. The methodology can be applied both in regression and survival framework.
+    bootstrap methods. The methodology can be applied in survival, regression 
+    and competing risk framework.
      Implemented methods are:
-    Grouping multiple survival curves described by Villanueva et al. (2018) <doi:10.1002/sim.8016>.
+    Clustering multiple survival curves described by Villanueva et al. (2018) <doi:10.1002/sim.8016>.
+    Clustering multiple regression curves described by Villanueva et al. (2020) <doi:10.48550/arXiv.2012.15278>.
+    Clustering multiple cumulative incidence functions described by sestelo et al. (2024) <doi:10.1002/bimj.202300084>.
 Depends:
     R (>= 3.5.0)
 License: MIT + file LICENSE

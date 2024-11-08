@@ -1,4 +1,4 @@
-# clustcurv: Determining Groups in Multiple Curves
+# clustcurv:Determining Groups in Multiples Curves for survival, regression and competing risks analysis.
 
 
 ```clustcurv``` is an R package that provides a method for determining groups in multiple 
