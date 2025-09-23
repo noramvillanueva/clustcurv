@@ -52,11 +52,14 @@ See help page of the function \code{\link[ggfortify:autoplot.survfit]{ggfortify:
 
 library(survival)
 library(clustcurv)
+library(condSURV)
 library(ggplot2)
 library(ggfortify)
 
 # Survival
 
+data(veteran)
+data(colonCS)
 
 cl2 <- ksurvcurves(time = veteran$time, status = veteran$status,
 x = veteran$celltype, k = 2, algorithm = "kmeans")
@@ -77,6 +80,22 @@ autoplot(r2, groups_by_colour = FALSE)
 autoplot(r2, groups_by_colour = FALSE, interactive = TRUE)
 autoplot(r2, centers = TRUE)
 
+
+colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
+                      nodes = colonCS$nodes)
+
+table(colonCSm$nodes)
+colonCSm$nodes[colonCSm$nodes == 0] <- NA
+colonCSm <- na.omit(colonCSm)
+colonCSm$nodes[colonCSm$nodes >= 10] <- 10
+table(colonCSm$nodes) # ten levels
+
+res <- survclustcurves(time = colonCSm$time, status = colonCSm$status,
+       x = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
+
+autoplot(res)
+autoplot(res, groups_by_colour = FALSE)
+autoplot(res, centers = TRUE)
 }
 }
 \author{
