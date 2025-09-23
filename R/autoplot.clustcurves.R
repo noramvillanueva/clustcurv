@@ -30,11 +30,14 @@ ggplot2::autoplot
 #'
 #' library(survival)
 #' library(clustcurv)
+#' library(condSURV)
 #' library(ggplot2)
 #' library(ggfortify)
 #'
 #' # Survival
 #'
+#' data(veteran)
+#' data(colonCS)
 #'
 #' cl2 <- ksurvcurves(time = veteran$time, status = veteran$status,
 #' x = veteran$celltype, k = 2, algorithm = "kmeans")
@@ -55,6 +58,22 @@ ggplot2::autoplot
 #' autoplot(r2, groups_by_colour = FALSE, interactive = TRUE)
 #' autoplot(r2, centers = TRUE)
 #'
+#'
+#' colonCSm <- data.frame(time = colonCS$Stime, status = colonCS$event,
+#'                       nodes = colonCS$nodes)
+#'
+#' table(colonCSm$nodes)
+#' colonCSm$nodes[colonCSm$nodes == 0] <- NA
+#' colonCSm <- na.omit(colonCSm)
+#' colonCSm$nodes[colonCSm$nodes >= 10] <- 10
+#' table(colonCSm$nodes) # ten levels
+#'
+#' res <- survclustcurves(time = colonCSm$time, status = colonCSm$status,
+#'        x = colonCSm$nodes, algorithm = "kmeans", nboot = 20)
+#'
+#' autoplot(res)
+#' autoplot(res, groups_by_colour = FALSE)
+#' autoplot(res, centers = TRUE)
 #' }
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
@@ -71,9 +90,9 @@ autoplot.clustcurves <- function(object = object, groups_by_colour = TRUE,
   k <- length(unique(x$cluster))
 
    if(k < 3){
-     colgr <- brewer.pal(n = 3, name = "Dark2")
+     colgr <- RColorBrewer::brewer.pal(n = 3, name = "Dark2")
    }else if(k<9){
-     colgr <- brewer.pal(n = k, name = "Dark2")
+     colgr <- RColorBrewer::brewer.pal(n = k, name = "Dark2")
      }else{
   colgr <- colorRampPalette(brewer.pal(n = 8, name = "Dark2"))(k)
      }
