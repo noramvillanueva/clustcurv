@@ -124,6 +124,62 @@ Tvalue <- function(data, K, kbin, method){
 
 
 
+#Funtion for obtaining LR pvalue for each cluster
+LR_pvalue <- function(data, stat){
+  if(length(unique(data$ff)) > 1){
+    aux <- survminer::surv_fit(Surv(ttilde, status) ~ ff, data = data)
+    pv_log <- surv_pvalue(aux, data = data, method = stat)$pval
+  }else{
+    pv_log <- NA  # no hace logrank, solo hay una curva
+  }
+  return(pv_log)
+}
+
+
+# test statistic (valid for kmeans or kmedians algorithm, fill in method argument),
+## using LR, no bootstrap
+Tvalue_LR <- function(data, K, kbin, method, stat, correction){
+  h1 <- survfit(Surv(ttilde, status) ~ ff, data = data)
+  plot(h1)
+  xbin <- seq(from = min(data$ttilde), to = max(data$ttilde), length.out = kbin)
+  aux <- summary(h1, times = xbin)
+  kbin_km <- as.numeric(table(aux$strata))
+
+  if (sum(kbin_km != kbin) > 0) { # if TRUE, there is some curve without estimates at each kbin
+    h1_param <- do.call("cbind", as.list(by(data, data$ff, survfitpar, xbin)))
+    muhat <- sapply(1:length(unique(data$ff)),
+                    function(x){joint_km_np(aux, h1_param, x, kbin)})
+  }else{
+    muhat <- matrix(aux$surv, ncol = nlevels(as.factor(data$ff)), nrow = kbin)
+  }
+
+  if(method == "kmeans"){
+    res <<- kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500)
+  }
+  if(method == "kmedians"){
+    if (K == 1){
+      res <<- list()
+      res$cluster <<- rep(1, length(unique(data$ff)))
+    } else {
+      res <<- kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10,
+                       gamma=0.05)
+    }
+  }
+
+  data$newf <- res$cluster[data$ff]
+
+  out <- by(data, data$newf, LR_pvalue, stat)
+  out <- as.vector(out)
+  out <- p.adjust(out, method = correction)
+  return(list(t = out, res = res))
+}
+
+
+
+
+
+
+
 
 
 
@@ -155,6 +211,36 @@ bootstrap <- function(data, newf, K, kbin, method){
 }
 
 
+# function testing H_0 (k) with LR stat (no bootsrap)
+testing_k_LR <- function(time, status, fac, k, kbin, stat, nboot,
+                         algorithm, seed, cluster, correction){
+  method <- algorithm
+  nf <- nlevels(factor(fac))
+
+  #########################################################
+  #get("res", envir = environment())
+  ########################################################
+
+  # levels
+  f <- factor(fac)
+  lab <- levels(f)
+  ff <- as.integer(f)
+
+  data <- data.frame(ttilde = time, status = status, f = fac, ff = ff)
+
+  # statistic from the sample
+  aux <- Tvalue_LR(data, k, kbin, method, stat, correction)
+  tsample <- aux$t
+
+  newf <- aux$res$cluster[data$ff]
+
+  # bootstrap
+
+  pvalue <- min(tsample, na.rm = TRUE)
+
+  return(list(pvalue = pvalue, t = NA, levels = lab,
+              cluster = as.numeric(aux$res$cluster)))
+}
 
 
 
