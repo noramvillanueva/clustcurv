@@ -1,0 +1,24 @@
+This file documents software changes since the previous edition.
+
+
+
+# clustcurv 3.0.0 (2025-11-14)
+
+* A new argument `method` has been added to the `survclustcurv()` function.
+  This argument allows selecting the testing procedure used to determine the number of groups.
+  The default is `method = "LR"`.
+
+  Supported values are:
+
+  - `"LR"`: Log-Rank test; sensitive to late differences.
+  - `"GB"`: Gehan–Breslow (generalized Wilcoxon); detects early differences.
+  - `"TW"`: Tarone–Ware; detects early differences.
+  - `"PP"`: Peto–Peto modified survival estimate; more robust than Tarone–Ware or Gehan–Breslow, detects early differences.
+  - `"mPP"`: Modified Peto–Peto (Andersen).
+  - `"FH"`: Fleming–Harrington (p = 1, q = 1).
+  - `"bootstrap"`: Villanueva, Sestelo & Meira-Machado bootstrap procedure (the procedure implemented in previous package versions).
+
+
+
+
+

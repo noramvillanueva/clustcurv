@@ -10,14 +10,14 @@ survclustcurves(
   x,
   kvector = NULL,
   kbin = 50,
+  method = "LR",
   nboot = 100,
   algorithm = "kmeans",
   alpha = 0.05,
   cluster = FALSE,
   ncores = NULL,
   seed = NULL,
-  multiple = FALSE,
-  multiple.method = "holm"
+  multiple.method = "bonferroni"
 )
 }
 \arguments{
@@ -35,15 +35,26 @@ checking.}
 \item{kbin}{Size of the grid over which the survival functions
 are to be estimated.}
 
-\item{nboot}{Number of bootstrap repeats.}
+\item{method}{Testing procedure used for obtain the number of groups. Default is \code{"LR"}
+Possible values are one of:
+- "LR": Regular Log-Rank test, sensitive to detect late differences.
+- "GB": Gehan-Breslow (generalized Wilcoxon), detect early differences.
+- "TW": Tarone-Ware, detect early differences.
+- "PP": Peto-Peto's modified survival estimate, more robust than
+Tharone-Ware or Gehan-Breslow, detect early differences
+- "mPP": modified Peto-Peto (by Andersen)
+- "FH": Fleming-Harrington (p = 1, q = 1)
+- "bootstrap": Villanueva, Sestelo & Meira-Machado bootstrap procedure.}
+
+\item{nboot}{Number of bootstrap repeats.Only for bootstrap method.}
 
 \item{algorithm}{A character string specifying which clustering algorithm is used,
 i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).}
 
 \item{alpha}{Significance level of the testing procedure. Defaults to 0.05.}
 
-\item{cluster}{A logical value. If  \code{TRUE} (default), the
-testing procedure is  parallelized. Note that there are cases
+\item{cluster}{A logical value. If  \code{FALSE} (default), the
+bootstrap testing procedure is  parallelized. Note that there are cases
 (e.g., a low number of bootstrap repetitions) that R will gain in
 performance through serial computation. R takes time to distribute tasks
 across the processors also it will need time for binding them all together
@@ -57,10 +68,8 @@ to be used is equal to the number of cores of the machine - 1.}
 
 \item{seed}{Seed to be used in the procedure.}
 
-\item{multiple}{A logical value. If  \code{TRUE} (not default), the resulted
-pvalues are adjusted by using one of several methods for multiple comparisons.}
-
-\item{multiple.method}{Correction method. See Details.}
+\item{multiple.method}{Correction for multiple comparisons. See Details. Not used
+in the case of the bootstrap method.}
 }
 \value{
 A list containing the following items:
@@ -84,7 +93,8 @@ Less conservative corrections are also included by Holm (1979) ('holm'),
 Hochberg (1988) ('hochberg'), Hommel (1988) ('hommel'),
 Benjamini & Hochberg (1995) ('BH' or its alias 'fdr'), and
 Benjamini & Yekutieli (2001) ('BY'), respectively.
-A pass-through option ('none') is also included.
+
+This correction is not applied in the bootstrap method.
 }
 \examples{
 library(clustcurv)

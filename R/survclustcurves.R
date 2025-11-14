@@ -13,7 +13,7 @@
 #'  checking.
 #' @param kbin Size of the grid over which the survival functions
 #' are to be estimated.
-#' @param method  Procedure used for grouping survival curves. Default is \code{"LR"}
+#' @param method  Testing procedure used for obtain the number of groups. Default is \code{"LR"}
 #' Possible values are one of:
 #' - "LR": Regular Log-Rank test, sensitive to detect late differences.
 #' - "GB": Gehan-Breslow (generalized Wilcoxon), detect early differences.
@@ -27,7 +27,7 @@
 #' @param algorithm A character string specifying which clustering algorithm is used,
 #'  i.e., k-means(\code{"kmeans"}) or k-medians (\code{"kmedians"}).
 #' @param alpha Significance level of the testing procedure. Defaults to 0.05.
-#' @param cluster A logical value. If  \code{TRUE} (default), the
+#' @param cluster A logical value. If  \code{FALSE} (default), the
 #'  bootstrap testing procedure is  parallelized. Note that there are cases
 #'  (e.g., a low number of bootstrap repetitions) that R will gain in
 #'  performance through serial computation. R takes time to distribute tasks
@@ -68,9 +68,7 @@
 #'@examples
 #' library(clustcurv)
 #' library(survival)
-#' library(condSURV)
 #' data(veteran)
-#' data(colonCS)
 #'
 #'# Survival framework
 #' res <- survclustcurves(time = veteran$time, status = veteran$status,
@@ -266,7 +264,7 @@ survclustcurves <- function(time, status = NULL, x,
 
   res <- list(num_groups = k, table = data.frame(H0 = h0tested, Tvalue = tval, pvalue = pval),
               levels = aux$levels, cluster = as.numeric(aux$cluster),
-              centers = h0, curves = h1, method = method, data = data, algorithm = algorithm,
+              centers = h0, curves = h1, method = "survival", data = data, algorithm = algorithm,
               call = match.call())
   class(res) <- "clustcurves"
   return(res)

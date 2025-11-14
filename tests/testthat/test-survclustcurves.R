@@ -4,7 +4,7 @@ library(survival)
 
 
 testthat::test_that( "Survival fit computed correctly", {
-    expected <- c(2,1,1,2)
+    expected <- c(1,2,2,1)
     fit <- survclustcurves(time = veteran$time, status = veteran$status,
                             x = veteran$celltype, algorithm = 'kmeans',
                            seed = 300716, nboot = 5)

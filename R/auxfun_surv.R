@@ -128,7 +128,7 @@ Tvalue <- function(data, K, kbin, method){
 LR_pvalue <- function(data, stat){
   if(length(unique(data$ff)) > 1){
     aux <- survminer::surv_fit(Surv(ttilde, status) ~ ff, data = data)
-    pv_log <- surv_pvalue(aux, data = data, method = stat)$pval
+    pv_log <- survminer::surv_pvalue(aux, data = data, method = stat)$pval
   }else{
     pv_log <- NA  # no hace logrank, solo hay una curva
   }
@@ -154,14 +154,14 @@ Tvalue_LR <- function(data, K, kbin, method, stat, correction){
   }
 
   if(method == "kmeans"){
-    res <<- kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500)
+    res <- kmeans(t(muhat), centers = K, iter.max = 50, nstart = 500)
   }
   if(method == "kmedians"){
     if (K == 1){
-      res <<- list()
-      res$cluster <<- rep(1, length(unique(data$ff)))
+      res <- list()
+      res$cluster <- rep(1, length(unique(data$ff)))
     } else {
-      res <<- kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10,
+      res <- kGmedian(t(muhat), ncenters = K, nstart = 50, nstartkmeans = 10,
                        gamma=0.05)
     }
   }
