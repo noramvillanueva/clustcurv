@@ -140,7 +140,6 @@ LR_pvalue <- function(data, stat){
 ## using LR, no bootstrap
 Tvalue_LR <- function(data, K, kbin, method, stat, correction){
   h1 <- survfit(Surv(ttilde, status) ~ ff, data = data)
-  plot(h1)
   xbin <- seq(from = min(data$ttilde), to = max(data$ttilde), length.out = kbin)
   aux <- summary(h1, times = xbin)
   kbin_km <- as.numeric(table(aux$strata))
