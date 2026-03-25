@@ -30,3 +30,42 @@ Or the development version from GitHub:
 devtools::install_github("noramvillanueva/clustcurv")
 ```
 
+
+
+
+## Citation
+
+If you use `clustcurv` in your research, please cite the following paper:
+
+
+> Villanueva, N.M., Sestelo, M., Meira-Machado, L., Roca-Pardiñas, J. (2021).
+> *clustcurv: An R Package for Determining Groups in Multiple Curves*. 
+> The R Journal, 13(1), 164–183. 
+> <https://doi.org/10.32614/RJ-2021-032>
+
+
+```         
+  @Article{,
+    title = {{clustcurv}: An {R} Package for Determining Groups in
+      Multiple Curves},
+    author = {Nora M. Villanueva and Marta Sestelo and Luis
+      Meira-Machado and Javier Roca-Pardi{\~n}as},
+    journal = {The R Journal},
+    year = {2021},
+    volume = {13},
+    number = {1},
+    pages = {164--183},
+    doi = {10.32614/RJ-2021-032},
+  }
+
+
+## Acknowledgment
+
+Marta Sestelo and Nora M. Villanueva acknowledges financial support from
+Grant PID2020-118801GB-I00 and Grant PID2023-148811NB-I00 funded by Ministerio de Ciencia e Innovación
+(MCIN/ AEI /10.13039/501100011033).
+
+
+
+
+
